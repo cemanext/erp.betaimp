@@ -3563,6 +3563,7 @@ $table_listaFattureInvioMultiplo = array(
  `id_prodotto`, `id_contatto`, `id_bolla`, `id_costo`, `tipo_documento`, `categoria`, `nome`, `descrizione`, `estensione`, `orientamento`,
  `note`, `scrittore`, `stato`, `tabella`, `id_corso`, `id_classe`
  */
+ 
 $table_documentiAttestati = array(
                 "index" => array("campi" => "CONCAT('<a class=\"btn btn-circle btn-icon-only yellow btn-outline\" href=\"dettaglio.php?tbl=lista_attestati&id=',id,'\" title=\"DETTAGLIO\" alt=\"DETTAGLIO\"><i class=\"fa fa-search\"></i></a>') AS 'fa-search',
                                             CONCAT('<a class=\"btn btn-circle btn-icon-only red btn-outline\" href=\"printAttestatoPDF_',orientamento,'.php?idAttestato=',id,'\" title=\"STAMPA\" alt=\"STAMPA\" target=\"_blank\"><i class=\"fa fa-file-pdf-o\"></i></a>') AS 'fa-file-pdf-o',
