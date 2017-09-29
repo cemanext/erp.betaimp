@@ -15,8 +15,10 @@ switch ($_GET['fn']) {
         $row_0001 = $dblink->get_row("SELECT username, email, nome, cognome, passwd FROM $tabella WHERE id_professionista = '$idProfessionista' ",true);
         //SERVONO PARAMETRI
         $return = $moodle->creaUtenteMoodle($row_0001['username'], $row_0001['email'], $row_0001['nome'], $row_0001['cognome'], $row_0001['passwd'], $idProfessionista);
-        $return = objToArray($return);
-        //var_dump($return);
+        if (DISPLAY_DEBUG) {
+            $return = objToArray($return);
+            var_dump($return);
+        }
         //
         //DA INSERIRE DAVIDE 10-07-2017
         //MAIL CREA UTENTE MOODLE
@@ -29,8 +31,10 @@ switch ($_GET['fn']) {
         $NomeClasse = $_GET['NomeClasse'];
 
         $return = $moodle->annullaAbbonamentoMoodle($idUtenteMoodle, $NomeClasse);
-        $return = objToArray($return);
-        //var_dump($return);
+        if (DISPLAY_DEBUG) {
+            $return = objToArray($return);
+            var_dump($return);
+        }
         //
         //@edo -> notifiche o altre cose da aggiungere nel processo?
 
@@ -44,8 +48,10 @@ switch ($_GET['fn']) {
         $DataFineIscrizione = $_GET['DataFineIscrizione'];
 
         $return = $moodle->iscrizioneCorsoMoodle($idUtenteMoodle, $idCorso, $NomeClasse, $DataFineIscrizione);
-        $return = objToArray($return);
-        //var_dump($return);
+        if (DISPLAY_DEBUG) {
+            $return = objToArray($return);
+            var_dump($return);
+        }
         //
         //@edo -> notifiche o altre cose da aggiungere nel processo?
 
@@ -59,8 +65,10 @@ switch ($_GET['fn']) {
             $moduli = $dblink->get_results("SELECT * FROM ".MOODLE_DB_NAME.".mdl_course_modules WHERE course='$corso[id]'");
             foreach ($moduli as $modulo) {
                 $var = json_decode($modulo['availability'] , true);
-                echo "<li>INSTANCE: $modulo[instance]<br><br>".
-                "<pre>".var_export($var,true). "</pre></li>";
+                if (DISPLAY_DEBUG) {
+                    echo "<li>INSTANCE: $modulo[instance]<br><br>".
+                    "<pre>".var_export($var,true). "</pre></li>";
+                }
             }
         }
     break;
@@ -291,9 +299,11 @@ switch ($_GET['fn']) {
     case "lista_prodotti":
         //$corsi = $moodle->get_all_course();
         $corsi = $dblink->get_results("SELECT * FROM ".MOODLE_DB_NAME.".mdl_course");
-        /*echo "<pre>";
-        print_r($corsi);
-        echo "<pre/><br>";*/
+        if (DISPLAY_DEBUG) {
+            /*echo "<pre>";
+            print_r($corsi);
+            echo "<pre/><br>";*/
+        }
         //die;
         foreach ($corsi as $corso) {
             if(strlen($corso['id'])<=1) continue;
@@ -579,10 +589,12 @@ switch ($_GET['fn']) {
         if(isset($_GET['id']) && $_GET['id']>0 && isset($_GET['idProd']) && $_GET['idProd']>0 && isset($_GET['idCorso']) && $_GET['idCorso']>0){
             $moduli = $moodle->get_all_lesson($_GET['id']);
             $corsi = $moodle->get_all_course();
-            //print_r($corsi);
-            //echo "<br />";
-            //print_r($moduli);
-            //die;
+            if (DISPLAY_DEBUG) {
+                //print_r($corsi);
+                //echo "<br />";
+                //print_r($moduli);
+                //die;
+            }
             echo "<br />";
             $ordine = 1;
             $timeCorso = 0;
@@ -757,13 +769,13 @@ switch ($_GET['fn']) {
 
                         foreach ($corsi as $corso) {
                             if(strlen($corso->id)<1) continue;
-                            echo "ID_NUMBER: ".$corso->id." == ID_CORSO: ".$_GET['id']."<br>";
+                            if (DISPLAY_DEBUG) echo "ID_NUMBER: ".$corso->id." == ID_CORSO: ".$_GET['id']."<br>";
                             if($corso->id == $_GET['id']){
-                                print_r($corso->time_to_complete_modules);
+                                if (DISPLAY_DEBUG) print_r($corso->time_to_complete_modules);
                                 $arrayTimelesson = json_decode($corso->time_to_complete_modules);
-                                print_r($arrayTimelesson);
+                                if (DISPLAY_DEBUG) print_r($arrayTimelesson);
                                 foreach ($arrayTimelesson as $arrayTime) {
-                                    print_r($arrayTime);
+                                    if (DISPLAY_DEBUG) print_r($arrayTime);
                                     if($arrayTime->istance_id == $lezione->id){
                                         $timeCorso = $arrayTime->value;
                                         break 2;

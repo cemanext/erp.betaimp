@@ -1,9 +1,5 @@
 <?php
-//include_once($_SERVER['DOCUMENT_ROOT'] . '/config/connDB.php');
-
-define("BASE_URL", (!empty($_SERVER['HTTPS'])) ? "https://".$_SERVER['SERVER_NAME'] : "http://".$_SERVER['SERVER_NAME']);
-define("BASE_ROOT", $_SERVER['DOCUMENT_ROOT']."/");
-define('ERP_DOMAIN_NAME', 'http://erp.betaformazione.com');
+include_once('../../config/connDB.php');
 
 if(isset($_GET['id']) && !empty($_GET['id'])){
     $idCampagna = $_GET['id'];

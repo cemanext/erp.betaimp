@@ -1,10 +1,6 @@
 <?php
-session_start();
-
-include_once($_SERVER['DOCUMENT_ROOT'].'/config/connDB.php');
-include_once(BASE_ROOT.'config/confAccesso.php');
-include_once(BASE_ROOT.'config/confDebug.php');
-include_once(BASE_ROOT.'libreria/libreria.php');
+include_once('../../config/connDB.php');
+include_once(BASE_ROOT . 'config/confAccesso.php');
 
 /*if(isset($_GET) && $_SERVER['REMOTE_ADDR']!="46.28.0.81" && strpos(strtolower($_SERVER['HTTP_USER_AGENT']), "wordpress")===false){
     

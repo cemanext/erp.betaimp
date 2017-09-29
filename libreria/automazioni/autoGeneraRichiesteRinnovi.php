@@ -1,8 +1,16 @@
 <?php
-session_start();
-include_once($_SERVER['DOCUMENT_ROOT'] . '/config/connDB.php');
-include_once(BASE_ROOT . 'libreria/libreria.php');
+include_once('../../config/connDB.php');
+include_once(BASE_ROOT . 'config/confAccesso.php');
+include_once(BASE_ROOT . 'classi/webservice/client.php');
 
+if (DISPLAY_DEBUG) {
+    echo '<li>'.date('Y-m-d H:i:s').'</li>';
+    echo '<li>DB_HOST = '.DB_HOST.'</li>';
+    echo '<li>DB_USER = '.DB_USER.'</li>';
+    echo '<li>DB_PASS = '.DB_PASS.'</li>';
+    echo '<li>DB_NAME = '.DB_NAME.'</li>';
+    echo '<hr>';
+}
 
 $Sql_tmp_0001 = "CREATE TEMPORARY TABLE listaRinnoviAbbonamentiDaCaricare (SELECT scrittore, id_professionista, abbonamento, id_classe, id_corso, data_fine_iscrizione FROM lista_iscrizioni WHERE data_fine_iscrizione = DATE_ADD(CURDATE(), INTERVAL 30 DAY) AND (stato LIKE 'Configurazione') AND abbonamento=1 GROUP BY id_professionista, abbonamento ORDER BY `lista_iscrizioni`.`data_fine_iscrizione` ASC);";
 $dblink->query($Sql_tmp_0001);
@@ -15,7 +23,7 @@ $dblink->query($Sql_tmp_0001);
 $sql_000001 = "SELECT * FROM listaRinnoviAbbonamentiDaCaricare";// UNION SELECT * FROM listaRinnoviCorsiDaCaricare";
 
 $rs_00000001 = $dblink->get_results($sql_000001);
-echo '<ol>';
+if (DISPLAY_DEBUG) echo '<ol>';
 foreach ($rs_00000001 AS $row_00000001) {
     
     $idProfessionista = $row_00000001['id_professionista'];
@@ -28,10 +36,10 @@ foreach ($rs_00000001 AS $row_00000001) {
     $rowMarketing = $dblink->get_row("SELECT id AS id_tipo_marketing, nome FROM lista_tipo_marketing WHERE id = '49'", true);
     if($row_00000001['abbonamento']=="1"){
         $rowProdotto = $dblink->get_row("SELECT * FROM lista_prodotti WHERE codice_esterno = 'abb_".$row_00000001['id_classe']."'", true);
-        echo "<br>".$dblink->get_query();
+        if (DISPLAY_DEBUG) echo "<br>".$dblink->get_query();
     }else{
         $rowProdotto = $dblink->get_row("SELECT * FROM lista_prodotti INNER JOIN lista_corsi ON lista_prodotti.id = lista_corsi.id_prodotto WHERE lista_corsi.id = '".$row_00000001['id_corso']."'", true);
-        echo "<br>".$dblink->get_query();
+        if (DISPLAY_DEBUG) echo "<br>".$dblink->get_query();
     }
     $rowCalendario = $dblink->get_row("SELECT id FROM calendario WHERE id_professionista='".$idProfessionista."' AND id_campagna='".$rowCampagna['id_campagna']."' AND id_prodotto='".$rowProdotto['id']."' AND (stato LIKE 'Richiamare' OR stato LIKE 'Mai Contattato' OR stato LIKE 'In Attesa di Controllo' OR stato LIKE 'Accorpata')",true);
     /*echo "<br>".$dblink->get_query();
@@ -39,7 +47,7 @@ foreach ($rs_00000001 AS $row_00000001) {
     print_r($rowCalendario);
     echo "</pre>";*/
     if(empty($rowCalendario)){
-        echo "<li>id_corso = ".$row_00000001['id_corso']."</li>";
+        if (DISPLAY_DEBUG) echo "<li>id_corso = ".$row_00000001['id_corso']."</li>";
         $insert = array(
             "dataagg" => date("Y-m-d H:i:s"),
             "scrittore" => $dblink->filter("autoGeneraRichiesteRinnovi"),
@@ -92,6 +100,6 @@ foreach ($rs_00000001 AS $row_00000001) {
     }
     
 }
-echo '</ol>';
     
+if (DISPLAY_DEBUG) echo '</pl>'.date("H:i:s");
 ?>

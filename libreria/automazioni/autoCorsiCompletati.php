@@ -1,21 +1,20 @@
 <?php
-session_start();
-include_once($_SERVER['DOCUMENT_ROOT'].'/config/connDB.php');
-include_once(BASE_ROOT.'config/confAccesso.php');
-include_once(BASE_ROOT.'config/confDebug.php');
-include_once(BASE_ROOT.'libreria/libreria.php');
-include_once(BASE_ROOT.'classi/phpmailer/class.phpmailer.php');
+include_once('../../config/connDB.php');
+include_once(BASE_ROOT . 'config/confAccesso.php');
+include_once(BASE_ROOT . 'classi/webservice/client.php');
 
-echo '<hr>'.date("H:i:s");
-echo '<li>DB_HOST = '.DB_HOST.'</li>';
-echo '<li>DB_USER = '.DB_USER.'</li>';
-echo '<li>DB_PASS = '.DB_PASS.'</li>';
-echo '<li>DB_NAME = '.DB_NAME.'</li>';
-echo '<li>DB_NAME = '.MOODLE_DB_NAME.'</li>';
-echo '<li>DB_NAME = '.DURATA_CORSO_INGEGNERI.'</li>';
-echo '<li>DB_NAME = '.DURATA_ABBONAMENTO.'</li>';
-echo '<li>DB_NAME = '.DURATA_CORSO.'</li>';
-echo '<hr>';
+if (DISPLAY_DEBUG) {
+    echo '<hr>'.date("H:i:s");
+    echo '<li>DB_HOST = '.DB_HOST.'</li>';
+    echo '<li>DB_USER = '.DB_USER.'</li>';
+    echo '<li>DB_PASS = '.DB_PASS.'</li>';
+    echo '<li>DB_NAME = '.DB_NAME.'</li>';
+    echo '<li>DB_NAME = '.MOODLE_DB_NAME.'</li>';
+    echo '<li>DB_NAME = '.DURATA_CORSO_INGEGNERI.'</li>';
+    echo '<li>DB_NAME = '.DURATA_ABBONAMENTO.'</li>';
+    echo '<li>DB_NAME = '.DURATA_CORSO.'</li>';
+    echo '<hr>';
+}
 /*
 // AGGIORNO ID UTENTE MOODLE
 $sql_0005 = "UPDATE lista_iscrizioni, lista_password 
@@ -68,15 +67,15 @@ foreach ($rowsIscrizioni as $rowIscrizione) {
             $ok = $dblink->update("lista_iscrizioni", $updateIscrizione, array("id"=>$rowIscrizione['id']));
             //CORSO COMPLETATO
              if($ok){
-                echo '<li style="color: GREEN;"> OK !</li>';
+                if (DISPLAY_DEBUG) echo '<li style="color: GREEN;"> OK !</li>';
                 $log->log_all_errors('autoCorsiCompletati.php -> corso  completato correttamente [id_corso_moodle = '.$rowIscrizione['id_corso_moodle'].']','OK');
             }else{
-                echo '<li style="color: RED;"> KO !</li>';
+                if (DISPLAY_DEBUG) echo '<li style="color: RED;"> KO !</li>';
                 $log->log_all_errors('autoCorsiCompletati.php -> corso NON completato [id_corso_moodle = '.$rowIscrizione['id_corso_moodle'].']','ERRORE');
             }
         }
     }
 }
 
-echo '<hr>'.date("H:i:s");
+if (DISPLAY_DEBUG) echo '<hr>'.date("H:i:s");
 ?>

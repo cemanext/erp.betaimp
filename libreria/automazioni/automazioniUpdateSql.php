@@ -1,12 +1,11 @@
 <?php
-session_start();
-ob_start();
+include_once('../../config/connDB.php');
+include_once(BASE_ROOT . 'config/confAccesso.php');
 
-echo "START: ".date("H:i:s");
-echo "<br>";
-
-include_once($_SERVER['DOCUMENT_ROOT'].'/config/connDB.php');
-include_once(BASE_ROOT.'libreria/libreria.php');
+if (DISPLAY_DEBUG) {
+    echo "START: ".date("H:i:s");
+    echo "<br>";
+}
 
 /* AGGIORNAMENTI LISTA COSTI */
 
@@ -127,6 +126,6 @@ $sql_0020 = "UPDATE lista_campagne
             WHERE data_fine < CURDATE() AND data_fine != '0000-00-00' ";
 $dblink->query($sql_0020);
 
-echo "END".date("H:i:s");
+if (DISPLAY_DEBUG) echo "END: ".date("H:i:s");
 
 ?>

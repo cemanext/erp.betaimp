@@ -1,21 +1,22 @@
 <?php
-session_start();
-include_once($_SERVER['DOCUMENT_ROOT'].'/config/connDB.php');
-include_once(BASE_ROOT.'libreria/libreria.php');
-include_once(BASE_ROOT.'classi/webservice/client.php');
+include_once('../../config/connDB.php');
+include_once(BASE_ROOT . 'config/confAccesso.php');
+include_once(BASE_ROOT . 'classi/webservice/client.php');
 
 $moodle = new moodleWebService();
 
-echo '<hr>'.date("H:i:s");
-echo '<li>DB_HOST = '.DB_HOST.'</li>';
-echo '<li>DB_USER = '.DB_USER.'</li>';
-echo '<li>DB_PASS = '.DB_PASS.'</li>';
-echo '<li>DB_NAME = '.DB_NAME.'</li>';
-echo '<li>DB_NAME = '.MOODLE_DB_NAME.'</li>';
-echo '<li>DB_NAME = '.DURATA_CORSO_INGEGNERI.'</li>';
-echo '<li>DB_NAME = '.DURATA_ABBONAMENTO.'</li>';
-echo '<li>DB_NAME = '.DURATA_CORSO.'</li>';
-echo '<hr>';
+if (DISPLAY_DEBUG) {
+    echo '<hr>'.date("H:i:s");
+    echo '<li>DB_HOST = '.DB_HOST.'</li>';
+    echo '<li>DB_USER = '.DB_USER.'</li>';
+    echo '<li>DB_PASS = '.DB_PASS.'</li>';
+    echo '<li>DB_NAME = '.DB_NAME.'</li>';
+    echo '<li>DB_NAME = '.MOODLE_DB_NAME.'</li>';
+    echo '<li>DB_NAME = '.DURATA_CORSO_INGEGNERI.'</li>';
+    echo '<li>DB_NAME = '.DURATA_ABBONAMENTO.'</li>';
+    echo '<li>DB_NAME = '.DURATA_CORSO.'</li>';
+    echo '<hr>';
+}
 
 $sql_000555= "UPDATE lista_iscrizioni 
 SET lista_iscrizioni.stato = 'Scaduto'
@@ -36,17 +37,29 @@ $sql_lista_iscrizioni_annulla = "SELECT id AS idIscrizione, id_utente_moodle, ab
 FROM lista_iscrizioni WHERE stato='Scaduto'
 AND abbonamento='0'";
 $rs_lista_iscrizioni_annulla = $dblink->get_results($sql_lista_iscrizioni_annulla);
+
 foreach ($rs_lista_iscrizioni_annulla AS $row_lista_iscrizioni_annulla){
-    echo '<br>id_utente_moodle = '.$id_utente_moodle = $row_lista_iscrizioni_annulla['id_utente_moodle'];
-    echo '<br>abbonamento = '.$abbonamento = $row_lista_iscrizioni_annulla['abbonamento'];
-    echo '<br>id_classe = '.$id_classe = $row_lista_iscrizioni_annulla['id_classe'];
-    echo '<br>nomeClasse = '.$nome_classe = $row_lista_iscrizioni_annulla['nomeClasse'];
-    echo '<br>id_corso_moodle = '.$id_corso_moodle = $row_lista_iscrizioni_annulla['id_corso_moodle'];
-    echo '<br>idIscrizione = '.$idIscrizione = $row_lista_iscrizioni_annulla['idIscrizione'];
+    
+    if (DISPLAY_DEBUG) {
+        echo '<br>id_utente_moodle = '.$id_utente_moodle = $row_lista_iscrizioni_annulla['id_utente_moodle'];
+        echo '<br>abbonamento = '.$abbonamento = $row_lista_iscrizioni_annulla['abbonamento'];
+        echo '<br>id_classe = '.$id_classe = $row_lista_iscrizioni_annulla['id_classe'];
+        echo '<br>nomeClasse = '.$nome_classe = $row_lista_iscrizioni_annulla['nomeClasse'];
+        echo '<br>id_corso_moodle = '.$id_corso_moodle = $row_lista_iscrizioni_annulla['id_corso_moodle'];
+        echo '<br>idIscrizione = '.$idIscrizione = $row_lista_iscrizioni_annulla['idIscrizione'];
+    }else{
+        $id_utente_moodle = $row_lista_iscrizioni_annulla['id_utente_moodle'];
+        $abbonamento = $row_lista_iscrizioni_annulla['abbonamento'];
+        $id_classe = $row_lista_iscrizioni_annulla['id_classe'];
+        $nome_classe = $row_lista_iscrizioni_annulla['nomeClasse'];
+        $id_corso_moodle = $row_lista_iscrizioni_annulla['id_corso_moodle'];
+        $idIscrizione = $row_lista_iscrizioni_annulla['idIscrizione'];
+    }
     
     $ok = $moodle->annullaCorsoMoodle($id_utente_moodle, $id_corso_moodle);
         if($ok){
-            echo '<li style="color: GREEN;"> OK !</li>';
+            if (DISPLAY_DEBUG) echo '<li style="color: GREEN;"> OK !</li>';
+            
             $sql_aggiorno_iscrizione = "UPDATE lista_iscrizioni 
             SET stato='Scaduto e Disattivato',
             dataagg=NOW(),
@@ -58,7 +71,8 @@ foreach ($rs_lista_iscrizioni_annulla AS $row_lista_iscrizioni_annulla){
             
             $log->log_all_errors('autoAnnullaCorsiAbbonamenti.php -> corso annullato correttamente [id_utente_moodle = '.$id_utente_moodle.']','OK');
         }else{
-            echo '<li style="color: RED;"> KO !</li>';
+            if (DISPLAY_DEBUG) echo '<li style="color: RED;"> KO !</li>';
+            
             $log->log_all_errors('autoAnnullaCorsiAbbonamenti.php -> impossibile annullare corso [id_utente_moodle = '.$id_utente_moodle.']','ERRORE');
         }
 
@@ -72,41 +86,52 @@ $sql_lista_iscrizioni_annulla = "SELECT id_utente_moodle, abbonamento, id_classe
 FROM lista_iscrizioni WHERE stato='Configurazione Scaduta'
 AND abbonamento='1'";
 $rs_lista_iscrizioni_annulla = $dblink->get_results($sql_lista_iscrizioni_annulla);
+
 foreach ($rs_lista_iscrizioni_annulla AS $row_lista_iscrizioni_annulla){
-    echo '<br>id_utente_moodle = '.$id_utente_moodle = $row_lista_iscrizioni_annulla['id_utente_moodle'];
-    echo '<br>abbonamento = '.$abbonamento = $row_lista_iscrizioni_annulla['abbonamento'];
-    echo '<br>id_classe = '.$id_classe = $row_lista_iscrizioni_annulla['id_classe'];
-    echo '<br>nomeClasse = '.$nome_classe = $row_lista_iscrizioni_annulla['nomeClasse'];
-        $ok = $moodle->annullaAbbonamentoMoodle($id_utente_moodle, $nome_classe);
-        if($ok){
-            echo '<li style="color: GREEN;"> OK !</li>';
-            $sql_aggiorno_iscrizione = "UPDATE lista_iscrizioni 
-            SET stato='Scaduto e Disattivato',
-            dataagg=NOW(),
-            scrittore = 'autoAnnullaCorsiAbbonamenti'
-            WHERE stato='Scaduto' 
-            AND id_utente_moodle='".$id_utente_moodle."' 
-            AND id_classe='".$id_classe."' 
-            AND abbonamento='1'";
-            $dblink->query($sql_aggiorno_iscrizione);
-            
-            $sql_aggiorno_iscrizione = "UPDATE lista_iscrizioni 
-            SET stato='Configurazione Scaduta e Disattivata',
-            dataagg=NOW(),
-            scrittore = 'autoAnnullaCorsiAbbonamenti'
-            WHERE stato='Configurazione Scaduta' 
-            AND id_utente_moodle='".$id_utente_moodle."' 
-            AND id_classe='".$id_classe."' 
-            AND abbonamento='1'";
-            $dblink->query($sql_aggiorno_iscrizione);
-            
-            $log->log_all_errors('autoAnnullaCorsiAbbonamenti.php -> abbonamento annullato correttamente [id_utente_moodle = '.$id_utente_moodle.']','OK');
-        }else{
-            echo '<li style="color: RED;"> KO !</li>';
-            $log->log_all_errors('autoAnnullaCorsiAbbonamenti.php -> impossibile annullare abbonamento [id_utente_moodle = '.$id_utente_moodle.']','ERRORE');
-        }
-    echo '<hr>';
+    
+    if (DISPLAY_DEBUG) {
+        echo '<br>id_utente_moodle = '.$id_utente_moodle = $row_lista_iscrizioni_annulla['id_utente_moodle'];
+        echo '<br>abbonamento = '.$abbonamento = $row_lista_iscrizioni_annulla['abbonamento'];
+        echo '<br>id_classe = '.$id_classe = $row_lista_iscrizioni_annulla['id_classe'];
+        echo '<br>nomeClasse = '.$nome_classe = $row_lista_iscrizioni_annulla['nomeClasse'];
+    }else{
+        $id_utente_moodle = $row_lista_iscrizioni_annulla['id_utente_moodle'];
+        $abbonamento = $row_lista_iscrizioni_annulla['abbonamento'];
+        $id_classe = $row_lista_iscrizioni_annulla['id_classe'];
+        $nome_classe = $row_lista_iscrizioni_annulla['nomeClasse'];
+    }
+    $ok = $moodle->annullaAbbonamentoMoodle($id_utente_moodle, $nome_classe);
+    if($ok){
+        if (DISPLAY_DEBUG) echo '<li style="color: GREEN;"> OK !</li>';
+
+        $sql_aggiorno_iscrizione = "UPDATE lista_iscrizioni 
+        SET stato='Scaduto e Disattivato',
+        dataagg=NOW(),
+        scrittore = 'autoAnnullaCorsiAbbonamenti'
+        WHERE stato='Scaduto' 
+        AND id_utente_moodle='".$id_utente_moodle."' 
+        AND id_classe='".$id_classe."' 
+        AND abbonamento='1'";
+        $dblink->query($sql_aggiorno_iscrizione);
+
+        $sql_aggiorno_iscrizione = "UPDATE lista_iscrizioni 
+        SET stato='Configurazione Scaduta e Disattivata',
+        dataagg=NOW(),
+        scrittore = 'autoAnnullaCorsiAbbonamenti'
+        WHERE stato='Configurazione Scaduta' 
+        AND id_utente_moodle='".$id_utente_moodle."' 
+        AND id_classe='".$id_classe."' 
+        AND abbonamento='1'";
+        $dblink->query($sql_aggiorno_iscrizione);
+
+        $log->log_all_errors('autoAnnullaCorsiAbbonamenti.php -> abbonamento annullato correttamente [id_utente_moodle = '.$id_utente_moodle.']','OK');
+    }else{
+        if (DISPLAY_DEBUG) echo '<li style="color: RED;"> KO !</li>';
+        $log->log_all_errors('autoAnnullaCorsiAbbonamenti.php -> impossibile annullare abbonamento [id_utente_moodle = '.$id_utente_moodle.']','ERRORE');
+    }
+    
+    if (DISPLAY_DEBUG) echo '<hr>';
 }
 
-//UPDATE `lista_iscrizioni` SET stato='Scaduto e da Controllare' WHERE stato='Scaduto';
+if (DISPLAY_DEBUG) echo date("H:i:s");
 ?>

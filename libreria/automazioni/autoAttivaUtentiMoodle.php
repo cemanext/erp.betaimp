@@ -1,8 +1,7 @@
 <?php
-session_start();
-include_once($_SERVER['DOCUMENT_ROOT'].'/config/connDB.php');
-include_once(BASE_ROOT.'libreria/libreria.php');
-include_once(BASE_ROOT.'classi/webservice/client.php');
+include_once('../../config/connDB.php');
+include_once(BASE_ROOT . 'config/confAccesso.php');
+include_once(BASE_ROOT . 'classi/webservice/client.php');
 
 $moodle = new moodleWebService();
 
@@ -21,17 +20,17 @@ AND id_professionista NOT IN (SELECT DISTINCT id_professionista FROM lista_passw
 $rs_0001 = $dblink->query($sql_0001);
 
 $sql_00000000 = "SELECT * FROM utentiDaAttivare WHERE 1";
-stampa_table_datatables_responsive($sql_00000000, $titolo, 'tabella_base');
+if (DISPLAY_DEBUG) stampa_table_datatables_responsive($sql_00000000, $titolo, 'tabella_base');
 
 $rs_00000000 = $dblink->get_results($sql_00000000);
 foreach ($rs_00000000 AS $row_00000000){
     $idProfessionista = $row_00000000['idProfessionista'];
     $ok = creaUtenteTotale($idProfessionista);
     if($ok){
-        echo '<li style="color: green;"> OK !</li>';
+        if (DISPLAY_DEBUG) echo '<li style="color: green;"> OK !</li>';
         $log->log_all_errors('creaUtenteTotale -> utente creato correttamente [idProfessionista = '.$idProfessionista.']','OK');
     }else{
-       echo '<li style="color: RED;"> KO !</li>';
+       if (DISPLAY_DEBUG) echo '<li style="color: RED;"> KO !</li>';
        $log->log_all_errors('creaUtenteTotale -> utente NON creato [idProfessionista = '.$idProfessionista.']','ERRORE');
     }
 

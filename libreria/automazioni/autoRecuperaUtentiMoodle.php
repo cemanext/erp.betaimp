@@ -1,21 +1,19 @@
 <?php
-session_start();
-ob_start();
-
-include_once($_SERVER['DOCUMENT_ROOT'].'/config/connDB.php');
-include_once(BASE_ROOT.'config/confAccesso.php');
-include_once(BASE_ROOT.'config/confDebug.php');
-include_once(BASE_ROOT.'libreria/libreria.php');
-include_once(BASE_ROOT.'classi/webservice/client.php');
+include_once('../../config/connDB.php');
+include_once(BASE_ROOT . 'config/confAccesso.php');
+include_once(BASE_ROOT . 'classi/webservice/client.php');
 
 $moodle = new moodleWebService();
+
+if (DISPLAY_DEBUG) {
+    echo "START: ".date("H:i:s");
+    echo "<br>";
+}
 
 $referer = recupera_referer();
 //DELETE FROM `lista_password` WHERE id > 190 AND `id_moodle_user` = 0
 $rows = $dblink->get_results("SELECT * FROM utenti_moodle_ultimo_anno WHERE id NOT IN (SELECT DISTINCT id_moodle_user FROM lista_password) AND id > 34644 LIMIT 10000");
 
-echo "START: ".date("H:i:s");
-echo "<br>";
 $countOK = 0;
 $countKO = 0;
 foreach ($rows as $row) {
@@ -44,9 +42,11 @@ foreach ($rows as $row) {
         if($row['id_professionista']==0){ $userUp['id_professionista'] = $rowEmail['id']; }
         
         foreach ($user->customfields as $userDetail) {
-            //echo "<pre>";
-            //print_r($userDetail);
-            //echo "</pre><br>";
+            if (DISPLAY_DEBUG) {
+                echo "<pre>";
+                print_r($userDetail);
+                echo "</pre><br>";
+            }
             switch ($userDetail->shortname) {
                 case "subscriptionexpiry":
                     $tmpData = explode("/",$userDetail->value);
@@ -72,22 +72,28 @@ foreach ($rows as $row) {
         }
         
         if($userUp['id_moodle_user']>0){
-            //echo "<pre>";
-            //print_r($userUp);
-            //echo "</pre><br>";
-            //die;
+            if (DISPLAY_DEBUG) {
+                echo "<pre>";
+                print_r($userUp);
+                echo "</pre><br>";
+                //die;
+            }
             $ok = $dblink->insert("lista_password", $userUp);
             if($ok) $countOK ++;
             else $countKO ++;
             
             ob_flush();
         }
-        //echo $dblink->get_query();
-        //echo "<br />";
+        if (DISPLAY_DEBUG) {
+            echo $dblink->get_query();
+            echo "<br />";
+        }
     }
 }
 
-echo "OK: $countOK<br />";
-echo "ERROR: $countKO<br />";
-echo "END".date("H:i:s");
+if (DISPLAY_DEBUG) {
+    echo "OK: $countOK<br />";
+    echo "ERROR: $countKO<br />";
+    echo "END".date("H:i:s");
+}
 ?>

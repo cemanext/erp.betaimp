@@ -12,14 +12,14 @@ if(strlen($_SESSION['passwd_email_utente'])>2 && strpos($_SESSION['email_utente'
     define("PASS_MAIL", $_SESSION['passwd_email_utente']);
     define("USER_MAIL", $_SESSION['email_utente']);
 }else{
-    define("USER_MAIL", "erp@betaformazione.com");
-    define("PASS_MAIL", 'Moda5221');
+    define("USER_MAIL", "erp@xxxxxx.com");
+    define("PASS_MAIL", 'xxxxxx');
 }
 
 //inviare email fattura
 function inviaEmailPreventivo($mitt, $dest, $dest_cc, $dest_bcc, $ogg, $mess, $allegato_1, $allegato_2, $PasswdEmailUtente) {
-    //$verifica = preg_match("^[^@ ]+@[^@ ]+\.[^@ \.]+$", $mitt);
-    $verifica = preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$/i", $mitt);
+    
+    $verifica = verificaEmail($mitt);
 
     if ($verifica) {
         //require BASE_ROOT . "classi/phpmailer/class.phpmailer.php";
@@ -137,8 +137,8 @@ function inviaEmailPreventivo($mitt, $dest, $dest_cc, $dest_bcc, $ogg, $mess, $a
 
 //inviare email fattura
 function inviaEmailFattura($mitt, $dest, $dest_cc, $dest_bcc, $ogg, $mess, $allegato_1, $allegato_2, $PasswdEmailUtente) {
-    //$verifica = preg_match("^[^@ ]+@[^@ ]+\.[^@ \.]+$", $mitt);
-    $verifica = preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$/i", $mitt);
+    
+    $verifica = verificaEmail($mitt);
 
     if ($verifica) {
         //require BASE_ROOT . "classi/phpmailer/class.phpmailer.php";
@@ -255,8 +255,8 @@ function inviaEmailFattura($mitt, $dest, $dest_cc, $dest_bcc, $ogg, $mess, $alle
 
 //inviare email
 function inviaEmail($mitt, $dest, $dest_cc, $dest_bcc, $ogg, $mess, $allegato_1, $allegato_2, $allegato_3, $idCommessaTLM, $idProcessoTLM, $PasswdEmailUtente) {
-    //$verifica = preg_match("^[^@ ]+@[^@ ]+\.[^@ \.]+$", $mitt);
-    $verifica = preg_match("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}$", $mitt);
+    
+    $verifica = verificaEmail($mitt);
 
     if ($verifica) {
         //require "phpmailer/class.phpmailer.php";
@@ -373,6 +373,7 @@ function inviaEmail($mitt, $dest, $dest_cc, $dest_bcc, $ogg, $mess, $allegato_1,
 }
 
 function inviaEmail_Base($mittente, $destinatario, $oggetto_da_inviare, $messaggio_da_inviare) {
+    
     $messaggio = new PHPmailer();
     $messaggio->IsHTML(true);
 

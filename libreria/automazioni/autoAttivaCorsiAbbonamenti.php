@@ -1,8 +1,6 @@
 <?php
-
-session_start();
-include_once($_SERVER['DOCUMENT_ROOT'] . '/config/connDB.php');
-include_once(BASE_ROOT . 'libreria/libreria.php');
+include_once('../../config/connDB.php');
+include_once(BASE_ROOT . 'config/confAccesso.php');
 include_once(BASE_ROOT . 'classi/webservice/client.php');
 
 $moodle = new moodleWebService();
@@ -62,10 +60,10 @@ $sql_00000000 = "SELECT DISTINCT
 $sql_00000000 = "SELECT DISTINCT *,
         IF(LCASE(Prodotto) LIKE 'abbonamento%','ABBONAMENTO','SINGOLO CORSO') AS 'Tipo'
         FROM attivazioniIscrizioni WHERE 1 ORDER BY idFattura DESC LIMIT 10";
-stampa_table_datatables_responsive($sql_00000000, $titolo, 'tabella_base');
+if (DISPLAY_DEBUG) stampa_table_datatables_responsive($sql_00000000, $titolo, 'tabella_base');
 
 $rs_00000000 = $dblink->get_results($sql_00000000);
-echo '<ol>';
+if (DISPLAY_DEBUG) echo '<ol>';
 foreach ($rs_00000000 AS $row_00000000) {
     //echo '<lI>'.$row_00000000['Professionista'].' ----> '.$row_00000000['Tipo'].' ----> '.$row_00000000['controllo'].' strlen(bottone)='.strlen($row_00000000['controllo']).'</li>';
     $idProfessionista = $row_00000000['idProfessionista'];
@@ -80,19 +78,19 @@ foreach ($rs_00000000 AS $row_00000000) {
         if ($row_00000000['Tipo'] == 'SINGOLO CORSO') {
             $ok = attivaCorsoFattura($idProfessionista, $idFattura, $idFatturaDettaglio, $idCorso, $idUtenteMoodle, $idCorsoMoodle);
             if ($ok) {
-                echo '<li style="color: green;"> attivaCorsoFattura --> OK !</li>';
+                if (DISPLAY_DEBUG) echo '<li style="color: green;"> attivaCorsoFattura --> OK !</li>';
                 $log->log_all_errors('attivaCorsoFattura -> Corso Attivato Correttamente [idCorsoMoodle = ' . $idCorsoMoodle . ']', 'OK');
             } else {
-                echo '<li style="color: RED;"> attivaCorsoFattura --> KO !</li>';
+                if (DISPLAY_DEBUG) echo '<li style="color: RED;"> attivaCorsoFattura --> KO !</li>';
                 $log->log_all_errors('attivaCorsoFattura -> Corso NON Attivato [idCorsoMoodle = ' . $idCorsoMoodle . ']', 'ERRORE');
             }
         } elseif ($row_00000000['Tipo'] == 'ABBONAMENTO') {
             $ok = attivaAbbonamentoFattura($idProfessionista, $idFattura, $idFatturaDettaglio, $idUtenteMoodle);
             if ($ok) {
-                echo '<li style="color: green;"> attivaAbbonamentoFattura --> OK !</li>';
+                if (DISPLAY_DEBUG) echo '<li style="color: green;"> attivaAbbonamentoFattura --> OK !</li>';
                 $log->log_all_errors('attivaAbbonamentoFattura -> Abbonamento Attivato Correttamente', 'OK');
             } else {
-                echo '<li style="color: RED;"> attivaAbbonamentoFattura --> KO !</li>';
+                if (DISPLAY_DEBUG) echo '<li style="color: RED;"> attivaAbbonamentoFattura --> KO !</li>';
                 $log->log_all_errors('attivaAbbonamentoFattura -> Abbonamento NON Attivato', 'ERRORE');
             }
         }
@@ -101,5 +99,5 @@ foreach ($rs_00000000 AS $row_00000000) {
     }
     sleep(5);
 }
-echo '</ol>';
+if (DISPLAY_DEBUG) echo '</ol>';
 ?>

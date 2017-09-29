@@ -15,7 +15,7 @@ class logerp {
     public function __construct()
     {
         try {
-            $this->dir = $_SERVER['DOCUMENT_ROOT']."/betaformazione/dev.betaformazione.com/";
+            $this->dir = $_SERVER['DOCUMENT_ROOT']."/dev7/";
         } catch ( Exception $e ) {
             die( 'Unable to set log' );
         }
