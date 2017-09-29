@@ -435,7 +435,7 @@ switch ($_GET['fn']) {
                         $rowConf = $dblink->get_row("SELECT id FROM lista_corsi_configurazioni WHERE id_corso = '".$idCorso."' AND id_prodotto = '".$idProdotto."' AND id_classe = '".$idClasse."'",true);
 
                         if($rowConf['id']>0){
-                            $updateConf = array(
+                            /*$updateConf = array(
                                 "dataagg" => date("Y-m-d H:i:s"),
                                 "scrittore" => $dblink->filter("autoImport"),
                                 "id_corso" => $idCorso,
@@ -454,7 +454,7 @@ switch ($_GET['fn']) {
                             if(DISPLAY_DEBUG){
                                 echo $dblink->get_query();
                                 echo "<br />";
-                            }
+                            }*/
                         }else{
                             $insertConf = array(
                                 "dataagg" => date("Y-m-d H:i:s"),

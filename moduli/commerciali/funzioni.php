@@ -52,7 +52,6 @@ function Stampa_HTML_Dettaglio_Commerciali($tabella, $id) {
                 AND YEAR(datainsert)=YEAR(CURDATE())
                 AND etichetta LIKE 'Nuova Richiesta'
                 AND id_agente='".$id."'";
-                //echo '<li>$sql_007 = '.$sql_007.'</li>';
                 $titolo = 'Nuove Richieste ANNO';
                 $icona = 'fa fa-building';
 
