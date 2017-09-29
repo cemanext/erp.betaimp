@@ -3563,7 +3563,6 @@ $table_listaFattureInvioMultiplo = array(
  `id_prodotto`, `id_contatto`, `id_bolla`, `id_costo`, `tipo_documento`, `categoria`, `nome`, `descrizione`, `estensione`, `orientamento`,
  `note`, `scrittore`, `stato`, `tabella`, `id_corso`, `id_classe`
  */
- 
 $table_documentiAttestati = array(
                 "index" => array("campi" => "CONCAT('<a class=\"btn btn-circle btn-icon-only yellow btn-outline\" href=\"dettaglio.php?tbl=lista_attestati&id=',id,'\" title=\"DETTAGLIO\" alt=\"DETTAGLIO\"><i class=\"fa fa-search\"></i></a>') AS 'fa-search',
                                             CONCAT('<a class=\"btn btn-circle btn-icon-only red btn-outline\" href=\"printAttestatoPDF_',orientamento,'.php?idAttestato=',id,'\" title=\"STAMPA\" alt=\"STAMPA\" target=\"_blank\"><i class=\"fa fa-file-pdf-o\"></i></a>') AS 'fa-file-pdf-o',
@@ -4080,6 +4079,40 @@ $table_listaAule = array(
                         "etichetta" => "Stato",
                         "readonly" => false,
                         "sql" => array("Attivo"=>"Attivo", "Non Attivo"=>"Non Attivo")
+                    ))
+            );
+$table_listaCorsiConfigurazioni = array(
+                "index" => array("campi" => "CONCAT('<a class=\"btn btn-circle btn-icon-only yellow btn-outline\" href=\"dettaglio.php?tbl=lista_corsi_configurazioni&id=',id,'\" title=\"DETTAGLIO\" alt=\"DETTAGLIO\"><i class=\"fa fa-search\"></i></a>') AS 'fa-search',
+                                            CONCAT('<a class=\"btn btn-circle btn-icon-only blue btn-outline\" href=\"modifica.php?tbl=lista_corsi_configurazioni&id=',id,'\" title=\"MODIFICA\" alt=\"MODIFICA\"><i class=\"fa fa-edit\"></i></a>') AS 'fa-edit',
+                                            CONCAT('<a class=\"btn btn-circle btn-icon-only red btn-outline\" href=\"cancella.php?tbl=lista_corsi_configurazioni&id=',id,'\" title=\"ELIMINA\" alt=\"ELIMINA\"><i class=\"fa fa-trash\"></i></a>') AS 'fa-trash',
+                                            dataagg, scrittore, stato",
+                                "where" => "1 ".$where_lista_corsi_configurazioni,
+                                "order" => "ORDER BY dataagg DESC"),
+                "modifica" => array(
+                array(  "campo" => "id",
+                        "tipo" => "hidden",
+                        "etichetta" => "ID",
+                        "readonly" => true
+                    ),
+                array(  "campo" => "dataagg",
+                        "tipo" => "hidden",
+                        "etichetta" => "Data Agg.",
+                        "readonly" => true
+                    ),
+                    array(  "campo" => "scrittore",
+                        "tipo" => "hidden",
+                        "etichetta" => "Scrittore",
+                        "readonly" => true
+                    ),
+                     array(  "campo" => "titolo",
+                        "tipo" => "input",
+                        "etichetta" => "Titolo",
+                        "readonly" => false
+                    ),
+                    array(  "campo" => "messaggio",
+                        "tipo" => "htmlarea",
+                        "etichetta" => "Corpo Documento",
+                        "readonly" => false
                     ))
             );
 ?>

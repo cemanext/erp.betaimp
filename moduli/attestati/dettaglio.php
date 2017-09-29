@@ -2,7 +2,7 @@
 include_once('../../config/connDB.php');
 include_once(BASE_ROOT.'config/confAccesso.php');
 
-include_once(BASE_ROOT . 'moduli/attestati/funzioni.php');
+include_once(BASE_ROOT . 'moduli/corsi/funzioni.php');
 
 if(isset($_GET['idMenu'])){
     $idMenu = $_GET['idMenu'];
@@ -103,7 +103,7 @@ if (isset($_GET['id'])) {
                     <!-- END PAGE TITLE -->
                     <!-- END PAGE HEADER-->
 
-                    <?php Stampa_HTML_Dettaglio_Attestati($tabella, $id); ?>
+                    <?php Stampa_HTML_Dettaglio_Corsi($tabella, $id); ?>
 
                 </div>
                 <!-- END CONTENT BODY -->
