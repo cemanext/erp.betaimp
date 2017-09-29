@@ -1,0 +1,136 @@
+<?php
+include_once('../../config/connDB.php');
+include_once(BASE_ROOT.'config/confAccesso.php');
+
+$referer = recupera_referer();
+
+if(isset($_GET['fn'])){
+    switch ($_GET['fn']) {
+        
+        case "aggiungiConfigurazioneCorso":
+            $ok = true;
+            $dblink->begin();
+            $idCorso = $_GET['idCorso'];
+            $sql_aggiungiConfigurazioneCorso = "INSERT INTO `lista_corsi_configurazioni` (`id`, `dataagg`, `scrittore`, `stato`, `id_corso`, `id_prodotto`) SELECT '', NOW(), '".addslashes($_SESSION['cognome_nome_utente'])."', 'Non Attivo', id, id_prodotto FROM lista_corsi WHERE id='".$idCorso."'";
+            $ok = $ok && $dblink->query($sql_aggiungiConfigurazioneCorso);
+            $lastId=$dblink->insert_id();
+            if($ok){
+                $ok = 1;
+                $dblink->commit();
+            }else{
+                $ok = 0;
+                $dblink->rollback();
+            }
+            header("Location:".$referer."");
+        break;
+        
+         case "aggiungiEsameCorso":
+            $ok = true;
+            $dblink->begin();
+            $idCorsoNuovoEsame = $_GET['idCorsoNuovoEsame'];
+            $sql_aggiungiEsameCorso = "INSERT INTO `calendario` (`id`, `dataagg`, `scrittore`, `stato`, `id_corso`, etichetta, oggetto) 
+            SELECT '', NOW(), '".addslashes($_SESSION['cognome_nome_utente'])."', 'Non Attivo', id, 'Calendario Esami', CONCAT('Esame ',nome_prodotto) FROM lista_corsi WHERE id='".$idCorsoNuovoEsame."'";
+            $ok = $ok && $dblink->query($sql_aggiungiEsameCorso);
+            $lastId=$dblink->insert_id();
+            if($ok){
+                $ok = 1;
+                $dblink->commit();
+            }else{
+                $ok = 0;
+                $dblink->rollback();
+            }
+            header("Location:".$referer."");
+        break;
+        
+        case "salvaConfigurazioneCorso":
+            $idCorso = $_GET['idCorso'];
+            
+            $arrayRisultati = $_POST;
+            
+            $conto = 0;
+
+            $tuttiCampi = array();
+            foreach ($arrayRisultati as $key => $value) {
+                //echo "<br>KEY: $key<br>";
+                $pos_001 = strpos($key, "txt_");
+                //echo "POS: ".$pos_001."<br>";
+                if($pos_001 === false) {
+                    
+                }else{
+                    $tmp = explode("_", $key);
+                    //print_r($tmp);
+                    $nome_campo = substr($key, (strlen("txt_".$tmp[1]."_")));
+                    if(strpos($nome_campo, "data")!==false){
+                        if(strlen($value)>0){
+                            $tuttiCampi[$tmp[1]][$nome_campo] = GiraDataOra(trim(str_replace("`", "", $value)));
+                        }else{
+                            $tuttiCampi[$tmp[1]][$nome_campo] = "";
+                        }
+                    }else{
+                        //echo "<br>$nome_campo<br>";
+
+                        $tuttiCampi[$tmp[1]][$nome_campo] = $dblink->filter(trim(str_replace("`", "", $value)));
+                    }
+                }
+                $conto++;
+            }
+            
+            
+            //print_r($tuttiCampi);
+            
+            $count = 0;
+            
+            foreach($tuttiCampi as $record){
+                $count++;
+                /*foreach($record as $nomi_colonne => $valore){
+                    echo '<lI>$nomi_colonne = '.$nomi_colonne.' / $valore = '.$valore.'</li>';
+                }*/
+            }
+            
+            
+            for($r=0;$r<$count;$r++){
+                
+                $tuttiCampi[$r]['dataagg'] = date("Y-m-d H:i:s");
+                $tuttiCampi[$r]['scrittore'] = $dblink->filter($_SESSION['cognome_nome_utente']);
+                
+                if($tuttiCampi[$r]['id']>0){
+                    $idWhere = $tuttiCampi[$r]['id'];
+                    //echo "<br>";
+                    unset($tuttiCampi[$r]['id']);
+                    
+                    //print_r($tuttiCampi[$r]);
+                    $ok = $dblink->update("lista_corsi_configurazioni", $tuttiCampi[$r], array("id"=>$idWhere)); 
+                    
+                    //echo $dblink->get_query();
+                    //echo "<br>";
+                }
+            
+            }
+            
+            //die;
+            header("Location:".$referer."");
+        break;
+    }
+}
+
+if(isset($_POST['txt_tbl'])){
+    switch ($_POST['txt_tbl']) {
+        case "lista_corsi":
+            salvaGenerale();
+
+            $sql_0002 = "SELECT nome as nome_prodotto FROM lista_prodotti WHERE id=".$_POST['id_prodotto'];
+            $row_0002 = $dblink->get_row($sql_0002, true);
+
+            $dblink->update("lista_corsi", $row_0002, array("id" => $_POST['txt_id']));
+
+            header("Location:".$referer."");
+        break;
+
+        default:
+            salvaGenerale();
+            $referer = $_POST['txt_referer'];
+            header("Location:".$referer."");
+        break;
+    }
+}
+?>

@@ -1,0 +1,15 @@
+<?php
+include_once(BASE_ROOT.'libreria/lib_mail.php');
+include_once(BASE_ROOT.'libreria/lib_stampa_html.php');
+include_once(BASE_ROOT.'libreria/lib_stampa_sql.php');
+include_once(BASE_ROOT.'libreria/lib_utility.php');
+include_once(BASE_ROOT.'libreria/lib_tabelle.php');
+include_once(BASE_ROOT.'libreria/lib_widget.php');
+include_once(BASE_ROOT.'libreria/lib_form.php');
+include_once(BASE_ROOT.'libreria/lib_calendario.php');
+include_once(BASE_ROOT.'libreria/lib_charts.php');
+include_once(BASE_ROOT.'libreria/lib_esporta.php');
+include_once(BASE_ROOT.'libreria/lib_moodle.php');
+include_once(BASE_ROOT.'libreria/preventivi.php');
+include_once(BASE_ROOT.'libreria/fatture.php');
+?>
