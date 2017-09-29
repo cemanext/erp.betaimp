@@ -160,7 +160,8 @@ function Stampa_HTML_Dettaglio_Iscrizioni($tabella, $id) {
             IF(id_professionista>0,(SELECT CONCAT('<h3><b>',cognome, ' ', nome,'</b></h3><small>', IF(id_classe>0,(SELECT nome FROM lista_classi WHERE id = id_classe LIMIT 1),'') ,'</small>')  FROM lista_professionisti WHERE id = id_professionista LIMIT 1), CONCAT('<i class=\"fa fa-user-times btn btn-icon-only red-flamingo btn-outline\"></i><br>', cognome_nome_professionista,'<br><small>',IF(id_classe>0,(SELECT nome FROM lista_classi WHERE id = id_classe LIMIT 1),''),'</small>')) AS 'Partecipante',
             (SELECT nome FROM lista_classi WHERE id = id_classe LIMIT 1) AS 'Classe',
             IF(stato='Completato',data_completamento,CONCAT('<small>dal ',data_inizio_iscrizione,' al ',data_fine_iscrizione,'</small>')) AS 'Validit&agrave;', stato,
-            CONCAT('<span class=\"btn sbold uppercase btn-circle btn-outline green-sharp\">',avanzamento_completamento,'%</span>') AS 'Perc.'
+            CONCAT('<span class=\"btn sbold uppercase btn-circle btn-outline green-sharp\">',avanzamento_completamento,'%</span>') AS 'Perc.',
+            CONCAT('<a class=\"btn btn-circle btn-icon-only red btn-outline\" href=\"".BASE_URL."/moduli/corsi/printAttestatoPDF.php?idIscrizione=',id,'\" title=\"STAMPA\" alt=\"STAMPA\" target=\"_blank\"><i class=\"fa fa-file-pdf-o\"></i></a>') AS 'fa-file-pdf-o'
             FROM lista_iscrizioni
             WHERE id_corso='".$id."' $whrStato ORDER BY $whrOrderBy";
             stampa_table_static_basic($sql_0001, '', 'Iscritti '.$whrStatoTitolo, '');

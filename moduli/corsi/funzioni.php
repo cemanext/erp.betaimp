@@ -117,7 +117,10 @@ function Stampa_HTML_Dettaglio_Corsi($tabella,$id){
                         <i class="fa fa-plus"></i>
                         </a></center>';
             echo '<div class="row"><div class="col-md-12 col-sm-12">';
-            $sql_0001 = "SELECT id, id_classe AS 'Classe', data_inizio, data_fine, crediti, durata_corso, avanzamento, 
+            $sql_0001 = "SELECT id, 
+            CONCAT('<a class=\"btn btn-circle btn-icon-only blue btn-outline\" href=\"modifica.php?tbl=lista_corsi_configurazioni&id=',id,'\" title=\"MODIFICA\" alt=\"MODIFICA\"><i class=\"fa fa-edit\"></i></a>') AS 'fa fa-edit',
+            CONCAT('<a class=\"btn btn-circle btn-icon-only red btn-outline\" href=\"cancella.php?tbl=lista_corsi_configurazioni&id=',id,'\" title=\"ELIMINA\" alt=\"ELIMINA\"><i class=\"fa fa-trash\"></i></a>') AS 'fa fa-trash', 
+            codice_corso AS 'Codice', id_classe AS 'Classe', data_inizio, data_fine, crediti, durata_corso, avanzamento,  codice_accreditamento AS 'Cod. Accr.',
             id_attestato AS 'Attestato PDF' 
             FROM `lista_corsi_configurazioni` WHERE id_corso ='".$id."'";
             echo "<form enctype=\"multipart/form-data\" role=\"form\" action=\"salva.php?tbl=lista_corsi_configurazioni&idCorso=' . $id . '&fn=salvaConfigurazioneCorso\" method=\"POST\">";
