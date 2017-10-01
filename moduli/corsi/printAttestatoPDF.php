@@ -27,7 +27,7 @@ if (isset($_GET['idIscrizione'])) {
     
     $rowCostiConfig = $dblink->get_row("SELECT * FROM lista_corsi_configurazioni WHERE id_corso = '$idCorso' AND id_classe = $idClasse AND (((data_inizio<='$dataCompletamento' OR data_inizio='00-00-0000') AND (data_fine>='$dataCompletamento' OR data_fine='00-00-0000')) OR (data_inizio='00-00-0000' OR data_fine='00-00-0000')) ORDER BY data_fine DESC, data_inizio DESC", true);
     $crediti = $rowCostiConfig['crediti'];
-    $durata = $rowCostiConfig['durata'];
+    $durata = $rowCostiConfig['durata_corso'];
     $codiceAccreditamento = $rowCostiConfig['codice_accreditamento'];
     $idAttestato = $rowCostiConfig['id_attestato'];
     $titolo = $rowCostiConfig['titolo'];
