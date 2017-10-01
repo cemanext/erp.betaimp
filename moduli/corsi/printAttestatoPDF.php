@@ -7,354 +7,12 @@ if ($browser == true) {
     //echo 'Code You Want To Execute';
 }
 
-require_once(BASE_ROOT . 'classi/fpdf/fpdf.php');
+ require_once '../../classi/vendor/autoload.php';
 
-function hex2dec($couleur = "#000000"){
-    $R = substr($couleur, 1, 2);
-    $rouge = hexdec($R);
-    $V = substr($couleur, 3, 2);
-    $vert = hexdec($V);
-    $B = substr($couleur, 5, 2);
-    $bleu = hexdec($B);
-    $tbl_couleur = array();
-    $tbl_couleur['R']=$rouge;
-    $tbl_couleur['V']=$vert;
-    $tbl_couleur['B']=$bleu;
-    return $tbl_couleur;
-}
+use Spipu\Html2Pdf\Html2Pdf;
+use Spipu\Html2Pdf\Exception\Html2PdfException;
+use Spipu\Html2Pdf\Exception\ExceptionFormatter;
 
-//conversion pixel -> millimeter at 72 dpi
-function px2mm($px){
-    return $px*25.4/72;
-}
-
-function txtentities($html){
-    $trans = get_html_translation_table(HTML_ENTITIES);
-    $trans = array_flip($trans);
-    return strtr($html, $trans);
-}
-
-class PDFAttestato extends FPDF {
-
-    var $B;
-    var $I;
-    var $U;
-    var $HREF;
-    protected $fontList;
-    protected $issetfont;
-    protected $issetcolor;
-
-    function __construct($orientation = 'P', $unit = 'mm', $format = 'A4') {
-        //Call parent constructor
-        parent::__construct($orientation, $unit, $format);
-        //Initialization
-        $this->B = 0;
-        $this->I = 0;
-        $this->U = 0;
-        $this->HREF = '';
-        $this->fontlist=array('arial', 'times', 'courier', 'helvetica', 'symbol');
-        $this->issetfont=false;
-        $this->issetcolor=false;
-    }
-
-    function Header() {
-        //Logo
-        //$this->Image('images/carta_intestata.jpg',0,0,210);
-        //Times bold 15
-        $this->SetFont('Times', 'B', 8);
-        //Line break
-        $this->Ln(45);
-    }
-
-    function Footer() {
-        //Position at 1.5 cm from bottom
-        $this->SetY(-5);
-        //Times italic 8
-        $this->SetFont('Times', 'I', 6);
-        //Page number
-        //$this->Cell(0, 1, 'Pagina ' . $this->PageNo() . '/{nb}', 0, 0, 'C');
-    }
-    
-    function Scrivi($h, $txt, $link='')
-    {
-            // Output text in flowing mode
-            if(!isset($this->CurrentFont))
-                    $this->Error('No font has been set');
-            $cw = &$this->CurrentFont['cw'];
-            $w = $this->w-$this->rMargin-$this->x;
-            $wmax = ($w-2*$this->cMargin)*1000/$this->FontSize;
-            $s = str_replace("\r",'',$txt);
-            $nb = strlen($s);
-            $sep = -1;
-            $i = 0;
-            $j = 0;
-            $l = 0;
-            $nl = 1;
-            while($i<$nb)
-            {
-                    // Get next character
-                    $c = $s[$i];
-                    if($c=="\n")
-                    {
-                            // Explicit line break
-                            $this->Cell($w,$h,substr($s,$j,$i-$j),1,2,'C',false,$link);
-                            $i++;
-                            $sep = -1;
-                            $j = $i;
-                            $l = 0;
-                            if($nl==1)
-                            {
-                                    $this->x = $this->lMargin;
-                                    $w = $this->w-$this->rMargin-$this->x;
-                                    $wmax = ($w-2*$this->cMargin)*1000/$this->FontSize;
-                            }
-                            $nl++;
-                            continue;
-                    }
-                    if($c==' ')
-                            $sep = $i;
-                    $l += $cw[$c];
-                    if($l>$wmax)
-                    {
-                            // Automatic line break
-                            if($sep==-1)
-                            {
-                                    if($this->x>$this->lMargin)
-                                    {
-                                            // Move to next line
-                                            $this->x = $this->lMargin;
-                                            $this->y += $h;
-                                            $w = $this->w-$this->rMargin-$this->x;
-                                            $wmax = ($w-2*$this->cMargin)*1000/$this->FontSize;
-                                            $i++;
-                                            $nl++;
-                                            continue;
-                                    }
-                                    if($i==$j)
-                                            $i++;
-                                    $this->Cell($w,$h,substr($s,$j,$i-$j),1,2,'C',false,$link);
-                            }
-                            else
-                            {
-                                    $this->Cell($w,$h,substr($s,$j,$sep-$j),1,2,'C',false,$link);
-                                    $i = $sep+1;
-                            }
-                            $sep = -1;
-                            $j = $i;
-                            $l = 0;
-                            if($nl==1)
-                            {
-                                    $this->x = $this->lMargin;
-                                    $w = $this->w-$this->rMargin-$this->x;
-                                    $wmax = ($w-2*$this->cMargin)*1000/$this->FontSize;
-                            }
-                            $nl++;
-                    }
-                    else
-                            $i++;
-            }
-            // Last chunk
-            if($i!=$j)
-                    $this->Cell($l/1000*$this->FontSize,$h,substr($s,$j),1,0,'C',false,$link);
-    }
-    
-    function WriteHTML($html,$larghezza)
-    {
-        //HTML parser
-        $html=strip_tags($html,"<h1><h2><h3><h5><h4><b><u><i><a><img><p><br><strong><em><font><table><tr><th><td><blockquote><center><p><div>"); //supprime tous les tags sauf ceux reconnus
-        $html=str_replace("\n",' ',$html); //remplace retour à la ligne par un espace
-        $a=preg_split('/<(.*)>/U',$html,-1,PREG_SPLIT_DELIM_CAPTURE); //éclate la chaîne avec les balises
-        foreach($a as $i=>$e)
-        {
-            if($i%2==0)
-            {
-                //Text
-                if($this->HREF)
-                    $this->PutLink($this->HREF,$e);
-                else{
-                    $this->MultiCell($larghezza, 1, ''. stripslashes(txtentities($e)).''  , 0, 'C', 0, true);
-                    //$this->Scrivi(5,stripslashes(txtentities($e)));
-                }
-            }
-            else
-            {
-                //Tag
-                if($e[0]=='/')
-                    $this->CloseTag(strtoupper(substr($e,1)));
-                else
-                {
-                    //Extract attributes
-                    $a2=explode(' ',$e);
-                    $tag=strtoupper(array_shift($a2));
-                    $attr=array();
-                    foreach($a2 as $v)
-                    {
-                        if(preg_match('/([^=]*)=["\']?([^"\']*)/',$v,$a3))
-                            $attr[strtoupper($a3[1])]=$a3[2];
-                    }
-                    $this->OpenTag($tag,$attr);
-                }
-            }
-        }
-    }
-
-    function OpenTag($tag, $attr)
-    {
-        //Opening tag
-        switch($tag){
-            case 'H1':
-                $this->SetFont('Times','B',38);
-                break;
-            case 'H2':
-                $this->SetFont('Times','B',28);
-                break;
-            case 'H3':
-                $this->Ln(3);
-                $this->SetFont('Times','B',20);
-                break;
-            case 'STRONG':
-                $this->SetFont('Times','B',14);
-                break;
-            case 'EM':
-                $this->SetFont('Times','I',14);
-                break;
-            case 'B':
-            case 'I':
-            case 'U':
-                $this->SetStyle($tag,true);
-            break;
-            case 'A':
-                $this->HREF=$attr['HREF'];
-                break;
-            case 'IMG':
-                if(isset($attr['SRC']) && (isset($attr['WIDTH']) || isset($attr['HEIGHT']))) {
-                    if(!isset($attr['WIDTH']))
-                        $attr['WIDTH'] = 0;
-                    if(!isset($attr['HEIGHT']))
-                        $attr['HEIGHT'] = 0;
-                    $this->Image($attr['SRC'], $this->GetX(), $this->GetY(), px2mm($attr['WIDTH']), px2mm($attr['HEIGHT']));
-                }
-                break;
-            case 'TR':
-            case 'BLOCKQUOTE':
-            case 'BR':
-                $this->Ln(5);
-                break;
-            case 'P':
-                $this->Ln(10);
-                break;
-            case 'FONT':
-                if (isset($attr['COLOR']) && $attr['COLOR']!='') {
-                    $coul=hex2dec($attr['COLOR']);
-                    $this->SetTextColor($coul['R'],$coul['V'],$coul['B']);
-                    $this->issetcolor=true;
-                }
-                if (isset($attr['FACE']) && in_array(strtolower($attr['FACE']), $this->fontlist)) {
-                    $this->SetFont(strtolower($attr['FACE']));
-                    $this->issetfont=true;
-                }
-                break;
-        }
-    }
-
-    function CloseTag($tag)
-    {
-        switch ($tag) {
-            case "H1":
-                $this->Ln(10);
-                $this->SetFont('Times','',14);
-            break;
-        
-            case "H2":
-                $this->Ln(10);
-                $this->SetFont('Times','',14);
-            break;
-        
-            case "H3":
-                $this->Ln(10);
-                $this->SetFont('Times','',14);
-            break;
-        
-            case "FONT":
-                if ($this->issetcolor==true) {
-                    $this->SetTextColor(0);
-                }
-                if ($this->issetfont) {
-                    $this->SetFont('Times');
-                    $this->issetfont=false;
-                }
-            break;
-            
-            case "B":
-            case "I":
-            case "U":
-                $this->SetStyle($tag,false);
-            break;
-            
-            case "A":
-                $this->HREF='';
-                $this->SetFont('Times','',14);
-            break;
-        
-            default:
-                $this->Ln(10);
-                $this->SetFont('Times','',14);
-            break;
-        }
-        //Closing tag
-        /*if($tag=='H1')
-            $this->Ln(10);
-            $this->SetFont('Times','',12);
-        if($tag=='H2')
-            $this->Ln(10);
-            $this->SetFont('Times','',12);
-        if($tag=='STRONG')
-            $tag='B';
-        if($tag=='EM')
-            $tag='I';
-        if($tag=='B' || $tag=='I' || $tag=='U')
-            $this->SetFont('Times','',12);
-            //$this->SetStyle($tag,false);
-            //$this->SetFontSize(12);
-        if($tag=='A')
-            $this->HREF='';
-        if($tag=='FONT'){
-            if ($this->issetcolor==true) {
-                $this->SetTextColor(0);
-            }
-            if ($this->issetfont) {
-                $this->SetFont('Times');
-                $this->issetfont=false;
-            }
-        }else{
-            $this->Ln(10);              
-        }*/
-    }
-
-    function SetStyle($tag, $enable)
-    {
-        //Modify style and select corresponding font
-        $this->$tag+=($enable ? 1 : -1);
-        $style='';
-        foreach(array('B','I','U') as $s)
-        {
-            if($this->$s>0)
-                $style.=$s;
-        }
-        $this->SetFont('',$style);
-    }
-
-    function PutLink($URL, $txt)
-    {
-        //Put a hyperlink
-        $this->SetTextColor(0,0,255);
-        $this->SetStyle('U',true);
-        $this->Write(5,$txt,$URL);
-        $this->SetStyle('U',false);
-        $this->SetTextColor(0);
-    }
-
-}
 
 if (isset($_GET['idIscrizione'])) {
 
@@ -414,19 +72,98 @@ if (isset($_GET['idIscrizione'])) {
     $begin = ($pagina - 1) * $pageSize;
     $countPages = ceil($totale / $pageSize);
 
-    $html = '';
+    $html = '<STYLE type="text/css">    
+        @page {
+            size: A4;
+            margin: 0;
+          }
+          @media print {
+            html, body {
+              width: 297mm;
+              height: 210mm;
+            }
+          }
+    #divid{margin-top: 0px;margin-left: 0px;
+        background-image: url('.BASE_URL.'/moduli/corsi/'.str_replace('.jpg','_2.jpg',$nomeFile).');
+        background-size: 30%;
+        background-repeat: no-repeat;
+        text-align:center;
+        vertical-align: middle;
+        width: 297mm;
+        height: 210mm;
+        font-size: 14pt;
+     }
+     h1{
+        font-size: 34pt;
+        margin-bottom: 0px;
+     }
+     
+     h2{
+        font-size: 28pt;
+        margin-bottom: 0px;
+     }
+     h3{
+        font-size: 20pt;
+     }
+     
+    #firma{
+        text-align:left;
+        margin-left: 150px;
+        margin-top: 680px;
+        font-size: 11pt;
+        position: absolute;
+        font-weight: bold;
+    }
+        </style>
+        <html>
+        <body>
+            <div id="divid">
+                _XXX_MESSAGGIO_XXX_
+                <div id="firma">
+                    _XXX_DATA_FIRMA_XXX_
+                </div>
+            </div>
+        </body>
+        </html>';
 
-    $pdf = new PDFAttestato($orientamento,'mm','A4');
+    try {
+        ob_start();
+        $messaggio = str_replace('_XXX_MESSAGGIO_XXX_', $messaggio, $html);
+        $messaggio = str_replace('_XXX_DATA_FIRMA_XXX_', "Lugo (RA), ".GiraDataOra($dataCompletamento), $messaggio);
+        $content = html_entity_decode($messaggio);
+
+        $html2pdf = new Html2Pdf($orientamento, 'A4', 'it', true, 'UTF-8',array(0, 0, 0, 0 ));
+        $html2pdf->setDefaultFont('Times');
+        $html2pdf->writeHTML($content);
+        $html2pdf->output('Attestato_Crocco.pdf');
+    } catch (Html2PdfException $e) {
+        $formatter = new ExceptionFormatter($e);
+        echo $formatter->getHtmlMessage();
+    }
+
+    /*$pdf = new PDFAttestato($orientamento,'mm','A4');
     $pdf->AliasNbPages();
     $pdf->SetMargins(20,20);
     
     
-    $pdf->SetFont('Times','',12);
+    $pdf->SetFont('Times','',14);
     $pdf->AddPage();
+    
+    $pdf->SetStyle("p","times","N",14,"0,0,0",0);
+    $pdf->SetStyle("span","times","N",14,"0,0,0",0);
+    $pdf->SetStyle("h1","times","BN",38,"0,0,0",0);
+    $pdf->SetStyle("h2","times","BN",28,"0,0,0",0);
+    $pdf->SetStyle("h3","times","BN",20,"0,0,0",0);
+    $pdf->SetStyle("b","times","B",14,"0,0,0");
+    $pdf->SetStyle("br","times","N",14,"0,0,0");
+    $pdf->SetStyle("place","arial","U",0,"153,0,0");
+    $pdf->SetStyle("vb","times","B",0,"102,153,153");
+    
     if($orientamento == "L"){
         $pdf->Image($nomeFile, 0, 0, 297);
         $pdf->SetXY(20,55);
-        $pdf->WriteHTML(html_entity_decode($messaggio),0);
+        //$pdf->WriteHTML(html_entity_decode($messaggio),0);
+        $pdf->WriteTag(0,10,html_entity_decode($messaggio),0,"C",0,0);
         //$this->Cell(0,210,$cell,0,2,'',false);
     }else{
         $pdf->Image($nomeFile, 0, 0, 210);
@@ -438,7 +175,7 @@ if (isset($_GET['idIscrizione'])) {
     //$pdf->MultiCell(250, 5, ''. html_entity_decode($messaggio).''  , 0, 'C', 0, true);
     
     
-    $pdf->Output();
+    //$pdf->Output();
 
     
 
@@ -471,6 +208,9 @@ if(file_exists(BASE_ROOT . "media/lista_attestati/".$filename)){
     chmod(BASE_ROOT. 'media/lista_attestati/' . $filename, 0777);
 }
 
-$pdf->Output(BASE_ROOT . 'media/lista_attestati/' . $filename, 'F');
+//$pdf->Output(BASE_ROOT . 'media/lista_attestati/' . $filename, 'F');
 
-$pdf->Output($filename, 'I');
+//$pdf->Output($filename, 'I');
+
+
+

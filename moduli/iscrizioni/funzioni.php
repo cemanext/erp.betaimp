@@ -121,6 +121,8 @@ function Stampa_HTML_index_Iscrizioni($tabella){
 }
 
 function Stampa_HTML_Dettaglio_Iscrizioni($tabella, $id) {
+    global $dblink;
+    
       switch ($tabella) {
         case 'lista_iscrizioni':
 		if(isset($_GET['whrStato']) and $_GET['whrStato']>0){
