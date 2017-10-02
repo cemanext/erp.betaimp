@@ -21,8 +21,9 @@ if(strlen($cercaQualcosa)>4){
     $sql_001 = 'SELECT nome, cognome, telefono, cellulare, codice, codice_fiscale, email FROM lista_professionisti LIMIT 1';
 	$colonne = $dblink->list_fields($sql_001);
 	if(!empty($colonne)){
+		//$conta_colonne = mysql_num_fields($rs_001);
 		$where_cerca_professionisti = '';
-                
+		//for ($b=0;$b<$conta_colonne;$b++){
                 foreach ($colonne as $colonna) {
                     if(strlen($colonna->orgname)>0){
                         $nome_colonna = $colonna->orgname;
@@ -35,8 +36,9 @@ if(strlen($cercaQualcosa)>4){
                     }else{
                         $where_cerca_professionisti .= "`".$nome_colonna."` LIKE '%".trim($_POST['cercaQualcosa'])."%' OR ";
                     }
-
+                    
 		}
+		$where_cerca_professionisti .= " CONCAT(cognome,' ',nome) LIKE '%".trim($_POST['cercaQualcosa'])."%' OR ";
 		$where_professionisti = ' AND ('.substr($where_cerca_professionisti,0,(strlen($where_cerca_professionisti)-4)).')';
 		//echo '<h1>$where_professionisti = '.$where_professionisti.'</h1>';
 	}
@@ -48,9 +50,9 @@ if(strlen($cercaQualcosa)>4){
         $sql_001 = 'SELECT ragione_sociale, email, telefono, partita_iva, codice_fiscale FROM lista_aziende LIMIT 1';
         $colonne = $dblink->list_fields($sql_001);
 	if(!empty($colonne)){
-            
+            //$conta_colonne = mysql_num_fields($rs_001);
             $where_cerca_aziende = '';
-            
+            //for ($b=0;$b<$conta_colonne;$b++){
             foreach ($colonne as $colonna) {
                 if(strlen($colonna->orgname)>0){
                     $nome_colonna = $colonna->orgname;
@@ -96,9 +98,9 @@ if(strlen($cercaQualcosa)>4){
     $sql_004 = 'SELECT mittente, destinatario, campo_1, campo_2, campo_3, campo_4, campo_5, tipo_marketing, telefono, email, cognome, nome FROM calendario WHERE id_campagna > 0';
 	$colonne = $dblink->list_fields($sql_004);
 	if(!empty($colonne)){
-            
+		//$conta_colonne = mysql_num_fields($rs_001);
 		$where_cerca_commento = '';
-                
+		//for ($b=0;$b<$conta_colonne;$b++){
                 foreach ($colonne as $colonna) {
                     if(strlen($colonna->orgname)>0){
                         $nome_colonna = $colonna->orgname;
@@ -112,6 +114,8 @@ if(strlen($cercaQualcosa)>4){
                         $where_cerca_commento .= "`".$nome_colonna."` LIKE '%".trim($_POST['cercaQualcosa'])."%' OR ";
                     }
 		}
+		
+		$where_cerca_commento .= " CONCAT(cognome,' ',nome) LIKE '%".trim($_POST['cercaQualcosa'])."%' OR ";
 		$where_commenti = ' AND ('.substr($where_cerca_commento,0,(strlen($where_cerca_commento)-4)).')';
 		//echo '<h1>$where_commenti = '.$where_commenti.'</h1>';
 	}
@@ -230,7 +234,10 @@ if($_SESSION['livello_utente']=='commerciale'){
                     <!-- BEGIN PAGE BAR-->
 
                     <!-- END PAGE BAR -->
-                    <!-- BEGIN PAGE TITLE -->
+                    <!-- BEGIN PAGE TITLE
+                    <h3 class="page-title"> Ci sono "X" risultati
+                        <small>della ricerca "xyz"</small>
+                    </h3>-->
                     <!-- END PAGE TITLE-->
                     <!-- END PAGE HEADER-->
 
@@ -252,6 +259,12 @@ if($_SESSION['livello_utente']=='commerciale'){
 
 
                         <div class="portlet">
+                            <!--<div class="portlet-title">
+                                <div class="caption">
+                                    <i class="fa fa-search"></i>Trovati "X" risultati
+                                </div>
+                                <div class="actions"> </div>
+                            </div>-->
                             <div class="portlet-body">
                               <ul class="nav nav-pills">
                                   <?php if(!$livelloCommerciale) { ?>
@@ -323,8 +336,8 @@ if($_SESSION['livello_utente']=='commerciale'){
                                     CONCAT('<h3>',cognome,'</h2>') AS 'cognome', 
                                     CONCAT('<h3>',nome,'</h2>') AS 'nome', 
                                     CONCAT('<h4>',email,'</h3>') AS 'email',
-                                    (SELECT IF(data_creazione LIKE '1970-%',CONCAT('<span class=\"btn sbold uppercase btn-outline red-thunderbird\">',DATE(data_creazione),'</span>'),CONCAT('<span class=\"btn sbold uppercase btn-outline green\">',DATE(data_creazione),'</span>')) FROM lista_password WHERE lista_password.id_professionista=lista_professionisti.id) AS 'Creazione Moodle',
-                                    (SELECT IF(data_ultimo_accesso LIKE '1970-%' OR data_ultimo_accesso LIKE '0000-00%',CONCAT('<span class=\"btn sbold uppercase btn-outline red-thunderbird\">',(data_ultimo_accesso),'</span>'),CONCAT('<span class=\"btn sbold uppercase btn-outline green\">',(data_ultimo_accesso),'</span>')) FROM lista_password WHERE lista_password.id_professionista=lista_professionisti.id) AS 'Ultimo Login  Moodle',
+                                    (SELECT IF(data_creazione LIKE '1970-%',CONCAT('<span class=\"btn sbold uppercase btn-outline red-thunderbird\">',DATE(data_creazione),'</span>'),CONCAT('<span class=\"btn sbold uppercase btn-outline green\">',DATE(data_creazione),'</span>')) FROM lista_password WHERE lista_password.id_professionista=lista_professionisti.id AND livello='cliente' LIMIT 1) AS 'Creazione Moodle',
+                                    (SELECT IF(data_ultimo_accesso LIKE '1970-%' OR data_ultimo_accesso LIKE '0000-00%',CONCAT('<span class=\"btn sbold uppercase btn-outline red-thunderbird\">',(data_ultimo_accesso),'</span>'),CONCAT('<span class=\"btn sbold uppercase btn-outline green\">',(data_ultimo_accesso),'</span>')) FROM lista_password WHERE lista_password.id_professionista=lista_professionisti.id AND livello='cliente' LIMIT 1) AS 'Ultimo Login  Moodle',
                                     CONCAT('<a onclick=\"javascript: return confirm(\'Sei sicuro di voler cancellare definitivamente \\\\n',UCASE(cognome),' ',UCASE(nome),' - Codice: ',codice,' ?\');\" class=\"btn btn-circle btn-icon-only red-flamingo btn-outline\" href=\"moduli/anagrafiche/salva.php?tbl=lista_professionisti&idProfessionista=',id,'\&fn=eliminaUtenteMoodle&cercaQualcosa=".$cercaQualcosa."\"><i class=\"fa fa-trash\"></i></a>') AS 'Elimina'
                                     FROM lista_professionisti WHERE  stato NOT LIKE '%Elimin%'  ".$where_professionisti." ORDER BY cognome, nome, email ASC";
                                     //echo $query;
@@ -397,6 +410,7 @@ if($_SESSION['livello_utente']=='commerciale'){
         <!-- END PAGE LEVEL SCRIPTS -->
         <!-- BEGIN THEME LAYOUT SCRIPTS -->
         <script src="<?=BASE_URL?>/assets/layouts/layout/scripts/layout.min.js" type="text/javascript"></script>
+        <script src="<?=BASE_URL?>/assets/layouts/layout/scripts/demo.min.js" type="text/javascript"></script>
         <script src="<?=BASE_URL?>/assets/layouts/global/scripts/quick-sidebar.min.js" type="text/javascript"></script>
         <!-- END THEME LAYOUT SCRIPTS -->
     </body>
