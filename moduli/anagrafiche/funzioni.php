@@ -233,7 +233,9 @@ IF(tipo LIKE 'Fattura',CONCAT('<span class=\"btn sbold uppercase btn-outline blu
             (SELECT nome_prodotto FROM lista_corsi WHERE id = id_corso) AS 'Corso',
             (SELECT nome FROM lista_classi WHERE id = id_classe) AS 'Classe',
             data_inizio_iscrizione, data_fine_iscrizione,
-            DATE(data_inizio) AS 'Data Inizio', DATE(data_fine) AS 'Data Fine', stato
+            DATE(data_inizio) AS 'Data Inizio', 
+            IF(data_completamento LIKE '000%',DATE(data_fine), DATE(data_completamento)) AS 'Data Fine', 
+            stato
             FROM lista_iscrizioni WHERE id_professionista = $id ORDER BY dataagg DESC";
             //stampa_table_static_basic($sql_0005, '', 'Iscrizioni Corsi', 'green-meadow', 'fa fa-university');
             stampa_table_datatables_responsive($sql_0005, 'Iscrizioni Corsi', 'tabella_base5', 'green-meadow', 'fa fa-university');
