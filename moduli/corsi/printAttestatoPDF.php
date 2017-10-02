@@ -72,73 +72,152 @@ if (isset($_GET['idIscrizione'])) {
     $begin = ($pagina - 1) * $pageSize;
     $countPages = ceil($totale / $pageSize);
 
-    $html = '<STYLE type="text/css">    
-        @page {
-            size: A4;
-            margin: 0;
-          }
-          @media print {
-            html, body {
-              width: 297mm;
-              height: 210mm;
-            }
-          }
-    #divid{margin-top: 0px;margin-left: 0px;
-        background-image: url('.BASE_URL.'/moduli/corsi/'.str_replace('.jpg','_2.jpg',$nomeFile).');
-        background-size: 30%;
-        background-repeat: no-repeat;
-        text-align:center;
-        vertical-align: middle;
-        width: 297mm;
-        height: 210mm;
-        font-size: 14pt;
-     }
-     h1{
-        font-size: 34pt;
-        margin-bottom: 0px;
-     }
-     
-     h2{
-        font-size: 28pt;
-        margin-bottom: 0px;
-     }
-     h3{
-        font-size: 20pt;
-     }
-     
-    #firma{
-        text-align:left;
-        margin-left: 150px;
-        margin-top: 680px;
-        font-size: 11pt;
-        position: absolute;
-        font-weight: bold;
-    }
-        </style>
-        <html>
-        <body>
-            <div id="divid">
-                _XXX_MESSAGGIO_XXX_
-                <div id="firma">
-                    _XXX_DATA_FIRMA_XXX_
+    if($orientamento == "L"){
+        $html = '<STYLE type="text/css">    
+            @page {
+                size: A4;
+                margin: 0;
+              }
+              @media print {
+                html, body {
+                  width: 297mm;
+                  height: 210mm;
+                }
+              }
+        #divid{margin-top: 0px;margin-left: 0px;
+            background-image: url('.BASE_URL.'/moduli/corsi/'.$nomeFile.');
+            background-size: 30%;
+            background-repeat: no-repeat;
+            text-align:center;
+            vertical-align: middle;
+            width: 297mm;
+            height: 210mm;
+            font-size: 14pt;
+         }
+         h1{
+            font-size: 34pt;
+            margin-bottom: 0px;
+         }
+
+         h2{
+            font-size: 28pt;
+            margin-bottom: 0px;
+         }
+         h3{
+            font-size: 20pt;
+         }
+
+        #firma{
+            text-align:left;
+            margin-left: 150px;
+            margin-top: 680px;
+            font-size: 11pt;
+            position: absolute;
+            font-weight: bold;
+        }
+            </style>
+            <html>
+            <body>
+                <div id="divid">
+                    _XXX_MESSAGGIO_XXX_
+                    <div id="firma">
+                        _XXX_DATA_FIRMA_XXX_
+                    </div>
                 </div>
-            </div>
-        </body>
-        </html>';
+            </body>
+            </html>';
 
-    try {
-        ob_start();
-        $messaggio = str_replace('_XXX_MESSAGGIO_XXX_', $messaggio, $html);
-        $messaggio = str_replace('_XXX_DATA_FIRMA_XXX_', "Lugo (RA), ".GiraDataOra($dataCompletamento), $messaggio);
-        $content = html_entity_decode($messaggio);
+        try {
+            ob_start();
+            $messaggio = str_replace('_XXX_MESSAGGIO_XXX_', $messaggio, $html);
+            $messaggio = str_replace('_XXX_DATA_FIRMA_XXX_', "Lugo (RA), ".GiraDataOra($dataCompletamento), $messaggio);
+            $content = html_entity_decode($messaggio);
 
-        $html2pdf = new Html2Pdf($orientamento, 'A4', 'it', true, 'UTF-8',array(0, 0, 0, 0 ));
-        $html2pdf->setDefaultFont('Times');
-        $html2pdf->writeHTML($content);
-        $html2pdf->output('Attestato_Crocco.pdf');
-    } catch (Html2PdfException $e) {
-        $formatter = new ExceptionFormatter($e);
-        echo $formatter->getHtmlMessage();
+            $html2pdf = new Html2Pdf($orientamento, 'A4', 'it', true, 'UTF-8',array(0, 0, 0, 0 ));
+            $html2pdf->setDefaultFont('Times');
+            $html2pdf->writeHTML($content);
+            $html2pdf->output('Attestato_Crocco.pdf');
+        } catch (Html2PdfException $e) {
+            $formatter = new ExceptionFormatter($e);
+            echo $formatter->getHtmlMessage();
+        }
+    }else{
+        $html = '<STYLE type="text/css">    
+            @page {
+                size: A4;
+                margin: 0;
+              }
+              @media print {
+                html, body {
+                  width: 210mm;
+                  height: 297mm;
+                }
+              }
+        #HiddenDiv{
+            margin-top: 0px;margin-left: 0px;
+            width: 210mm;
+            height: 297mm;
+            position:absolute;
+            z-index:99999;
+        }
+        #divid{
+            margin-top: 0px;margin-left: 0px;
+            background-image: url('.BASE_URL.'/moduli/corsi/'.$nomeFile.');
+            background-size: 30%;
+            background-repeat: no-repeat;
+            text-align:center;
+            vertical-align: middle;
+            width: 210mm;
+            height: 297mm;
+            font-size: 14pt;
+         }
+         h1{
+            font-size: 34pt;
+            margin-bottom: 0px;
+         }
+
+         h2{
+            font-size: 28pt;
+            margin-bottom: 0px;
+         }
+         h3{
+            font-size: 20pt;
+         }
+
+        #firma{
+            text-align:left;
+            margin-left: 150px;
+            margin-top: 680px;
+            font-size: 11pt;
+            position: absolute;
+            font-weight: bold;
+        }
+            </style>
+            <html>
+            <body>
+                <div id="divid">
+                    _XXX_MESSAGGIO_XXX_
+                    <div id="firma">
+                        _XXX_DATA_FIRMA_XXX_
+                    </div>
+                </div>
+            </body>
+            </html>';
+
+        try {
+            ob_start();
+            $messaggio = str_replace('_XXX_MESSAGGIO_XXX_', $messaggio, $html);
+            $messaggio = str_replace('_XXX_DATA_FIRMA_XXX_', "Lugo (RA), ".GiraDataOra($dataCompletamento), $messaggio);
+            $content = html_entity_decode($messaggio);
+
+            $html2pdf = new Html2Pdf($orientamento, 'A4', 'it', true, 'UTF-8',array(0, 0, 0, 0 ));
+            $html2pdf->setDefaultFont('Times');
+            $html2pdf->writeHTML($content);
+            $html2pdf->output('Attestato_Crocco.pdf');
+        } catch (Html2PdfException $e) {
+            $formatter = new ExceptionFormatter($e);
+            echo $formatter->getHtmlMessage();
+        }
     }
 
     /*$pdf = new PDFAttestato($orientamento,'mm','A4');

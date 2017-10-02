@@ -36,10 +36,10 @@ if (isset($_GET['fn'])) {
             foreach ($arrayCampi as $key => $value) {
                 $pos = strpos($key, "txt_checkbox_");
                 if ($pos === false) {
-                    echo '<li style="color:red;">' . $key . ' = ' . $arrayCampi[$key] . '</li>';
+                    //echo '<li style="color:red;">' . $key . ' = ' . $arrayCampi[$key] . '</li>';
                 } else {
                     $idFattura = $arrayCampi[$key];
-                    echo '<li style="color:green;">idFattura = ' . $idFattura . '</li>';
+                    //echo '<li style="color:green;">idFattura = ' . $idFattura . '</li>';
                     $sql_0001 = "UPDATE lista_fatture
                         SET dataagg=NOW(),
                         scrittore='" . addslashes($_SESSION['cognome_nome_utente']) . "',
@@ -65,16 +65,17 @@ if (isset($_GET['fn'])) {
             unset($arrayCampi['tipoPagamento']);
             //print_r($arrayCampi);
             foreach ($arrayCampi as $key => $value) {
-                echo '<li style="color:orange;">dataCreazioneEmissione = ' . $dataCreazioneEmissione . '</li>';
-                echo '<li style="color:orange;">dataScadenzaEmissione = ' . $dataScadenzaEmissione . '</li>';
-                echo '<li style="color:orange;">tipoBanca = ' . $tipoBanca . '</li>';
-                echo '<li style="color:orange;">tipoPagamento = ' . $tipoPagamento . '</li>';
+                
+                //echo '<li style="color:orange;">dataCreazioneEmissione = ' . $dataCreazioneEmissione . '</li>';
+                //echo '<li style="color:orange;">dataScadenzaEmissione = ' . $dataScadenzaEmissione . '</li>';
+                //echo '<li style="color:orange;">tipoBanca = ' . $tipoBanca . '</li>';
+                //echo '<li style="color:orange;">tipoPagamento = ' . $tipoPagamento . '</li>';
 
                 $pos = strpos($key, "txt_checkbox_");
                 if ($pos === false) {
-                    echo '<li style="color:red;">' . $key . ' = ' . $arrayCampi[$key] . '</li>';
+                   // echo '<li style="color:red;">' . $key . ' = ' . $arrayCampi[$key] . '</li>';
                 } else {
-                    echo '<li style="color:green;">' . $key . ' = ' . $arrayCampi[$key] . '</li>';
+                    //echo '<li style="color:green;">' . $key . ' = ' . $arrayCampi[$key] . '</li>';
                     $idFattura = $arrayCampi[$key];
                     $sql_00001_01 = "SELECT id, codice, sezionale, importo, stato FROM lista_fatture WHERE id='" . $idFattura . "'";
                     $rs_00001_01 = $dblink->get_results($sql_00001_01);
@@ -82,11 +83,11 @@ if (isset($_GET['fn'])) {
                         //StampaSQL($sql_00001_01, '', 'Fattura con id = ' . $idFattura);
                         foreach ($rs_00001_01 as $row_00001_01) {
                             $codSezionale = $row_00001_01['sezionale'];
-                            echo '<li style="color:orange;">codSezionale = ' . $codSezionale . '</li>';
+                            //echo '<li style="color:orange;">codSezionale = ' . $codSezionale . '</li>';
                             //QUI INSERIRE RECUPERO CODICE
                             if (nuovoCodiceFattura($idFattura, $codSezionale)) {
                                 $fattura_nuova = nuovoCodiceFattura($idFattura, $codSezionale);
-                                echo '<li style="color:blue;">fattura_nuova = ' . $fattura_nuova . '</li>';
+                                //echo '<li style="color:blue;">fattura_nuova = ' . $fattura_nuova . '</li>';
                                 $sql_007 = "UPDATE lista_fatture SET
                                 dataagg = NOW(),
                                 data_creazione = '" . GiraDataOra($dataCreazioneEmissione) . "',
@@ -103,7 +104,7 @@ if (isset($_GET['fn'])) {
                                 banca_pagamento = (SELECT lista_fatture_banche.nome FROM lista_fatture_banche WHERE lista_fatture_banche.id = lista_fatture.id_fatture_banche),
                                 stato='In Attesa'
                                 WHERE id ='" . $idFattura . "'
-                                AND sezionale = " . $codSezionale;
+                                AND sezionale = '" . $codSezionale."'";
                                 $rs_007 = $dblink->query($sql_007);
                                 if ($rs_007) {
                                     $sql_007_1 = "UPDATE lista_fatture_dettaglio SET
@@ -124,12 +125,12 @@ if (isset($_GET['fn'])) {
                                     }
                                 }
                             } else {
-                                echo '<li>Errore: nuovoCodiceFattura !</li>';
+                               // echo '<li>Errore: nuovoCodiceFattura !</li>';
                             }
                         }
                     }
                 }
-                echo '<hr>';
+                //echo '<hr>';
             }
             
             header("Location:" . $referer . "&res=7");
@@ -138,8 +139,8 @@ if (isset($_GET['fn'])) {
         case 'accorpaFatture':
             $idFatturaPrincipale = $_GET['idFatturaPrincipale'];
             $idAzienda = $_GET['idAzienda'];
-            echo '<li>idFatturaPrincipale = ' . $idFatturaPrincipale . '</li>';
-            echo '<li>idAzienda = ' . $idAzienda . '</li>';
+            //echo '<li>idFatturaPrincipale = ' . $idFatturaPrincipale . '</li>';
+            //echo '<li>idAzienda = ' . $idAzienda . '</li>';
 
             //print_r($_POST);
 
@@ -152,7 +153,7 @@ if (isset($_GET['fn'])) {
                 } else {
                     //echo '<li style="color:green;">'.$key.' = '.$arrayCampi[$key].'</li>';
                     $id_fattura_dettaglio_selezionata = $arrayCampi[$key];
-                    echo '<li style="color:green;">id_fattura_dettaglio_selezionata = ' . $id_fattura_dettaglio_selezionata . '</li>';
+                    //echo '<li style="color:green;">id_fattura_dettaglio_selezionata = ' . $id_fattura_dettaglio_selezionata . '</li>';
                     $sql_0001 = "UPDATE lista_fatture_dettaglio
                         SET dataagg=NOW(),
                         scrittore='" . addslashes($_SESSION['cognome_nome_utente']) . "',
@@ -164,14 +165,14 @@ if (isset($_GET['fn'])) {
                         AND stato NOT LIKE 'Accorpata'";
                     $rs_0001 = $dblink->query($sql_0001);
                     if ($rs_0001) {
-                        echo '<li style="color:green;">id_fattura_dettaglio_selezionata --> Aggiornata :)</li>';
+                        //echo '<li style="color:green;">id_fattura_dettaglio_selezionata --> Aggiornata :)</li>';
                     } else {
-                        echo '<li style="color:red;">id_fattura_dettaglio_selezionata --> NON Aggiornata :(</li>';
+                        //echo '<li style="color:red;">id_fattura_dettaglio_selezionata --> NON Aggiornata :(</li>';
                     }
                 }
             }
 
-            echo '<hr>';
+            //echo '<hr>';
 
             $sql_00001_01 = "SELECT id FROM lista_fatture WHERE id_azienda='" . $idAzienda . "'
             AND id !='" . $idFatturaPrincipale . "'
@@ -180,13 +181,13 @@ if (isset($_GET['fn'])) {
             if (!empty($rs_00001_01)) {
                 //StampaSQL($sql_00001_01, '', '');
                 foreach ($rs_00001_01 as $row_00001_01) {
-                    echo '<hr>';
+                    //echo '<hr>';
                     $sql_00001_02 = "SELECT * FROM lista_fatture_dettaglio WHERE id_fattura='" . $row_00001_01['id'] . "'";
                     $rs_00001_02 = $dblink->num_rows($sql_00001_02);
                     //if ($rs_00001_02) {
                         //StampaSQL($sql_00001_02, '', '');
                         if ($rs_00001_02 <= 0) {
-                            echo '<li>NON ABBIAMO DETTAGLIO PER id_fattura  = ' . $row_00001_01['id'] . '</li>';
+                            //echo '<li>NON ABBIAMO DETTAGLIO PER id_fattura  = ' . $row_00001_01['id'] . '</li>';
                             $sql_0002 = "UPDATE lista_fatture
                             SET dataagg=NOW(),
                             scrittore='" . addslashes($_SESSION['cognome_nome_utente']) . "',
@@ -195,9 +196,9 @@ if (isset($_GET['fn'])) {
                             AND id_azienda='" . $idAzienda . "'";
                             $rs_0002 = $dblink->query($sql_0002);
                             if ($rs_0002) {
-                                echo '<li style="color:green;">Fattura Stato da Accorpare --> Aggiornata :)</li>';
+                                //echo '<li style="color:green;">Fattura Stato da Accorpare --> Aggiornata :)</li>';
                             } else {
-                                echo '<li style="color:red;">Fattura Stato da Accorpare --> NON Aggiornata :(</li>';
+                                //echo '<li style="color:red;">Fattura Stato da Accorpare --> NON Aggiornata :(</li>';
                             }
                         }
                     //}
@@ -385,8 +386,8 @@ if (isset($_GET['fn'])) {
                     }
                     //print_r($tuttiCampi[$r]);
                     $ok = $dblink->update("lista_fatture_dettaglio", $tuttiCampi[$r], array("id" => $idWhere));
-                    if (!$ok)
-                        echo "errore Database";
+                    //if (!$ok)
+                        //echo "errore Database";
                     //echo $dblink->get_query();
                     //echo "<br>";
                 }
@@ -467,7 +468,7 @@ if (isset($_GET['fn'])) {
                     }
                 }
             } else {
-                echo '<li>Errore: nuovoCodiceFattura !</li>';
+                //echo '<li>Errore: nuovoCodiceFattura !</li>';
             }
             break;
 
@@ -596,7 +597,7 @@ if (isset($_GET['fn'])) {
                         if ($rs_4) {
                             if ($statoPagamento == 'Parziale') {
                                 if ($id_costo_inserito <= 0) {
-                                    echo '<li>fatturaPagata -> Parziale  id_costo_inserito Errore:  !!!!</li>';
+                                    //echo '<li>fatturaPagata -> Parziale  id_costo_inserito Errore:  !!!!</li>';
                                 } else {
                                     header("Location: " . BASE_URL . "/moduli/costi/modifica.php?tbl=lista_costi&id=" . $id_costo_inserito);
                                 }

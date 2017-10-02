@@ -184,6 +184,7 @@ function creaFatturaPDF($idFatt, $echo = false) {
             lista_preventivi.codice_esterno AS prev_codice_esterno,
             lista_preventivi.data_esterna AS prev_data_esterna,
 
+            (SELECT lista_prodotti.descrizione_fattura FROM lista_prodotti WHERE lista_prodotti.id = lista_fatture_dettaglio.id_prodotto) AS descrizione_fattura,
 
             lista_fatture_dettaglio.nome_prodotto,
             lista_fatture_dettaglio.note AS descrizione_aggiuntiva,
@@ -491,7 +492,7 @@ function creaFatturaPDF($idFatt, $echo = false) {
                     
 
                     $pdf->SetXY($margine_x_dettaglio_fattura + 31, $margine_y_dettaglio_fattura + 5);
-                    $pdf->Cell(97, 5, '' . strtoupper(utf8_decode(mb_convert_encoding($row['nome_prodotto'], "UTF-8", "HTML-ENTITIES"))) . ' '.utf8_decode(mb_convert_encoding($row['descrizione_aggiuntiva'], "UTF-8", "HTML-ENTITIES")), 0, 0, 'L', 0, 0);
+                    $pdf->Cell(97, 5, '' . strtoupper(utf8_decode(mb_convert_encoding($row['descrizione_fattura'], "UTF-8", "HTML-ENTITIES"))) . ' '.utf8_decode(mb_convert_encoding($row['descrizione_aggiuntiva'], "UTF-8", "HTML-ENTITIES")), 0, 0, 'L', 0, 0);
 
                     $pdf->SetXY($margine_x_dettaglio_fattura + 137.3, $margine_y_dettaglio_fattura + 5);
                     $pdf->Cell(20.5, 5, '' . strtoupper(utf8_decode($row['quantita'])) . '', 0, 0, 'C', 0, 0);

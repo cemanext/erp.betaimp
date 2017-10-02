@@ -107,7 +107,7 @@ if (isset($_GET['tbl']) && $_GET['tbl'] != "") {
                         <div class="col-md-12 col-sm-12">
 
                             <!-- INIZIO TABELLA-->
-                            <?php stampa_bootstrap_form_horizontal($tabella, $id, 'Modifica Azienda'); ?>
+                            <?php stampa_bootstrap_form_horizontal($tabella, $id, 'Modifica Azienda', BASE_URL.'/moduli/anagrafiche/salva.php?fn=salvaGeneraleAnagrafiche'); ?>
                             <!-- FINE TABELLA-->
                         </div>
 

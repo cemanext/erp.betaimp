@@ -206,10 +206,16 @@ $table_listaProfessionisti = array(
                         "etichetta" => "Codice Fiscale",
                         "readonly" => false
                     ),
-                array(  "campo" => "professione",
+                /*array(  "campo" => "professione",
                         "tipo" => "input",
                         "etichetta" => "Professione",
                         "readonly" => false
+                    ),*/
+                array(  "campo" => "professione",
+                        "tipo" => "select2",
+                        "etichetta" => "Professione",
+                        "readonly" => false,
+                        "sql" => "SELECT nome AS valore, nome AS nome FROM  `lista_professioni` WHERE  `stato` LIKE 'Attivo' ORDER BY  `nome` ASC"
                     ),
                 array(  "campo" => "id_classe",
                         "tipo" => "select2",
@@ -2348,6 +2354,11 @@ $table_listaProdotti = array(
                         "readonly" => false,
                         "sql" => "SELECT nome AS valore, nome AS nome, colore_sfondo AS colore FROM  `lista_prodotti_categorie` WHERE  `stato` LIKE 'Attivo' ORDER BY  `nome` ASC"
                     ),*/
+                    array(  "campo" => "descrizione_fattura",
+                        "tipo" => "input",
+                        "etichetta" => "Descrizione Fattura",
+                        "readonly" => false
+                    ),
                     array(  "campo" => "tipologia",
                         "tipo" => "bs-select",
                         "etichetta" => "Tipologia",

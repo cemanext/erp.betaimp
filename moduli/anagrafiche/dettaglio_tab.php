@@ -251,7 +251,7 @@ if($id_professionista_presente<=0){
     $nomeTabProfessionista = "Dati Contatto";
     $tabellaProfessionista = "calendario";
     
-    $sql_00001 = "SELECT * FROM calendario WHERE id=" . $row_00004['id'];
+    $sql_00001 = "SELECT * FROM calendario WHERE id='".$row_00004['id']."'";
     $row_00001 = $dblink->get_row($sql_00001, true);
 }else{
     $nomeTabProfessionista = "Dati Participante";
@@ -700,7 +700,7 @@ if($richiestaReadonly===false){
                                                                     CONCAT('<a class=\"btn btn-circle btn-icon-only red btn-outline\" href=\"".BASE_URL."/moduli/fatture/printFatturaPDF.php?idFatt=',`id`,'&idA=',id_area,'\" TARGET=\"_BLANK\" title=\"STAMPA\" alt=\"STAMPA\"><i class=\"fa fa-file-pdf-o\"></i></a>')) AS 'fa-search',
                                                                 codice, data_creazione, data_scadenza, imponibile, stato "
                                                                         . "FROM lista_fatture "
-                                                                        . "WHERE id_professionista= " . $id_professionista_presente . " AND stato!='Accorpata' ORDER BY codice DESC";
+                                                                        . "WHERE id_professionista= '" . $id_professionista_presente . "' AND stato!='Accorpata' ORDER BY codice DESC";
                                                                 stampa_table_datatables_responsive($sql_0018, 'Fatture', '', 'grey');
                                                                 ?>
 
@@ -935,7 +935,7 @@ if($richiestaReadonly===false){
                         if($idCalendario_daPassare>0){
                             $sql_0020 = "SELECT data, ora, etichetta, REPLACE(messaggio,'\\n','<br>') AS messaggio, mittente, stato "
                                     . "FROM calendario "    
-                                    . "WHERE id_professionista= " . $id_professionista_presente . " AND LCASE(mittente)=LCASE('".$dblink->filter($row_00003['mittente'])."') AND id!=".$idCalendario_daPassare." 
+                                    . "WHERE id_professionista= '" . $id_professionista_presente . "' AND LCASE(mittente)=LCASE('".$dblink->filter($row_00003['mittente'])."') AND id!=".$idCalendario_daPassare." 
                                     ORDER BY dataagg DESC, id DESC LIMIT 0,100000";
                             stampa_table_datatables_responsive($sql_0020, 'Storico Richieste', '', 'grey');
                         }

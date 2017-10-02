@@ -262,6 +262,22 @@ function getNomeAgente($idAgente){
     return $row_1['nome']." ".$row_1['cognome'];
 }
 
+function getNomeProfessionista($idProfessionista){
+    global $dblink;
+    
+    $row_1 = $dblink->get_row("SELECT nome, cognome FROM lista_professionisti WHERE id='".$idProfessionista."' ORDER BY id DESC",true);
+    
+    return $row_1['nome']." ".$row_1['cognome'];
+}
+
+function getNomeAzienda($idAzienda){
+    global $dblink;
+    
+    $row_1 = $dblink->get_row("SELECT ragione_sociale, forma_giuridica FROM lista_aziende WHERE id='".$idAzienda."' ORDER BY id DESC",true);
+    
+    return $row_1['ragione_sociale']." ".$row_1['forma_giuridica'];
+}
+
 function getIdTipoMarketing($nomeTipoMarketing){
     global $dblink;
     

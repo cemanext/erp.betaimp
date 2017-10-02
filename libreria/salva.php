@@ -12,6 +12,10 @@ if(isset($_POST['txt_id'])){
 
 $nome_referer = recupera_referer();
 
+if(isset($_POST['txt_referer']) && !empty($_POST['txt_referer'])){
+    $nome_referer = recupera_referer($_POST['txt_referer']);
+}
+
 $ok = salvaGenerale();
 
 if($nome_id!=0){

@@ -216,7 +216,7 @@ if(isset($_GET['fn'])){
 
                 $ok = $ok && $dblink->update("calendario", $row_0001, array("id"=>$id_calendario));
 
-                $ok = $ok && $dblink->update("lista_preventivi", array("dataagg" => date("Y-m-d H:i:s"), "scrittore" => $dblink->filter($_SESSION['cognome_nome_utente']), "id_agente"=>$id_agente), array("id_calendario"=>$id_calendario));
+                $ok = $ok && $dblink->update("lista_preventivi", array("dataagg" => date("Y-m-d H:i:s"), "scrittore" => $dblink->filter($_SESSION['cognome_nome_utente']), "id_agente"=>$id_agente, "cognome_nome_agente"=>$row_0001['destinatario']), array("id_calendario"=>$id_calendario));
                 //$ok = $ok && $dblink->update("lista_preventivi", array("dataagg" => date("Y-m-d H:i:s"), "scrittore" => $dblink->filter($_SESSION['cognome_nome_utente']), "id_calendario"=>$insetIdCalendario, "id_agente"=>$id_agente), array("id_calendario"=>$id_calendario));
                 //$ok = $ok && $dblink->update("lista_preventivi_dettaglio", array("dataagg" => date("Y-m-d H:i:s"), "scrittore" => $dblink->filter($_SESSION['cognome_nome_utente']), "id_calendario"=>$insetIdCalendario), array("id_calendario"=>$id_calendario));
                 //echo $dblink->get_query();
@@ -263,7 +263,7 @@ if(isset($_GET['fn'])){
 
                 $ok = $ok && $dblink->update("calendario", $row_0001, array("id"=>$id_calendario));
 
-                $ok = $ok && $dblink->update("lista_preventivi", array("dataagg" => date("Y-m-d H:i:s"), "scrittore" => $dblink->filter($_SESSION['cognome_nome_utente']), "id_agente"=>$id_agente), array("id_calendario"=>$id_calendario));
+                $ok = $ok && $dblink->update("lista_preventivi", array("dataagg" => date("Y-m-d H:i:s"), "scrittore" => $dblink->filter($_SESSION['cognome_nome_utente']), "id_agente"=>$id_agente, "cognome_nome_agente"=>$row_0001['destinatario']), array("id_calendario"=>$id_calendario));
                 //$ok = $ok && $dblink->update("lista_preventivi", array("dataagg" => date("Y-m-d H:i:s"), "scrittore" => $dblink->filter($_SESSION['cognome_nome_utente']), "id_calendario"=>$insetIdCalendario, "id_agente"=>$id_agente), array("id_calendario"=>$id_calendario));
                 //$ok = $ok && $dblink->update("lista_preventivi_dettaglio", array("dataagg" => date("Y-m-d H:i:s"), "scrittore" => $dblink->filter($_SESSION['cognome_nome_utente']), "id_calendario"=>$insetIdCalendario), array("id_calendario"=>$id_calendario));
                 //echo $dblink->get_query();
@@ -276,6 +276,10 @@ if(isset($_GET['fn'])){
                 $row_0001["scrittore"] = $dblink->filter($_SESSION['cognome_nome_utente']);
 
                 $ok = $ok && $dblink->update("calendario", $row_0001, array("id"=>$id_calendario));
+                
+                if($dblink->num_rows("SELECT * FROM lista_preventivi WHERE id_calendario = '$id_calendario'")){
+                    $ok = $ok && $dblink->update("lista_preventivi", array("dataagg" => date("Y-m-d H:i:s"), "scrittore" => $dblink->filter($_SESSION['cognome_nome_utente']), "id_agente"=>$id_agente, "cognome_nome_agente"=>$row_0001['destinatario']), array("id_calendario"=>$id_calendario));
+                }
                 
                 if($ok) echo "OK:$id_calendario";
                 else echo "KO";
@@ -560,6 +564,10 @@ if(isset($_GET['fn'])){
                             . "WHERE id_professionista<=0 "
                             . "AND id=".$richiesta_id_calendario;
                     $ok = $dblink->query($sql_00003);
+                    
+                    if($dblink->num_rows("SELECT * FROM lista_preventivi WHERE id_calendario = '$richiesta_id_calendario'")){
+                        $ok = $ok && $dblink->update("lista_preventivi", array("dataagg" => date("Y-m-d H:i:s"), "scrittore" => $dblink->filter($_SESSION['cognome_nome_utente']), "id_professionista" => $id_professionista, "cognome_nome_professionista"=>getNomeProfessionista($id_professionista), "id_azienda" => $id_azienda, "ragione_sociale_azienda"=>getNomeAzienda($id_azienda)), array("id_calendario"=>$richiesta_id_calendario));
+                    }
                 }
             }
             
@@ -646,6 +654,10 @@ if(isset($_GET['fn'])){
                     $ok = $ok && $dblink->query($sql_00003);
                     //$sql = $dblink->get_query();
                     
+                    if($dblink->num_rows("SELECT * FROM lista_preventivi WHERE id_calendario = '$richiesta_id_calendario'")){
+                        $ok = $ok && $dblink->update("lista_preventivi", array("dataagg" => date("Y-m-d H:i:s"), "scrittore" => $dblink->filter($_SESSION['cognome_nome_utente']), "id_azienda" => $id_azienda, "ragione_sociale_azienda"=>getNomeAzienda($id_azienda)), array("id_calendario"=>$richiesta_id_calendario));
+                    }
+                    
                 }else{
                     $ok = $ok && $dblink->insert("lista_aziende",array("dataagg" => date("Y-m-d H:i:s"), "scrittore"=>$dblink->filter($_SESSION['cognome_nome_utente']), "partita_iva"=>$partita_iva_nuova, "stato"=>"Attivo"));
                     $id_azienda = $dblink->lastid();
@@ -660,6 +672,10 @@ if(isset($_GET['fn'])){
                             . "WHERE id='".$richiesta_id_calendario."'";
                     
                     $ok = $ok && $dblink->query($sql_00004);
+                    
+                    if($dblink->num_rows("SELECT * FROM lista_preventivi WHERE id_calendario = '$richiesta_id_calendario'")){
+                        $ok = $ok && $dblink->update("lista_preventivi", array("dataagg" => date("Y-m-d H:i:s"), "scrittore" => $dblink->filter($_SESSION['cognome_nome_utente']), "id_azienda" => $id_azienda, "ragione_sociale_azienda"=>getNomeAzienda($id_azienda)), array("id_calendario"=>$richiesta_id_calendario));
+                    }
                     
                     if($ok) $ok = "OK2:OK2";
                 }
@@ -755,6 +771,10 @@ if(isset($_GET['fn'])){
                     
                     $ok = $ok && $dblink->update("calendario", $update, $where);
                     
+                    if($dblink->num_rows("SELECT * FROM lista_preventivi WHERE id_calendario = '$richiesta_id_calendario'")){
+                        $ok = $ok && $dblink->update("lista_preventivi", array("dataagg" => date("Y-m-d H:i:s"), "scrittore" => $dblink->filter($_SESSION['cognome_nome_utente']), "id_professionista" => $id_professionista, "cognome_nome_professionista"=>getNomeProfessionista($id_professionista)), array("id_calendario"=>$richiesta_id_calendario));
+                    }
+                    
                     if($ok===true) $ok="OK:OK";
                     
                 }else{
@@ -785,10 +805,17 @@ if(isset($_GET['fn'])){
                     $ok = $ok && $dblink->insert("lista_professionisti",$insert);
                     $id_professionista = $dblink->lastid();
                     
+                    $sql_0006 = "UPDATE lista_professionisti
+                    SET codice = CONCAT('BF',RIGHT(concat('0000000000',id),6)) 
+                    WHERE id = '$id_professionista'";
+                    
+                    $ok = $ok && $dblink->query($sql_0006);
+                    
                     $update = array(
                         "id_professionista" => $id_professionista,
                         "dataagg" => date("Y-m-d H:i:s"),
                         "scrittore" => $dblink->filter($_SESSION['cognome_nome_utente']),
+                        "cognome_nome_professionista" => getNomeProfessionista($id_professionista)
                     );
                     
                     $ok = $ok && $dblink->update("lista_preventivi", $update, array("id_calendario"=>$richiesta_id_calendario));
@@ -839,6 +866,10 @@ if(isset($_GET['fn'])){
         break;
         
         case "salvaDettaglio":
+            
+            $ok = true;
+            $dblink->begin();
+            
             $arrayCampi = $_POST;
             ksort($arrayCampi);
             
@@ -909,7 +940,8 @@ if(isset($_GET['fn'])){
                 //echo $dblink->get_query();
                 //die;
                 
-                $ok = $dblink->update("lista_password", array("id_classe" => $tuttiCampi['lista_professionisti']['id_classe'],"email" => $tuttiCampi['lista_professionisti']['email']), array("id_professionista" => $idProfessionista, "id_classe"=>"0"));
+                $ok = $dblink->update("lista_password", array("id_classe" => $tuttiCampi['lista_professionisti']['id_classe'],"email" => $tuttiCampi['lista_professionisti']['email']), array("id_professionista" => $idProfessionista, 'livello' => 'cliente'));
+                $ok = $dblink->update(MOODLE_DB_NAME.".mdl_user", array("email" => $tuttiCampi['lista_professionisti']['email']), array("idnumber" => $idProfessionista));
                 
             }else{
                 /*if(strlen($tuttiCampi['lista_professionisti']['codice_fiscale'])==16){
@@ -1011,7 +1043,9 @@ if(isset($_GET['fn'])){
                     "dataagg" => date("Y-m-d H:i:s"),
                     "scrittore" => $dblink->filter($_SESSION['cognome_nome_utente']),
                     "importo"=>$row_0001['importo'],
-                    "imponibile"=>$row_0001['imponibile']
+                    "imponibile"=>$row_0001['imponibile'],
+                    "cognome_nome_professionista" => getNomeProfessionista($idProfessionista),
+                    "ragione_sociale_azienda" => getNomeAzienda($idAzienda),
                 );
                 
                 if(isset($idAzienda) && $idAzienda>0){
@@ -1026,10 +1060,10 @@ if(isset($_GET['fn'])){
             
             if($ok){
                 $ok = 1;
-                //$dblink->commit();
+                $dblink->commit();
             }else{
                 $ok = 0;
-                //$dblink->rollback();
+                $dblink->rollback();
             }
             //die();
             
@@ -1040,8 +1074,36 @@ if(isset($_GET['fn'])){
             
         break;
 
+        case "salvaGeneraleAnagrafiche":
+            $dblink->begin();
+            $ok = true;
+            
+            $ok = salvaGenerale();
+            
+            $idProfessionista = $_POST['txt_id'];
+            $referer = recupera_referer($_POST['txt_referer']);
+            
+            if($idProfessionista > 0){
+                list($emailAggiornata) = $dblink->get_row("SELECT email FROM lista_professionisti WHERE id = '$idProfessionista'");
+
+                $ok = $ok && $dblink->update("lista_password", array("email" => $emailAggiornata), array("id_professionista" => $idProfessionista, 'livello' => 'cliente'));
+                $ok = $ok && $dblink->update(MOODLE_DB_NAME.".mdl_user", array("email" => $emailAggiornata), array("idnumber" => $idProfessionista));
+            }
+            
+            if($ok){
+                $ok = 1;
+                $dblink->commit();
+            }else{
+                $ok = 0;
+                $dblink->rollback();
+            }
+            
+            
+            header("Location:".$referer."&res=$ok");
+        break;
+        
         default:
-            break;
+        break;
     }
 }
 
