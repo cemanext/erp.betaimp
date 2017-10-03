@@ -1,6 +1,6 @@
 <?php
 
-include_once($_SERVER['DOCUMENT_ROOT'].dirname($_SERVER[PHP_SELF]).'/config/connDB.php');
+include_once('config/connDB.php');
 include_once(BASE_ROOT.'config/confAccesso.php');
 
 //echo '---------->'.$_POST['cercaQualcosa'];
@@ -16,6 +16,15 @@ if(isset($_GET['cercaQualcosa']) && strlen($_GET['cercaQualcosa'])>4){
 $cercaQualcosa = $_GET['cercaQualcosa'];
 
 if(strlen($cercaQualcosa)>4){
+    
+    $arrayCampoRicerca = array();
+    if(strpos($cercaQualcosa," ")!==false){
+        $arrayCampoRicerca = explode(" ",$cercaQualcosa);
+    }else{
+        if(strlen($cercaQualcosa)>0){
+            $arrayCampoRicerca[] = $cercaQualcosa;
+        }
+    }
 
     //cerchiamo PROFESSIONISTA
     $sql_001 = 'SELECT nome, cognome, telefono, cellulare, codice, codice_fiscale, email FROM lista_professionisti LIMIT 1';
@@ -24,22 +33,34 @@ if(strlen($cercaQualcosa)>4){
 		//$conta_colonne = mysql_num_fields($rs_001);
 		$where_cerca_professionisti = '';
 		//for ($b=0;$b<$conta_colonne;$b++){
-                foreach ($colonne as $colonna) {
-                    if(strlen($colonna->orgname)>0){
-                        $nome_colonna = $colonna->orgname;
-                    }else{
-                        $nome_colonna = $colonna->name;
-                    }
-
-                    if($nome_colonna == 'stato' or $nome_colonna == 'scrittore'){
-                        $where_cerca_professionisti .= "";
-                    }else{
-                        $where_cerca_professionisti .= "`".$nome_colonna."` LIKE '%".trim($_POST['cercaQualcosa'])."%' OR ";
-                    }
+                if(!empty($arrayCampoRicerca)){
+                    foreach ($arrayCampoRicerca as $campoRicerca) {
+                        
+                        $where_cerca_professionisti.= " AND ( ";
+                        
+                        $campoRicerca = $dblink->filter(trim($campoRicerca));
                     
-		}
-		$where_cerca_professionisti .= " CONCAT(cognome,' ',nome) LIKE '%".trim($_POST['cercaQualcosa'])."%' OR ";
-		$where_professionisti = ' AND ('.substr($where_cerca_professionisti,0,(strlen($where_cerca_professionisti)-4)).')';
+                        foreach ($colonne as $colonna) {
+                            if(strlen($colonna->orgname)>0){
+                                $nome_colonna = $colonna->orgname;
+                            }else{
+                                $nome_colonna = $colonna->name;
+                            }
+
+                            if($nome_colonna == 'stato' or $nome_colonna == 'scrittore'){
+                                $where_cerca_professionisti .= " ";
+                            }else{
+                                $where_cerca_professionisti .= "`".$nome_colonna."` LIKE '%".$campoRicerca."%' OR ";
+                            }
+
+                        }
+                        
+                        $where_cerca_professionisti = substr($where_cerca_professionisti,0,(strlen($where_cerca_professionisti)-4))." ) ";
+                    }
+                }
+		//$where_cerca_professionisti .= " CONCAT(cognome,' ',nome) LIKE '%".trim($_POST['cercaQualcosa'])."%' OR ";
+		//$where_professionisti = ' AND ('.substr($where_cerca_professionisti,0,(strlen($where_cerca_professionisti)-4)).')';
+		$where_professionisti = $where_cerca_professionisti;
 		//echo '<h1>$where_professionisti = '.$where_professionisti.'</h1>';
 	}
     //fine cerchiamo PROFESSIONISTA
@@ -53,21 +74,32 @@ if(strlen($cercaQualcosa)>4){
             //$conta_colonne = mysql_num_fields($rs_001);
             $where_cerca_aziende = '';
             //for ($b=0;$b<$conta_colonne;$b++){
-            foreach ($colonne as $colonna) {
-                if(strlen($colonna->orgname)>0){
-                    $nome_colonna = $colonna->orgname;
-                }else{
-                    $nome_colonna = $colonna->name;
-                }
-            
-                if($nome_colonna == 'stato' or $nome_colonna == 'scrittore'){
-                    $where_cerca_aziende .= "";
-                }else{
-                    $where_cerca_aziende .= "`".$nome_colonna."` LIKE '%".trim($_POST['cercaQualcosa'])."%' OR ";
-                }
+            if(!empty($arrayCampoRicerca)){
+                    foreach ($arrayCampoRicerca as $campoRicerca) {
+                        
+                    $where_cerca_aziende.= " AND (";
 
+                    $campoRicerca = $dblink->filter(trim($campoRicerca));
+                    
+                    foreach ($colonne as $colonna) {
+                        if(strlen($colonna->orgname)>0){
+                            $nome_colonna = $colonna->orgname;
+                        }else{
+                            $nome_colonna = $colonna->name;
+                        }
+
+                        if($nome_colonna == 'stato' or $nome_colonna == 'scrittore'){
+                            $where_cerca_aziende .= "";
+                        }else{
+                            $where_cerca_aziende .= "`".$nome_colonna."` LIKE '%".$campoRicerca."%' OR ";
+                        }
+
+                    }
+                    $where_cerca_aziende = substr($where_cerca_aziende,0,(strlen($where_cerca_aziende)-4)).')';
+                }
             }
-            $where_aziende = ' AND ('.substr($where_cerca_aziende,0,(strlen($where_cerca_aziende)-4)).')';
+            //$where_aziende = ' AND ('.substr($where_cerca_aziende,0,(strlen($where_cerca_aziende)-4)).')';
+            $where_aziende = $where_cerca_aziende;
             //echo '<h1>$where_aziende = '.$where_aziende.'</h1>';
         }
         //fine cerchiamo AZIENDA
@@ -101,22 +133,33 @@ if(strlen($cercaQualcosa)>4){
 		//$conta_colonne = mysql_num_fields($rs_001);
 		$where_cerca_commento = '';
 		//for ($b=0;$b<$conta_colonne;$b++){
-                foreach ($colonne as $colonna) {
-                    if(strlen($colonna->orgname)>0){
-                        $nome_colonna = $colonna->orgname;
-                    }else{
-                        $nome_colonna = $colonna->name;
-                    }
+                if(!empty($arrayCampoRicerca)){
+                    foreach ($arrayCampoRicerca as $campoRicerca) {
+                        
+                        $where_cerca_commento.= " AND (";
 
-                    if($nome_colonna == 'stato' or $nome_colonna == 'scrittore'){
-                        $where_cerca_commento .= "";
-                    }else{
-                        $where_cerca_commento .= "`".$nome_colonna."` LIKE '%".trim($_POST['cercaQualcosa'])."%' OR ";
+                        $campoRicerca = $dblink->filter(trim($campoRicerca));
+                        
+                        foreach ($colonne as $colonna) {
+                            if(strlen($colonna->orgname)>0){
+                                $nome_colonna = $colonna->orgname;
+                            }else{
+                                $nome_colonna = $colonna->name;
+                            }
+
+                            if($nome_colonna == 'stato' or $nome_colonna == 'scrittore'){
+                                $where_cerca_commento .= "";
+                            }else{
+                                $where_cerca_commento .= "`".$nome_colonna."` LIKE '%".$campoRicerca."%' OR ";
+                            }
+                        }
+                        $where_cerca_commento = substr($where_cerca_commento,0,(strlen($where_cerca_commento)-4)).')';
                     }
-		}
+                }
 		
-		$where_cerca_commento .= " CONCAT(cognome,' ',nome) LIKE '%".trim($_POST['cercaQualcosa'])."%' OR ";
-		$where_commenti = ' AND ('.substr($where_cerca_commento,0,(strlen($where_cerca_commento)-4)).')';
+		//$where_cerca_commento .= " CONCAT(cognome,' ',nome) LIKE '%".trim($_POST['cercaQualcosa'])."%' OR ";
+		//$where_commenti = ' AND ('.substr($where_cerca_commento,0,(strlen($where_cerca_commento)-4)).')';
+		$where_commenti = $where_cerca_commento;
 		//echo '<h1>$where_commenti = '.$where_commenti.'</h1>';
 	}
 
@@ -338,8 +381,8 @@ if($_SESSION['livello_utente']=='commerciale'){
                                     CONCAT('<h4>',email,'</h3>') AS 'email',
                                     (SELECT IF(data_creazione LIKE '1970-%',CONCAT('<span class=\"btn sbold uppercase btn-outline red-thunderbird\">',DATE(data_creazione),'</span>'),CONCAT('<span class=\"btn sbold uppercase btn-outline green\">',DATE(data_creazione),'</span>')) FROM lista_password WHERE lista_password.id_professionista=lista_professionisti.id AND livello='cliente' LIMIT 1) AS 'Creazione Moodle',
                                     (SELECT IF(data_ultimo_accesso LIKE '1970-%' OR data_ultimo_accesso LIKE '0000-00%',CONCAT('<span class=\"btn sbold uppercase btn-outline red-thunderbird\">',(data_ultimo_accesso),'</span>'),CONCAT('<span class=\"btn sbold uppercase btn-outline green\">',(data_ultimo_accesso),'</span>')) FROM lista_password WHERE lista_password.id_professionista=lista_professionisti.id AND livello='cliente' LIMIT 1) AS 'Ultimo Login  Moodle',
-                                    CONCAT('<a onclick=\"javascript: return confirm(\'Sei sicuro di voler cancellare definitivamente \\\\n',UCASE(cognome),' ',UCASE(nome),' - Codice: ',codice,' ?\');\" class=\"btn btn-circle btn-icon-only red-flamingo btn-outline\" href=\"moduli/anagrafiche/salva.php?tbl=lista_professionisti&idProfessionista=',id,'\&fn=eliminaUtenteMoodle&cercaQualcosa=".$cercaQualcosa."\"><i class=\"fa fa-trash\"></i></a>') AS 'Elimina'
-                                    FROM lista_professionisti WHERE  stato NOT LIKE '%Elimin%'  ".$where_professionisti." ORDER BY cognome, nome, email ASC";
+                                    CONCAT('<a onclick=\"javascript: return confirm(\'Sei sicuro di voler cancellare definitivamente \\\\n',UCASE(cognome),' ',UCASE(nome),' - Codice: ',codice,' ?\');\" class=\"btn btn-circle btn-icon-only red-flamingo btn-outline\" href=\"moduli/anagrafiche/salva.php?tbl=lista_professionisti&idProfessionista=',id,'\&fn=eliminaUtenteMoodle&cercaQualcosa=".addslashes($cercaQualcosa)."\"><i class=\"fa fa-trash\"></i></a>') AS 'Elimina'
+                                    FROM lista_professionisti WHERE  stato NOT LIKE '%Elimin%' ".$where_professionisti." ORDER BY cognome, nome, email ASC";
                                     //echo $query;
 									
                                     StampaSQL2017($query, 'Professionisti Trovati');

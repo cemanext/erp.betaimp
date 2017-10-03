@@ -24,7 +24,7 @@ if(isset($_POST['id_campagna']) && $_POST['id_campagna']>0){
     $whereCampagnaId = "AND id='".$_POST['id_campagna'] ."'";
     $whereCampagna = "AND id_campagna='".$_POST['id_campagna'] ."'";
     $whereCampagnaAll = "AND lp.id_campagna='".$_POST['id_campagna'] ."'";
-    $whereCampagnaCal = "AND calendario.id_campagna='".$_POST['id_campagna'] ."'";
+    $whereCampagnaCal = "AND id_campagna='".$_POST['id_campagna'] ."'";
     $whereCampagnaCalAll = "AND cp.id_campagna='".$_POST['id_campagna'] ."'";
     $whereCampagnaFatt = "AND lista_fatture.id_campagna='".$_POST['id_campagna'] ."'";
     $whereCampagnaFattAll = "AND lf.id_campagna='".$_POST['id_campagna'] ."'";
@@ -58,7 +58,7 @@ if(isset($_POST['id_tipo_marketing']) && $_POST['id_tipo_marketing']>0){
     
     $whereProdotto = "AND id IN (SELECT lpd.id_preventivo FROM lista_preventivi_dettaglio AS lpd WHERE lpd.id_prodotto='".$_POST['id_prodotto'] ."' GROUP BY lpd.id_preventivo)";
     $whereProdottoAll = "AND lp.id IN (SELECT lpd.id_preventivo FROM lista_preventivi_dettaglio AS lpd WHERE lpd.id_prodotto='".$_POST['id_prodotto'] ."' GROUP BY lpd.id_preventivo)";
-    $whereProdottoCal = "AND calendario.id_prodotto='".$_POST['id_prodotto'] ."'";
+    $whereProdottoCal = "AND id_prodotto='".$_POST['id_prodotto'] ."'";
     $whereProdottoCalAll = "AND ca.id_prodotto='".$_POST['id_prodotto'] ."'";
     $whereProdottoFatt = "AND lista_fatture.id IN (SELECT lfd.id_fattura FROM lista_fatture_dettaglio AS lfd WHERE lfd.id_prodotto='".$_POST['id_prodotto'] ."' GROUP BY lfd.id_fattura)";
     $whereProdottoFattAll = "AND lf.id IN (SELECT lfd.id_fattura FROM lista_fatture_dettaglio AS lfd WHERE lfd.id_prodotto='".$_POST['id_prodotto'] ."' GROUP BY lfd.id_fattura)";
@@ -352,7 +352,7 @@ if(isset($_POST['intervallo_data'])) {
                             SUM((SELECT COUNT(*) AS conteggio_venduti FROM lista_preventivi AS lp WHERE (lp.stato LIKE 'Chiuso') AND lp.id_campagna=ag.id $where_intervallo_all)) AS Confermati,
                             SUM((SELECT IF(SUM(lp.imponibile)>0, SUM(lp.imponibile), 0) AS conteggio_preventivi FROM lista_preventivi AS lp WHERE (lp.stato LIKE 'Chiuso') AND lp.id_campagna=ag.id $where_intervallo_all)) AS Ordinato_Lordo,
                             SUM((SELECT IF(SUM(ABS(lf.imponibile))>0, SUM(ABS(lf.imponibile)), 0) AS conteggio_annullate FROM lista_fatture AS lf WHERE (lf.stato LIKE 'Nota di Credito%') AND lf.tipo LIKE 'Nota di Credito%' AND lf.id_campagna=ag.id $where_intervallo_fatture_all)) AS Fatture_Annullate
-                            FROM lista_campagne AS ag WHERE ag.stato='In Corso' OR ag.stato = 'Attiva' $whereCampagnaId $whereTipoMarketing GROUP BY ag.id_tipo_marketing);";
+                            FROM lista_campagne AS ag WHERE 1 $whereCampagnaId $whereTipoMarketing GROUP BY ag.id_tipo_marketing);";
                             $dblink->query($sql_0028, true);
                             
                             $sql_0029 = "CREATE TEMPORARY TABLE stat_marketing_home_totale (SELECT tipo_marketing, Richiami, Tutte_Richieste, Tel_Richiami+Negativo+Confermati AS 'Tel_Gestite',"
@@ -393,7 +393,7 @@ if(isset($_POST['intervallo_data'])) {
                             (SELECT COUNT(*) AS conteggio_venduti FROM lista_preventivi AS lp WHERE (lp.stato LIKE 'Chiuso') AND lp.id_campagna=ag.id $where_intervallo_all) AS Confermati,
                             (SELECT IF(SUM(lp.imponibile)>0, SUM(lp.imponibile), 0) AS conteggio_preventivi FROM lista_preventivi AS lp WHERE (lp.stato LIKE 'Chiuso') AND lp.id_campagna=ag.id $where_intervallo_all) AS Ordinato_Lordo,
                             (SELECT IF(SUM(ABS(lf.imponibile))>0, SUM(ABS(lf.imponibile)), 0) AS conteggio_annullate FROM lista_fatture AS lf WHERE (lf.stato LIKE 'Nota di Credito%') AND lf.tipo LIKE 'Nota di Credito%' AND lf.id_campagna=ag.id $where_intervallo_fatture_all) AS Fatture_Annullate
-                            FROM lista_campagne AS ag WHERE ag.stato='In Corso' OR ag.stato = 'Attiva' $whereCampagnaId $whereTipoMarketing);";
+                            FROM lista_campagne AS ag WHERE 1 $whereCampagnaId $whereTipoMarketing);";
                             $dblink->query($sql_0024, true);
                             
                             $sql_0025 = "CREATE TEMPORARY TABLE stat_campagna_home_totale (SELECT Nome_Campagna, tipo_marketing, Richiami, Tutte_Richieste, Tel_Richiami+Negativo+Confermati AS 'Tel_Gestite',"

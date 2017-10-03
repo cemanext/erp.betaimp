@@ -935,7 +935,7 @@ if($richiestaReadonly===false){
                         if($idCalendario_daPassare>0){
                             $sql_0020 = "SELECT data, ora, etichetta, REPLACE(messaggio,'\\n','<br>') AS messaggio, mittente, stato "
                                     . "FROM calendario "    
-                                    . "WHERE id_professionista= '" . $id_professionista_presente . "' AND LCASE(mittente)=LCASE('".$dblink->filter($row_00003['mittente'])."') AND id!=".$idCalendario_daPassare." 
+                                    . "WHERE ((id_professionista > 0 AND id_professionista= '" . $id_professionista_presente . "') OR LCASE(mittente)=LCASE('".$dblink->filter($row_00003['mittente'])."')) AND id!=".$idCalendario_daPassare." 
                                     ORDER BY dataagg DESC, id DESC LIMIT 0,100000";
                             stampa_table_datatables_responsive($sql_0020, 'Storico Richieste', '', 'grey');
                         }

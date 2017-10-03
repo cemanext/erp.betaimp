@@ -425,7 +425,7 @@ if (isset($_POST['intervallo_data'])) {
                             
                             $sql_0021 = "CREATE TEMPORARY TABLE stat_commerciali_home_totale (SELECT Commerciale, Richiami, Richieste_Attribuite, Tel_Richiami+Negativo+Iscritti AS 'Tel_Gestite',"
                                     . " Iscritti, Iscritto_Lordo, Iscritto_Annulato, (Iscritto_Netto-Iscritto_Annulato) AS Iscritto_Netto, IF(Iscritti>0,ROUND((Richieste_Attribuite)/Iscritti, 2),0) AS Realizzato,"
-                                    . " IF(Iscritto_Netto>0, ROUND((Iscritto_Netto-Iscritto_Annulato)/(Iscritti),2), 0) AS Media_part_su_Fattura, Incassato, Da_Incassare"
+                                    . " IF(Iscritto_Netto>0, ROUND(Iscritto_Netto/(Iscritti),2), 0) AS Media_part_su_Fattura, Incassato, Da_Incassare"
                                     . " FROM stat_commerciali_home_2);";
                             $dblink->query($sql_0021, true);
                             
@@ -436,7 +436,7 @@ if (isset($_POST['intervallo_data'])) {
                             
                             $sql_0023 = "CREATE TEMPORARY TABLE stat_commerciali_home_totale_tot (SELECT '<b>TOTALE</b>', Richiami, Richieste_Attribuite, Tel_Gestite,"
                                     . " Iscritti, Iscritto_Lordo, Iscritto_Annulato, Iscritto_Netto, ROUND(Richieste_Attribuite/Iscritti, 2) AS Realizzato,"
-                                    . " IF(Iscritto_Netto>0, ROUND((Iscritto_Netto-Iscritto_Annulato)/Tel_Gestite,2), 0) AS Media_part_su_Fattura, Incassato, Da_Incassare"
+                                    . " IF(Iscritto_Netto>0, ROUND(Iscritto_Netto/Iscritti,2), 0) AS Media_part_su_Fattura, Incassato, Da_Incassare"
                                     . " FROM stat_commerciali_home_totale_tot_tmp);";
                             $dblink->query($sql_0023, true);
                             

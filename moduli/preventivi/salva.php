@@ -42,7 +42,7 @@ if(isset($_GET['fn'])){
             $ok = $ok && $dblink->update("calendario", $updateCalendario, array("id"=>$idCalendario));
             
             $sql_43 = "INSERT INTO calendario (`id`, `scrittore`, `dataagg`, `datainsert`, `orainsert`, id_contatto, id_professionista, id_azienda, id_agente, id_preventivo, id_commessa, `data`, `ora`, `etichetta`, `oggetto`, `messaggio`, `mittente`, `destinatario`, `priorita`, `stato`)
-            SELECT '', '".addslashes($_SESSION['cognome_nome_utente'])."', NOW(), NOW(), NOW(), id_contatto, id_professionista, id_azienda, id_agente, '".$idPreventivo."', '', CURDATE(), CONCAT(LEFT(TIME(NOW()),2),':00:00'), 'Ordini', CONCAT('Ordine n ', id ,''), CONCAT('Ordine n ', id ,': Venduto il ',NOW(),''), '".addslashes($_SESSION['cognome_nome_utente'])."', '', 'Normale', 'Fatto' FROM lista_preventivi WHERE id='".$idPreventivo."'";
+            SELECT '', '".addslashes($_SESSION['cognome_nome_utente'])."', NOW(), NOW(), NOW(), id_contatto, id_professionista, id_azienda, id_agente, '".$idPreventivo."', '', CURDATE(), TIME(NOW()), 'Ordini', CONCAT('Ordine n ', id ,''), CONCAT('Ordine n ', id ,': Venduto il ',NOW(),''), '".addslashes($_SESSION['cognome_nome_utente'])."', '', 'Normale', 'Fatto' FROM lista_preventivi WHERE id='".$idPreventivo."'";
             $ok = $ok && $dblink->query($sql_43);
             
             if($ok){
@@ -89,7 +89,7 @@ if(isset($_GET['fn'])){
             $ok = $ok && $dblink->update("calendario", $updateCalendario, array("id"=>$idCalendario));
             
             $sql_43 = "INSERT INTO calendario (`id`, `scrittore`, `dataagg`, `datainsert`, `orainsert`, id_contatto, id_professionista, id_azienda, id_agente, id_preventivo, id_commessa, `data`, `ora`, `etichetta`, `oggetto`, `messaggio`, `mittente`, `destinatario`, `priorita`, `stato`)
-            SELECT '', '".addslashes($_SESSION['cognome_nome_utente'])."', NOW(), NOW(), NOW(), id_contatto, id_professionista, id_azienda, id_agente, '".$idPreventivo."', '', CURDATE(), CONCAT(LEFT(TIME(NOW()),2),':00:00'), 'Ordini', CONCAT('Ordine n ', id ,''), CONCAT('Ordine n ', id ,': Negativo il ',NOW(),''), '".addslashes($_SESSION['cognome_nome_utente'])."', '', 'Normale', 'Fatto' FROM lista_preventivi WHERE id='".$idPreventivo."'";
+            SELECT '', '".addslashes($_SESSION['cognome_nome_utente'])."', NOW(), NOW(), NOW(), id_contatto, id_professionista, id_azienda, id_agente, '".$idPreventivo."', '', CURDATE(), TIME(NOW()), 'Ordini', CONCAT('Ordine n ', id ,''), CONCAT('Ordine n ', id ,': Negativo il ',NOW(),''), '".addslashes($_SESSION['cognome_nome_utente'])."', '', 'Normale', 'Fatto' FROM lista_preventivi WHERE id='".$idPreventivo."'";
             $ok = $ok && $dblink->query($sql_43);
             
             if($ok){
@@ -431,7 +431,7 @@ if(isset($_GET['fn'])){
                 $ok = $ok && $dblink->query($sql_42);
                     
                 $sql_43 = "INSERT INTO calendario (`id`, `scrittore`, `dataagg`, `datainsert`, `orainsert`, id_contatto, id_professionista, id_azienda, id_preventivo, id_commessa, `data`, `ora`, `etichetta`, `oggetto`, `messaggio`, `mittente`, `destinatario`, `priorita`, `stato`)
-                SELECT '', '".addslashes($_SESSION['cognome_nome_utente'])."', NOW(), NOW(), NOW(), id_contatto, id_professionista, id_azienda, '".$idPreventivoFirmato."', '', CURDATE(), CONCAT(LEFT(TIME(NOW()),2),':00:00'), 'Ordini', CONCAT('Ordine n ', id ,''), CONCAT('Ordine n ', id ,': Firmato il ',NOW(),''), '".addslashes($_SESSION['cognome_nome_utente'])."', '', 'Normale', 'Fatto' FROM lista_preventivi WHERE id='".$idPreventivoFirmato."'";
+                SELECT '', '".addslashes($_SESSION['cognome_nome_utente'])."', NOW(), NOW(), NOW(), id_contatto, id_professionista, id_azienda, '".$idPreventivoFirmato."', '', CURDATE(), TIME(NOW()), 'Ordini', CONCAT('Ordine n ', id ,''), CONCAT('Ordine n ', id ,': Firmato il ',NOW(),''), '".addslashes($_SESSION['cognome_nome_utente'])."', '', 'Normale', 'Fatto' FROM lista_preventivi WHERE id='".$idPreventivoFirmato."'";
                 $ok = $ok && $dblink->query($sql_43);
                         
                 $sql_44 = "UPDATE lista_preventivi
@@ -487,7 +487,7 @@ if(isset($_GET['fn'])){
                 $idCalendarioRichiesta = $row_4['id_calendario'];
                 
                 $sql_43 = "INSERT INTO calendario (`id`, `datainsert`, `orainsert`, id_contatto, id_professionista, id_azienda, id_preventivo, id_commessa, `data`, `ora`, `etichetta`, `oggetto`, `messaggio`, `mittente`, `destinatario`, `priorita`, `stato`)
-                SELECT '', NOW(), NOW(), id_contatto, id_professionista, id_azienda, '".$idPreventivoNegativo."', '', CURDATE(), CONCAT(LEFT(TIME(NOW()),2),':00:00'), 'Ordini', CONCAT('Ordine n ', id ,''), CONCAT('Ordine n ', id ,': Negativo il ',NOW(),''), '".addslashes($_SESSION['cognome_nome_utente'])."', '', 'Normale', 'Fatto' FROM lista_preventivi WHERE id='".$idPreventivoNegativo."'";
+                SELECT '', NOW(), NOW(), id_contatto, id_professionista, id_azienda, '".$idPreventivoNegativo."', '', CURDATE(), TIME(NOW()), 'Ordini', CONCAT('Ordine n ', id ,''), CONCAT('Ordine n ', id ,': Negativo il ',NOW(),''), '".addslashes($_SESSION['cognome_nome_utente'])."', '', 'Normale', 'Fatto' FROM lista_preventivi WHERE id='".$idPreventivoNegativo."'";
                 $ok = $ok && $dblink->query($sql_43);
 
                 $sql_44 = "UPDATE lista_preventivi

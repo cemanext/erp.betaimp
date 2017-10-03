@@ -255,14 +255,18 @@ if (isset($_POST['intervallo_data'])) {
                     </div>
 					<?php
 					echo '<div class="row"><div class="col-md-12 col-sm-12">';
-                $sql_0001 = "SELECT YEAR(data_creazione) AS Anno, MONTH(data_creazione) AS Mese, SUM(imponibile) AS Imponibile, COUNT(stato) AS CONTEGGIO, tipo, sezionale, stato FROM lista_fatture WHERE 1
+                $sql_0001 = "SELECT 
+                IF(stato LIKE 'In Attesa' OR stato LIKE 'Pagata%', CONCAT('<a class=\"btn btn-circle btn-icon-only blue-steel btn-outline\" href=\"".BASE_URL."/moduli/fatture/printFattureXML.php?anno=',YEAR(data_creazione),'&mese=',MONTH(data_creazione),'&sezionale=',sezionale,'&stato=',stato,'\" target=\"_blank\" title=\"XML COMMERCIALISTA\" alt=\"XML COMMERCIALISTA\"><i class=\"fa fa-file-code-o\"></i></a>') ,'') as 'fa-file-code-o',
+                YEAR(data_creazione) AS Anno, MONTH(data_creazione) AS Mese, SUM(imponibile) AS Imponibile, COUNT(stato) AS CONTEGGIO, tipo, sezionale, stato FROM lista_fatture WHERE 1
 GROUP BY YEAR(data_creazione), MONTH(data_creazione), tipo, sezionale, stato 
 ORDER BY YEAR(data_creazione) DESC, MONTH(data_creazione) DESC, tipo, sezionale, stato ASC;";
                 stampa_table_static_basic($sql_0001, 'tab2_fatture_home', 'Andamento Fatture', '', 'fa fa-user');
                 echo '</div></div>';
 				
 									echo '<div class="row"><div class="col-md-12 col-sm-12">';
-                $sql_0001 = "SELECT YEAR(data_creazione) AS Anno, MONTH(data_creazione) AS Mese, SUM(imponibile) AS Imponibile, CONCAT('<div href=\"#\" style=\"width:',((SUM(imponibile)*100)/500000),'%; background-color:blue; color:white;\">',(SUM(imponibile)),'</div>') AS CONTEGGIO, tipo, sezionale, stato FROM lista_fatture WHERE YEAR(data_creazione) = YEAR(CURDATE()) AND tipo LIKE 'Fattura'
+                $sql_0001 = "SELECT 
+                IF(stato LIKE 'In Attesa' OR stato LIKE 'Pagata%', CONCAT('<a class=\"btn btn-circle btn-icon-only blue-steel btn-outline\" href=\"".BASE_URL."/moduli/fatture/printFattureXML.php?anno=',YEAR(data_creazione),'&mese=',MONTH(data_creazione),'&sezionale=',sezionale,'&stato=',stato,'\" target=\"_blank\" title=\"XML COMMERCIALISTA\" alt=\"XML COMMERCIALISTA\"><i class=\"fa fa-file-code-o\"></i></a>') ,'') as 'fa-file-code-o',
+                YEAR(data_creazione) AS Anno, MONTH(data_creazione) AS Mese, SUM(imponibile) AS Imponibile, CONCAT('<div href=\"#\" style=\"width:',((SUM(imponibile)*100)/500000),'%; background-color:blue; color:white;\">',(SUM(imponibile)),'</div>') AS CONTEGGIO, tipo, sezionale, stato FROM lista_fatture WHERE YEAR(data_creazione) = YEAR(CURDATE()) AND tipo LIKE 'Fattura'
 GROUP BY YEAR(data_creazione), MONTH(data_creazione), tipo, sezionale, stato 
 ORDER BY sezionale ASC, YEAR(data_creazione) ASC, MONTH(data_creazione) ASC, tipo, stato ASC;";
                 stampa_table_static_basic($sql_0001, 'tab3_fatture_home', 'Andamento Fatture', '', 'fa fa-user');

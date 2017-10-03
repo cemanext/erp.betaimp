@@ -116,7 +116,7 @@ if (isset($_GET['fn'])) {
                                     $rs_007_1 = $dblink->query($sql_007_1);
                                     if ($rs_007_1) {
                                         $sql1 = "INSERT INTO calendario (`id`, `id_professionista`, `id_azienda`, `id_preventivo`, `id_fattura`, `dataagg`, `datainsert`, `orainsert`, `data`, `ora`, `etichetta`, `oggetto`, `messaggio`, `mittente`, `destinatario`, `priorita`, stato)
-                                        SELECT '', `id_professionista`, `id_azienda`, `id_preventivo`, `id`, NOW(), NOW(), NOW(), CURDATE(), CONCAT(LEFT(TIME(NOW()),2),':00:00'), 'Fatture', CONCAT('Fattura n ', codice ,''), CONCAT('Fattura n ', codice ,': Emessa il ',NOW()), '" . addslashes($_SESSION['cognome_nome_utente']) . "', '" . addslashes($_SESSION['cognome_nome_utente']) . "', 'Normale', 'Fatto'
+                                        SELECT '', `id_professionista`, `id_azienda`, `id_preventivo`, `id`, NOW(), NOW(), NOW(), CURDATE(), TIME(NOW()), 'Fatture', CONCAT('Fattura n ', codice ,''), CONCAT('Fattura n ', codice ,': Emessa il ',NOW()), '" . addslashes($_SESSION['cognome_nome_utente']) . "', '" . addslashes($_SESSION['cognome_nome_utente']) . "', 'Normale', 'Fatto'
                                         FROM lista_fatture WHERE id='" . $idFattura . "'";
                                         $rs1 = $dblink->query($sql1);
                                         if ($rs1) {
@@ -459,7 +459,7 @@ if (isset($_GET['fn'])) {
                     $rs_007_1 = $dblink->query($sql_007_1);
                     if ($rs_007_1) {
                         $sql1 = "INSERT INTO calendario (`id`, `id_professionista`, `id_azienda`, `id_preventivo`, `id_fattura`, `dataagg`, `datainsert`, `orainsert`, `data`, `ora`, `etichetta`, `oggetto`, `messaggio`, `mittente`, `destinatario`, `priorita`, stato)
-                        SELECT '', `id_professionista`, `id_azienda`, `id_preventivo`, `id`, NOW(), NOW(), NOW(), CURDATE(), CONCAT(LEFT(TIME(NOW()),2),':00:00'), 'Fatture', CONCAT('Fattura n ', codice ,''), CONCAT('Fattura n ', codice ,': Emessa il ',NOW()), '" . addslashes($_SESSION['cognome_nome_utente']) . "', '" . addslashes($_SESSION['cognome_nome_utente']) . "', 'Normale', 'Fatto'
+                        SELECT '', `id_professionista`, `id_azienda`, `id_preventivo`, `id`, NOW(), NOW(), NOW(), CURDATE(), TIME(NOW()), 'Fatture', CONCAT('Fattura n ', codice ,''), CONCAT('Fattura n ', codice ,': Emessa il ',NOW()), '" . addslashes($_SESSION['cognome_nome_utente']) . "', '" . addslashes($_SESSION['cognome_nome_utente']) . "', 'Normale', 'Fatto'
                         FROM lista_fatture WHERE id='" . $idFattura . "'";
                         $rs1 = $dblink->query($sql1);
                         if ($rs1) {
@@ -480,7 +480,7 @@ if (isset($_GET['fn'])) {
             $etichettaPagamento = ' Totale';
 
             $sql2 = "INSERT INTO calendario (`id`, `id_professionista`, `id_azienda`, `id_preventivo`, `id_fattura`, `dataagg`, `datainsert`, `orainsert`, `data`, `ora`, `etichetta`, `oggetto`, `messaggio`, `mittente`, `destinatario`, `priorita`, stato)
-            SELECT '', `id_professionista`, `id_azienda`, `id_preventivo`, `id`, NOW(), NOW(), NOW(), CURDATE(), CONCAT(LEFT(TIME(NOW()),2),':00:00'), 'Fatture', CONCAT('Fattura n ', codice ,''), CONCAT('Fattura n ', codice ,' pagata" . $etichettaPagamento . "'), '" . addslashes($_SESSION['cognome_nome_utente']) . "', '" . addslashes($_SESSION['cognome_nome_utente']) . "', 'Normale', 'Fatto'
+            SELECT '', `id_professionista`, `id_azienda`, `id_preventivo`, `id`, NOW(), NOW(), NOW(), CURDATE(), TIME(NOW()), 'Fatture', CONCAT('Fattura n ', codice ,''), CONCAT('Fattura n ', codice ,' pagata" . $etichettaPagamento . "'), '" . addslashes($_SESSION['cognome_nome_utente']) . "', '" . addslashes($_SESSION['cognome_nome_utente']) . "', 'Normale', 'Fatto'
             FROM lista_fatture WHERE id='" . $idFattura . "'";
             $rs2 = $dblink->query($sql2);
             if ($rs2) {
@@ -575,7 +575,7 @@ if (isset($_GET['fn'])) {
             if ($rs) {
                 $id_costo_inserito = $dblink->lastid();
                 $sql2 = "INSERT INTO calendario (`id`, `id_professionista`, `id_azienda`, `id_preventivo`, `id_fattura`, `dataagg`, `datainsert`, `orainsert`, `data`, `ora`, `etichetta`, `oggetto`, `messaggio`, `mittente`, `destinatario`, `priorita`, stato)
-                    SELECT '', `id_professionista`, `id_azienda`, `id_preventivo`, `id`, NOW(), NOW(), NOW(), CURDATE(), CONCAT(LEFT(TIME(NOW()),2),':00:00'), 'Fatture', CONCAT('Fattura n ', codice ,''), CONCAT('Fattura n ', codice ,' pagata" . $etichettaPagamento . "'), '" . addslashes($_SESSION['cognome_nome_utente']) . "', '" . addslashes($_SESSION['cognome_nome_utente']) . "', 'Normale', 'Fatto'
+                    SELECT '', `id_professionista`, `id_azienda`, `id_preventivo`, `id`, NOW(), NOW(), NOW(), CURDATE(), TIME(NOW()), 'Fatture', CONCAT('Fattura n ', codice ,''), CONCAT('Fattura n ', codice ,' pagata" . $etichettaPagamento . "'), '" . addslashes($_SESSION['cognome_nome_utente']) . "', '" . addslashes($_SESSION['cognome_nome_utente']) . "', 'Normale', 'Fatto'
                     FROM lista_fatture WHERE id='" . $idFattura . "'";
                 $rs2 = $dblink->query($sql2);
                 if ($rs2) {

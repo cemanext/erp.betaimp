@@ -448,7 +448,7 @@ if(isset($_GET['fn'])){
             $ok = $ok && $dblink->update("lista_preventivi_dettaglio", $updatePreventivoDettaglio, array("id_preventivo"=>$id_preventivo));
             
             $sql_000001 = "INSERT INTO calendario (`id`, `dataagg`, `scrittore`, `datainsert`, `orainsert`, id_agente, id_campagna, id_contatto, id_professionista, id_azienda, id_preventivo, id_commessa, `data`, `ora`, `etichetta`, `oggetto`, `messaggio`, `mittente`, `destinatario`, `priorita`, `stato`) 
-            SELECT '', NOW(), '".$dblink->filter($_SESSION['cognome_nome_utente'])."', NOW(), NOW(), id_agente, id_campagna, id_contatto, id_professionista, id_azienda, '".$id_preventivo."', '', CURDATE(), CONCAT(LEFT(TIME(NOW()),2),':00:00'), 'Ordini', CONCAT('Ordine n ', id ,''), CONCAT('Ordine n ', id ,': Venduto il ',NOW(),''), '".$dblink->filter($_SESSION['cognome_nome_utente'])."', '', 'Normale', 'Fatto' FROM lista_preventivi WHERE id='".$id_preventivo."'";
+            SELECT '', NOW(), '".$dblink->filter($_SESSION['cognome_nome_utente'])."', NOW(), NOW(), id_agente, id_campagna, id_contatto, id_professionista, id_azienda, '".$id_preventivo."', '', CURDATE(), TIME(NOW()), 'Ordini', CONCAT('Ordine n ', id ,''), CONCAT('Ordine n ', id ,': Venduto il ',NOW(),''), '".$dblink->filter($_SESSION['cognome_nome_utente'])."', '', 'Normale', 'Fatto' FROM lista_preventivi WHERE id='".$id_preventivo."'";
             $ok = $ok && $dblink->query($sql_000001);
             
             if($ok){
@@ -513,7 +513,7 @@ if(isset($_GET['fn'])){
             $ok = $ok && $dblink->update("lista_preventivi_dettaglio", $updatePreventivoDettaglio, array("id_preventivo"=>$id_preventivo));
             
             $sql_000001 = "INSERT INTO calendario (`id`, `dataagg`, `scrittore`, `datainsert`, `orainsert`, id_agente, id_campagna, id_contatto, id_professionista, id_azienda, id_preventivo, id_commessa, `data`, `ora`, `etichetta`, `oggetto`, `messaggio`, `mittente`, `destinatario`, `priorita`, `stato`) 
-            SELECT '', NOW(), '".$dblink->filter($_SESSION['cognome_nome_utente'])."', NOW(), NOW(), id_agente, id_campagna, id_contatto, id_professionista, id_azienda, '".$id_preventivo."', '', CURDATE(), CONCAT(LEFT(TIME(NOW()),2),':00:00'), 'Ordini', CONCAT('Ordine n ', id ,''), CONCAT('Ordine n ', id ,': Negativo il ',NOW(),''), '".$dblink->filter($_SESSION['cognome_nome_utente'])."', '', 'Normale', 'Fatto' FROM lista_preventivi WHERE id='".$id_preventivo."'";
+            SELECT '', NOW(), '".$dblink->filter($_SESSION['cognome_nome_utente'])."', NOW(), NOW(), id_agente, id_campagna, id_contatto, id_professionista, id_azienda, '".$id_preventivo."', '', CURDATE(), TIME(NOW()), 'Ordini', CONCAT('Ordine n ', id ,''), CONCAT('Ordine n ', id ,': Negativo il ',NOW(),''), '".$dblink->filter($_SESSION['cognome_nome_utente'])."', '', 'Normale', 'Fatto' FROM lista_preventivi WHERE id='".$id_preventivo."'";
             $ok = $ok && $dblink->query($sql_000001);
             
             if($ok){
