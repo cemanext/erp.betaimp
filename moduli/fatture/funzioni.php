@@ -492,7 +492,8 @@ function Stampa_HTML_Dettaglio_Fatture($tabella,$id){
                 note AS 'Descrizione Aggiuntiva', 
                 prezzo_prodotto AS 'Prezzo',
                 iva_prodotto AS 'Iva',
-                quantita AS 'Qnt'
+                quantita AS 'Qnt',
+                id_provvigione AS provvigione
                 FROM lista_fatture_dettaglio WHERE id_fattura=".$id;
                 stampa_table_static_basic_input('lista_fatture_dettaglio',$sql_0005,'','Dettaglio '.$tipoFattura, '');
             }else{

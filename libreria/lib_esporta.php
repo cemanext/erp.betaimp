@@ -1,5 +1,4 @@
 <?php
-
 /*
 STAMPA FORM DA TABELLA CON DEFINIZIONE ARRAY
 link:http://keenthemes.com/preview/metronic/theme/admin_1/form_controls.html

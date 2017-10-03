@@ -1184,7 +1184,7 @@ function get_campi_tabella($dati, $ret = array()){
                 case "id_azienda":
                     $campi_visualizzati .= "(SELECT CONCAT(lista_aziende.ragione_sociale,' ',lista_aziende.forma_giuridica) AS nome FROM lista_aziende WHERE lista_aziende.id=".$nome_tabella.".".str_replace('chk_','',$key).")  AS '".$arrayETK[str_replace('chk_','etk_',$key)]."', ";
                 break;
-            
+                
                 case "id_professionista":
                     $campi_visualizzati .= "(SELECT CONCAT(lista_professionisti.cognome,' ',lista_professionisti.nome) AS nome FROM lista_professionisti WHERE lista_professionisti.id=".$nome_tabella.".".str_replace('chk_','',$key).")  AS '".$arrayETK[str_replace('chk_','etk_',$key)]."', ";
                 break;
@@ -1272,6 +1272,12 @@ function get_campi_tabella($dati, $ret = array()){
             }
         }
         $tuttiCampi[$key] = trim(str_replace("`", "", $value));
+     }
+     
+     if($nome_tabella == "lista_preventivi"){
+         $campi_visualizzati .= "(SELECT email AS email_professionista FROM lista_professionisti WHERE lista_professionisti.id=lista_preventivi.id_professionista)  AS email_professionista, ";
+         $campi_visualizzati .= "(SELECT CONCAT(lista_aziende.indirizzo,' ',lista_aziende.cap,' ',lista_aziende.citta,' (',lista_aziende.provincia,')') AS Indirizzo FROM lista_aziende WHERE lista_aziende.id=lista_preventivi.id_azienda)  AS indirizzo, ";
+         $campi_visualizzati .= "CONCAT((SELECT GROUP_CONCAT(lista_preventivi_dettaglio.nome_prodotto,' (', lista_preventivi_dettaglio.codice_prodotto ,')' SEPARATOR '<br>') FROM lista_preventivi_dettaglio WHERE lista_preventivi_dettaglio.id_preventivo = lista_preventivi.id)) AS Prodotti, ";
      }
 
     $campi_visualizzati_perfetti = substr($campi_visualizzati,0,-2);

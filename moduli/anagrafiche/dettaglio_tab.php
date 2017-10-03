@@ -540,7 +540,7 @@ if($richiestaReadonly===false){
                                                                         $sql_0007 = "SELECT @i:=@i+1 AS iterator,   
                                                                                 if('".$livelloCommercialeTipo."'='amministratore',CONCAT('<a class=\"btn btn-circle btn-icon-only red btn-outline\" onClick=\"return eliminaDettaglioPreventivo(',id,',',id_preventivo,');\" href=\"cancella.php?tbl=lista_preventivi_dettaglio&id=',id,'&idPreventivo=',id_preventivo,'\" title=\"ELIMINA\" alt=\"ELIMINA\"><i class=\"fa fa-trash\"></i></a>') ,
                                                                                 if(@i>1,CONCAT('<a class=\"btn btn-circle btn-icon-only red btn-outline\" onClick=\"return eliminaDettaglioPreventivo(',id,',',id_preventivo,');\" href=\"cancella.php?tbl=lista_preventivi_dettaglio&id=',id,'&idPreventivo=',id_preventivo,'\" title=\"ELIMINA\" alt=\"ELIMINA\"><i class=\"fa fa-trash\"></i></a>'),'')) AS 'elimina',
-                                                                                   id, id_prodotto as nome_prodotto, prezzo_prodotto AS euro, quantita as qta "
+                                                                                   id, id_prodotto as nome_prodotto, prezzo_prodotto AS euro, quantita as qta, id_provvigione AS provvigione "
                                                                                 . "FROM lista_preventivi_dettaglio as p, (SELECT @i:=0) as foo "
                                                                                 . "WHERE id_calendario= " . $idCalendario_daPassare . " AND stato='In Attesa' ORDER BY id ASC";
                                                                                 //stampa_table_datatables_responsive($sql_0001, 'Ordini', '', 'grey');
@@ -560,7 +560,7 @@ if($richiestaReadonly===false){
                                                                         echo "<hr>";
                                                                         
                                                                         $sql_0080 = "SELECT
-                                                                                   nome_prodotto, prezzo_prodotto AS euro, quantita as qta "
+                                                                                   nome_prodotto, prezzo_prodotto AS euro, quantita as qta, id_provvigione AS provvigione"
                                                                                 . "FROM lista_preventivi_dettaglio "
                                                                                 . "WHERE id_calendario= '" . $idCalendario_daPassare . "' AND stato='In Attesa' ORDER BY dataagg DESC";;
                                                                           //stampa_table_datatables_responsive($sql_0001, 'Ordini', '', 'grey');

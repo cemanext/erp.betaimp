@@ -380,6 +380,14 @@ function stampa_table_static_basic_input($tabella, $query, $stile, $titolo, $col
                             else
                                 $rowTable .=  '<td style="text-align:center; vertical-align:middle;"><input name="txt_' . $record . '_' . $nome_colonna . '" id="txt_' . $record . '_' . $nome_colonna . '" type="text" class="form-control" placeholder="' . $nome_colonna . '" value="' . $column . '"></td>';
                         break;
+                        
+                        case "nome_provvigione":
+                        case "id_provvigione":
+                            if($tabella == "lista_preventivi_dettaglio" OR $tabella == "lista_fatture_dettaglio")
+                                $rowTable .=  '<td style="text-align:center; vertical-align:middle;">' . print_select2("SELECT id as valore, nome FROM lista_provvigioni WHERE stato='Attivo' ORDER BY nome ASC", "txt_" . $record . "_" . $nome_colonna, $column, "", false, 'tooltips select_provvigione-allow-clear', 'data-container="body" data-placement="top" data-original-title="PROVVIGIONE"') . '</td>';
+                            else
+                                $rowTable .=  '<td style="text-align:center; vertical-align:middle;"><input name="txt_' . $record . '_' . $nome_colonna . '" id="txt_' . $record . '_' . $nome_colonna . '" type="text" class="form-control" placeholder="' . $nome_colonna . '" value="' . $column . '"></td>';
+                        break;
 
                         case "nome_professionista":
                         case "id_professionista":
