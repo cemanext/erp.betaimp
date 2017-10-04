@@ -1287,6 +1287,9 @@ function get_campi_tabella($dati, $ret = array()){
          $campi_visualizzati .= "(SELECT email AS email_professionista FROM lista_professionisti WHERE lista_professionisti.id=lista_preventivi.id_professionista)  AS email_professionista, ";
          $campi_visualizzati .= "(SELECT CONCAT(lista_aziende.indirizzo,' ',lista_aziende.cap,' ',lista_aziende.citta,' (',lista_aziende.provincia,')') AS Indirizzo FROM lista_aziende WHERE lista_aziende.id=lista_preventivi.id_azienda)  AS indirizzo, ";
          $campi_visualizzati .= "CONCAT((SELECT GROUP_CONCAT(lista_preventivi_dettaglio.nome_prodotto,' (', lista_preventivi_dettaglio.codice_prodotto ,')' SEPARATOR '<br>') FROM lista_preventivi_dettaglio WHERE lista_preventivi_dettaglio.id_preventivo = lista_preventivi.id)) AS Prodotti, ";
+         $campi_visualizzati .= "(SELECT professione AS email_professionista FROM lista_professionisti WHERE lista_professionisti.id=lista_preventivi.id_professionista)  AS professione, ";
+         $campi_visualizzati .= "(SELECT provincia_albo AS email_professionista FROM lista_professionisti WHERE lista_professionisti.id=lista_preventivi.id_professionista)  AS provincia_albo, ";
+         $campi_visualizzati .= "(SELECT numero_albo AS email_professionista FROM lista_professionisti WHERE lista_professionisti.id=lista_preventivi.id_professionista)  AS numero_albo, ";
      }
 
     $campi_visualizzati_perfetti = substr($campi_visualizzati,0,-2);

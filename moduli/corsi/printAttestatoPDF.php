@@ -44,6 +44,9 @@ if (isset($_GET['idIscrizione'])) {
     $dataDiNascita = $rowProfessionista['data_di_nascita'];
     $provinciaDiNascita = $rowProfessionista['provincia_di_nascita'];
     $luogoDiNascita = $rowProfessionista['luogo_di_nascita'];
+    $codiceFiscale = $rowProfessionista['codice_fiscale'];
+    $provinciaAlbo = $rowProfessionista['provincia_albo'];
+    $numeroAlbo = $rowProfessionista['numero_albo'];
     
     $rowCorso = $dblink->get_row("SELECT * FROM lista_corsi WHERE id = '$idCorso'", true);
     $nomeCorso = $rowCorso['nome_prodotto'];
@@ -63,6 +66,9 @@ if (isset($_GET['idIscrizione'])) {
     $messaggio = str_replace('_XXX_ORE_CORSO_XXX_', $durata, $messaggio);
     $messaggio = str_replace('_XXX_CODICE_ACCREDITAMENTO_XXX_', $codiceAccreditamento, $messaggio);
     $messaggio = str_replace('_XXX_NUMERO_CREDITI_XXX_', $crediti, $messaggio);
+    $messaggio = str_replace('_XXX_CODICE_FISCALE_XXX_', $codiceFiscale, $messaggio);
+    $messaggio = str_replace('_XXX_PROVINCIA_ALBO_XXX_', $provinciaAlbo, $messaggio);
+    $messaggio = str_replace('_XXX_NUMERO_ORDINE_XXX_', $numeroAlbo, $messaggio);
     
     
     $totale = 1;
@@ -73,6 +79,7 @@ if (isset($_GET['idIscrizione'])) {
     $countPages = ceil($totale / $pageSize);
 
     if($orientamento == "L"){
+        
         $html = '<STYLE type="text/css">    
             @page {
                 size: A4;
@@ -84,18 +91,35 @@ if (isset($_GET['idIscrizione'])) {
                   height: 210mm;
                 }
               }
+        body {
+            font-family: \'Trajan Pro\';
+            font-size: 14pt;
+            width: 297mm;
+            height: 210mm;
+            background-color: #FFFFCC;
+        }
         #divid{margin-top: 0px;margin-left: 0px;
-            background-image: url('.BASE_URL.'/moduli/corsi/'.$nomeFile.');
-            background-size: 30%;
-            background-repeat: no-repeat;
             text-align:center;
             vertical-align: middle;
             width: 297mm;
             height: 210mm;
             font-size: 14pt;
          }
+         .cornice{
+            position: absolute;
+            top: 0mm;
+            left: 0mm;
+            bottom: 0mm;
+            right: 0mm;
+            width: 297mm;
+            height: 210mm;
+        }
+        .cornice img{
+            width: 297mm;
+            height: 210mm;
+        }
          h1{
-            font-size: 34pt;
+            font-size: 32pt;
             margin-bottom: 0px;
          }
 
@@ -118,6 +142,7 @@ if (isset($_GET['idIscrizione'])) {
             </style>
             <html>
             <body>
+                <div class="cornice"><img src="'.BASE_URL.'/moduli/corsi/'.$nomeFile.'" /></div>
                 <div id="divid">
                     _XXX_MESSAGGIO_XXX_
                     <div id="firma">
@@ -128,7 +153,6 @@ if (isset($_GET['idIscrizione'])) {
             </html>';
 
         try {
-            ob_start();
             $messaggio = str_replace('_XXX_MESSAGGIO_XXX_', $messaggio, $html);
             $messaggio = str_replace('_XXX_DATA_FIRMA_XXX_', "Lugo (RA), ".GiraDataOra($dataCompletamento), $messaggio);
             $content = html_entity_decode($messaggio);
@@ -153,41 +177,53 @@ if (isset($_GET['idIscrizione'])) {
                   height: 297mm;
                 }
               }
-        #HiddenDiv{
-            margin-top: 0px;margin-left: 0px;
+        body {
+            font-family: \'Trajan Pro\';
+            font-size: 14pt;
             width: 210mm;
             height: 297mm;
-            position:absolute;
-            z-index:99999;
+            background-color: #FFFFCC;
         }
-        #divid{
-            margin-top: 0px;margin-left: 0px;
-            background-image: url('.BASE_URL.'/moduli/corsi/'.$nomeFile.');
-            background-size: 30%;
-            background-repeat: no-repeat;
+        #divid{margin-top: 0px;margin-left: 0px;
             text-align:center;
-            vertical-align: middle;
-            width: 210mm;
-            height: 297mm;
+            vertical-align: top;
+            margin-left: 9.5mm;
+            margin-top: 45mm;
+            padding: 0px;
+            width: 190mm;
+            height: 190mm;
             font-size: 14pt;
          }
+         .cornice{
+            position: absolute;
+            top: 0mm;
+            left: 0mm;
+            bottom: 0mm;
+            right: 0mm;
+            width: 210mm;
+            height: 297mm;
+        }
+        .cornice img{
+            width: 210mm;
+            height: 297mm;
+        }
          h1{
-            font-size: 34pt;
+            font-size: 26pt;
             margin-bottom: 0px;
          }
 
          h2{
-            font-size: 28pt;
+            font-size: 18pt;
             margin-bottom: 0px;
          }
          h3{
-            font-size: 20pt;
+            font-size: 18pt;
          }
 
         #firma{
             text-align:left;
             margin-left: 150px;
-            margin-top: 680px;
+            margin-top: 920px;
             font-size: 11pt;
             position: absolute;
             font-weight: bold;
@@ -195,6 +231,7 @@ if (isset($_GET['idIscrizione'])) {
             </style>
             <html>
             <body>
+                <div class="cornice"><img src="'.BASE_URL.'/moduli/corsi/'.$nomeFile.'" /></div>
                 <div id="divid">
                     _XXX_MESSAGGIO_XXX_
                     <div id="firma">
@@ -205,7 +242,6 @@ if (isset($_GET['idIscrizione'])) {
             </html>';
 
         try {
-            ob_start();
             $messaggio = str_replace('_XXX_MESSAGGIO_XXX_', $messaggio, $html);
             $messaggio = str_replace('_XXX_DATA_FIRMA_XXX_', "Lugo (RA), ".GiraDataOra($dataCompletamento), $messaggio);
             $content = html_entity_decode($messaggio);
@@ -220,62 +256,9 @@ if (isset($_GET['idIscrizione'])) {
         }
     }
 
-    /*$pdf = new PDFAttestato($orientamento,'mm','A4');
-    $pdf->AliasNbPages();
-    $pdf->SetMargins(20,20);
-    
-    
-    $pdf->SetFont('Times','',14);
-    $pdf->AddPage();
-    
-    $pdf->SetStyle("p","times","N",14,"0,0,0",0);
-    $pdf->SetStyle("span","times","N",14,"0,0,0",0);
-    $pdf->SetStyle("h1","times","BN",38,"0,0,0",0);
-    $pdf->SetStyle("h2","times","BN",28,"0,0,0",0);
-    $pdf->SetStyle("h3","times","BN",20,"0,0,0",0);
-    $pdf->SetStyle("b","times","B",14,"0,0,0");
-    $pdf->SetStyle("br","times","N",14,"0,0,0");
-    $pdf->SetStyle("place","arial","U",0,"153,0,0");
-    $pdf->SetStyle("vb","times","B",0,"102,153,153");
-    
-    if($orientamento == "L"){
-        $pdf->Image($nomeFile, 0, 0, 297);
-        $pdf->SetXY(20,55);
-        //$pdf->WriteHTML(html_entity_decode($messaggio),0);
-        $pdf->WriteTag(0,10,html_entity_decode($messaggio),0,"C",0,0);
-        //$this->Cell(0,210,$cell,0,2,'',false);
-    }else{
-        $pdf->Image($nomeFile, 0, 0, 210);
-        $pdf->SetXY(20,55);
-        $pdf->WriteHTML(html_entity_decode($messaggio),0);
-        //$this->Cell(0,297,$cell,0,0,'C',0,0);
-    }
-    
-    //$pdf->MultiCell(250, 5, ''. html_entity_decode($messaggio).''  , 0, 'C', 0, true);
-    
-    
-    //$pdf->Output();
-
-    
-
-        /*$pdf->AddPage();
-        $pdf->SetFont('Times', '', 8);
-        $pdf->SetFillColor(255, 255, 255);
-        $pdf->SetTextColor(0, 0, 0);
-
-        if($orientamento == "L"){
-            $pdf->Image($nomeFile, 0, 0, 297);
-        }else{
-            $pdf->Image($nomeFile, 0, 0, 210);
-        }
-        $pdf->SetXY(100, 100);
-        $pdf->WriteHTML($messaggio);*/
-
-        $filename = 'Attestato_Crocco.pdf';
+    $filename = 'Attestato_Crocco.pdf';
     
 }
-//stampo
-//$pdf->Output();
 
 if(!is_dir(BASE_ROOT . "media")){
     mkdir(BASE_ROOT . "media", 0777);
