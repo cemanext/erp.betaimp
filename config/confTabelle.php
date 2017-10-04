@@ -4126,4 +4126,79 @@ $table_listaCorsiConfigurazioni = array(
                         "readonly" => false
                     ))
             );
+
+
+$table_listaProvvigioni = array(
+            "index" => array("campi" => "CONCAT('<a class=\"btn btn-circle btn-icon-only yellow btn-outline\" href=\"dettaglio.php?tbl=lista_provvigioni&id=',id,'\" title=\"DETTAGLIO\" alt=\"DETTAGLIO\"><i class=\"fa fa-search\"></i></a>') AS 'fa-search',
+                                        CONCAT('<a class=\"btn btn-circle btn-icon-only blue btn-outline\" href=\"modifica.php?tbl=lista_provvigioni&id=',id,'\" title=\"MODIFICA\" alt=\"MODIFICA\"><i class=\"fa fa-edit\"></i></a>') AS 'fa-edit',
+                                        CONCAT('<a class=\"btn btn-circle btn-icon-only green btn-outline\" href=\"duplica.php?tbl=lista_provvigioni&id=',id,'\" title=\"DUPLICA\" alt=\"DUPLICA\"><i class=\"fa fa-copy\"></i></a>') AS 'fa-copy',
+                                        CONCAT('<span class=\"btn btn-lg sbold uppercase btn-outline blue-madison\">',codice,'</span>') AS 'Codice',
+                                        CONCAT('<span class=\"btn sbold uppercase btn-outline blue-dark\">',`nome`,'</span>') AS Nome,
+                                        (SELECT DISTINCT CONCAT('<B>',`nome` ,'</B><BR><SMALL>',codice,'</SMALL>')FROM `lista_prodotti` WHERE `id` = `id_prodotto`) AS 'Prodotto',
+                                        prezzo_sconto,
+                                        provvigione AS 'Provvigione &euro;',
+                                        provvigione_percentuale AS 'Provvigione %',
+                                        `stato` ",
+                            "where" => "1 ".$where_lista_provvigioni,
+                            "order" => "ORDER BY codice DESC"),
+            "modifica" => array(
+            array(  "campo" => "id",
+                    "tipo" => "hidden",
+                    "etichetta" => "ID",
+                    "readonly" => true
+                ),
+            array(  "campo" => "dataagg",
+                    "tipo" => "hidden",
+                    "etichetta" => "Data Agg.",
+                    "readonly" => true
+                ),
+            array(  "campo" => "scrittore",
+                    "tipo" => "hidden",
+                    "etichetta" => "Scrittore",
+                    "readonly" => true
+                ),
+                array(  "campo" => "nome",
+                    "tipo" => "input",
+                    "etichetta" => "Nome",
+                    "readonly" => false
+                ),
+                array(  "campo" => "codice",
+                    "tipo" => "input",
+                    "etichetta" => "Codice",
+                    "readonly" => false
+                ),
+                array(  "campo" => "descrizione",
+                    "tipo" => "text",
+                    "etichetta" => "Descrizione",
+                    "readonly" => false
+                ),
+            array(  "campo" => "id_prodotto",
+                    "tipo" => "select2",
+                    "etichetta" => "Prodotto",
+                    "readonly" => false,
+                    "sql" => "SELECT id AS valore, nome AS nome FROM `lista_prodotti`  WHERE LENGTH(`nome`)>1 AND  `stato` LIKE 'Attivo' ORDER BY  `nome`  ASC"
+                ),
+                array(  "campo" => "prezzo_sconto",
+                    "tipo" => "input",
+                    "etichetta" => "Prezzo Scontato",
+                    "readonly" => false
+                ),
+                array(  "campo" => "provvigione",
+                    "tipo" => "input",
+                    "etichetta" => "Provvigione &euro;",
+                    "readonly" => false
+                ),
+                array(  "campo" => "provvigione_percentuale",
+                    "tipo" => "input",
+                    "etichetta" => "Provvigione %",
+                    "readonly" => false
+                ),
+                array(  "campo" => "stato",
+                        "tipo" => "select_static",
+                        "etichetta" => "Stato",
+                        "readonly" => false,
+                        "sql" => array("Attivo"=>"Attivo", "Non Attivo"=>"Non Attivo")
+                    )
+                )
+        );
 ?>

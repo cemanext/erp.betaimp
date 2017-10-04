@@ -222,7 +222,7 @@ function Stampa_HTML_Dettaglio_Preventivi($tabella, $id) {
                         note AS 'Descrizione Aggiuntiva',
                         prezzo_prodotto AS prezzo, 
                         iva_prodotto AS IVA, quantita AS Qta,
-                        id_provvigione AS provvigione
+                        id_provvigione AS partner
                         FROM lista_preventivi_dettaglio WHERE id_preventivo='" . $id . "'";
             stampa_table_static_basic_input('lista_preventivi_dettaglio', $sql_0003, '', 'Modifica Preventivo / Prodotti', '');
 

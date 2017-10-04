@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-var BASE_URL_HOST = "http://"+window.location.hostname+"/dev7";
+var BASE_URL_HOST = "http://"+window.location.hostname+"";
 
 function scriviDentroListaPreventiviDettaglioTXT(selettore){
     
@@ -21,7 +21,7 @@ function scriviDentroListaPreventiviDettaglioTXT(selettore){
 
 $( document ).ready(function() {
     
-    BASE_URL_HOST = "http://"+window.location.hostname+"/dev7";
+    BASE_URL_HOST = "http://"+window.location.hostname+"";
     
     toastr.options = {
         "closeButton": false,

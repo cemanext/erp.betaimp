@@ -540,7 +540,7 @@ if($richiestaReadonly===false){
                                                                         $sql_0007 = "SELECT @i:=@i+1 AS iterator,   
                                                                                 if('".$livelloCommercialeTipo."'='amministratore',CONCAT('<a class=\"btn btn-circle btn-icon-only red btn-outline\" onClick=\"return eliminaDettaglioPreventivo(',id,',',id_preventivo,');\" href=\"cancella.php?tbl=lista_preventivi_dettaglio&id=',id,'&idPreventivo=',id_preventivo,'\" title=\"ELIMINA\" alt=\"ELIMINA\"><i class=\"fa fa-trash\"></i></a>') ,
                                                                                 if(@i>1,CONCAT('<a class=\"btn btn-circle btn-icon-only red btn-outline\" onClick=\"return eliminaDettaglioPreventivo(',id,',',id_preventivo,');\" href=\"cancella.php?tbl=lista_preventivi_dettaglio&id=',id,'&idPreventivo=',id_preventivo,'\" title=\"ELIMINA\" alt=\"ELIMINA\"><i class=\"fa fa-trash\"></i></a>'),'')) AS 'elimina',
-                                                                                   id, id_prodotto as nome_prodotto, prezzo_prodotto AS euro, quantita as qta, id_provvigione AS provvigione "
+                                                                                   id, id_prodotto as nome_prodotto, prezzo_prodotto AS euro, quantita as qta, id_provvigione AS partner "
                                                                                 . "FROM lista_preventivi_dettaglio as p, (SELECT @i:=0) as foo "
                                                                                 . "WHERE id_calendario= " . $idCalendario_daPassare . " AND stato='In Attesa' ORDER BY id ASC";
                                                                                 //stampa_table_datatables_responsive($sql_0001, 'Ordini', '', 'grey');
@@ -560,7 +560,7 @@ if($richiestaReadonly===false){
                                                                         echo "<hr>";
                                                                         
                                                                         $sql_0080 = "SELECT
-                                                                                   nome_prodotto, prezzo_prodotto AS euro, quantita as qta, id_provvigione AS provvigione"
+                                                                                   nome_prodotto, prezzo_prodotto AS euro, quantita as qta, id_provvigione AS partner"
                                                                                 . "FROM lista_preventivi_dettaglio "
                                                                                 . "WHERE id_calendario= '" . $idCalendario_daPassare . "' AND stato='In Attesa' ORDER BY dataagg DESC";;
                                                                           //stampa_table_datatables_responsive($sql_0001, 'Ordini', '', 'grey');
@@ -793,11 +793,13 @@ if($richiestaReadonly===false){
                                                 </div>
                                                 <div class="col-md-12" style="margin-top: -10px; margin-bottom: -10px;">
                                                     <div class="form-group " style="">
-                                                        <label class="control-label font-dark bold">Canale Marketing</label>
+                                                        <label class="control-label font-dark bold">Campagna</label>
                                                         <?php if($livelloAdmin){ ?>
-                                                        <?php   print_bs_select("SELECT nome as valore, nome, colore_sfondo as colore FROM lista_tipo_marketing WHERE stato='Attivo' ORDER BY nome", "calendario_txt_tipo_marketing", $row_00003['tipo_marketing'], "", true); ?>
+                                                        <?php   //print_bs_select("SELECT nome as valore, nome, colore_sfondo as colore FROM lista_tipo_marketing WHERE stato='Attivo' ORDER BY nome", "calendario_txt_tipo_marketing", $row_00003['tipo_marketing'], "", true); ?>
+                                                        <?php   print_bs_select("SELECT nome as valore, nome, colore_sfondo as colore FROM lista_campagne WHERE stato='Attivo' ORDER BY nome", "calendario_txt_id_campagna", $row_00003['id_campagna'], "", true); ?>
                                                         <?php }else{ ?>
-                                                                <?=print_input("calendario_txt_tipo_marketing", $row_00003['tipo_marketing'],"Canale Marketing",true, false); ?>
+                                                                <?php //print_input("calendario_txt_tipo_marketing", $row_00003['tipo_marketing'],"Canale Marketing",true, false); ?>
+                                                                <?=print_input("calendario_txt_id_campagna", $row_00003['id_campagna'],"Campagna",true, false); ?>
                                                         <?php } ?>
                                                         <!--<select class="bs-select form-control" data-show-subtext="true"  id="calendario_txt_tipoChiusura" name="calendario_txt_tipoChiusura" >
                                                             <option  value="E_ABBING_17" data-content="<span class='label bg-green-jungle bg-font-green-jungle bold'>E_ABBING_17 </span>" selected>E_ABBING_17</option>

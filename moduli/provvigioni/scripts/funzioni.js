@@ -1,4 +1,4 @@
-/*
+/* 
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -7,7 +7,7 @@ var BASE_URL_HOST = "http://"+window.location.hostname+"";
 
 $( document ).ready(function() {
     BASE_URL_HOST = "http://"+window.location.hostname+"";
-
+    
     toastr.options = {
         "closeButton": false,
         "debug": false,
@@ -28,28 +28,29 @@ $( document ).ready(function() {
     }
 
     var urlReferer = get_referer();
-
+    
     if($.urlParam('res')=="1"){
         toastr.success("Dati aggiornati!","Salvato");
+        //toastr.success("Dati aggiornati!");
     }
-
+    
     if($.urlParam('res')=="0"){
         toastr.error("Si è verificato un errore nell'aggironamento dei dati.");
     }
-
-    TableDatatablesAjaxBase.init();
+    
+    TableDatatablesAjaxProvvigioni.init();
     ComponentsSelectProdotto.init();
-    TabelleBase.init();
-
+    TabelleProvvigioni.init();
+    
 });
 
-var TableDatatablesAjaxBase = function () {
+var TableDatatablesAjaxProvvigioni = function () {
 
-    var initTableAjaxBase1 = function () {
+    var initTableAjaxProvvigioni1 = function () {
         var table = $('#datatable_ajax');
 
         var oTable = table.dataTable({
-            
+
             "processing": true,
             "serverSide": true,
 
@@ -68,11 +69,10 @@ var TableDatatablesAjaxBase = function () {
             ],
 
             // setup responsive extension: http://datatables.net/extensions/responsive/
-            responsive: false, 
-            stateSave: true,
+            responsive: false,
 
             "ajax": {
-                "url": BASE_URL_HOST+"/moduli/ticket/scripts/server_processing.php?tbl="+$.urlParam('tbl'), // ajax source
+                "url": BASE_URL_HOST+"/moduli/provvigioni/scripts/server_processing.php?tbl="+$.urlParam('tbl'), // ajax source
             },
 
             "ordering": true,
@@ -100,7 +100,7 @@ var TableDatatablesAjaxBase = function () {
 
         //main function to initiate the module
         init: function () {
-            initTableAjaxBase1();
+            initTableAjaxProvvigioni1();
         }
 
     };
@@ -172,9 +172,9 @@ var ComponentsSelectProdotto = function() {
 
 }();
 
-var TabelleBase = function () {
+var TabelleProvvigioni = function () {
 
-  var initTableBase1 = function () {
+  var initTableProvvigioni1 = function () {
       var table = $('#tabella_base1, #tabella_base2, #tabella_base3, #tabella_base4, #tabella_base5, #tabella_base6, #tabella_base7, #tabella_base8, #tabella_base9, #tabella_base10');
 
       var oTable = table.dataTable({
@@ -195,8 +195,7 @@ var TabelleBase = function () {
           ],
 
           // setup responsive extension: http://datatables.net/extensions/responsive/
-          responsive: false, 
-          stateSave: true,
+          responsive: false,
 
           "order": [
               [2, 'asc']
@@ -216,7 +215,10 @@ var TabelleBase = function () {
           // So when dropdowns used the scrollable div should be removed.
           //"dom": "<'row' <'col-md-12'T>><'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r>t<'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>",
       });
-  }
+    }
+  
+  
+
 
     return {
 
@@ -227,7 +229,7 @@ var TabelleBase = function () {
                 return;
             }
 
-            initTableBase1();
+            initTableinitTableProvvigioni1();
         }
 
     };

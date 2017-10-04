@@ -15,7 +15,7 @@ class logerp {
     public function __construct()
     {
         try {
-            $this->dir = $_SERVER['DOCUMENT_ROOT']."/dev7/";
+            $this->dir = $_SERVER['DOCUMENT_ROOT']."/";
         } catch ( Exception $e ) {
             die( 'Unable to set log' );
         }

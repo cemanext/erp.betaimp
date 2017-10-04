@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-var BASE_URL_HOST = "http://"+window.location.hostname+"/dev7";
+var BASE_URL_HOST = "http://"+window.location.hostname+"";
 
 function scriviDentroListaPreventiviDettaglio(){
 
@@ -409,7 +409,7 @@ var ComponentsSelectProvvigione = function() {
 
 $( document ).ready(function() {
     
-    BASE_URL_HOST = "http://"+window.location.hostname+"/dev7";
+    BASE_URL_HOST = "http://"+window.location.hostname+"";
     
     toastr.options = {
         "closeButton": false,

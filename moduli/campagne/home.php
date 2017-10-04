@@ -228,7 +228,7 @@ if(isset($_POST['intervallo_data'])) {
                                     </div>
                                     <div class="form-group">
                                         <div class="col-md-6">
-                                            <?=print_select2("SELECT id_prodotto AS valore, nome_prodotto AS nome FROM lista_preventivi_dettaglio WHERE 1 ORDER BY nome_prodotto ASC", "id_prodotto", $_POST['id_prodotto'], "", false, 'tooltips select_prodotto-allow-clear', 'data-container="body" data-placement="top" data-original-title="SELEZIONA PRODOTTO"') ?>
+                                            <?=print_select2("SELECT id_prodotto AS valore, nome_prodotto AS nome FROM lista_preventivi_dettaglio WHERE id_prodotto > 0 GROUP BY id_prodotto ORDER BY nome_prodotto ASC", "id_prodotto", $_POST['id_prodotto'], "", false, 'tooltips select_prodotto-allow-clear', 'data-container="body" data-placement="top" data-original-title="SELEZIONA PRODOTTO"') ?>
                                         </div>
                                         <div class="col-md-6">
                                             <?=print_select2("SELECT id as valore, CONCAT(cognome,' ', nome) as nome FROM lista_password WHERE stato='Attivo' AND livello LIKE 'commerciale' ORDER BY cognome, nome ASC", "id_agente", $_POST['id_agente'], "", false, 'tooltips select_commerciale-allow-clear', 'data-container="body" data-placement="top" data-original-title="SELEZIONA COMMERCIALE"') ?>

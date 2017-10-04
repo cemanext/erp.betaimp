@@ -12,7 +12,8 @@ function stampa_bootstrap_form_horizontal($tabella,$id,$titolo,$action="".BASE_U
             $table_listaIscrizioni, $table_listaCommerciali, $table_calendarioEsami, $table_calendarioEsamiIscrizioni,
             $table_listaIscrizioniPartecipanti, $table_listaCosti, $table_listaFatture,$table_listaFattureDettaglio, $table_documentiAttestati,
             $table_listaProdottiTipologie, $table_listaProdottiCategorie, $table_listaProdottiGruppi, $table_listaTemplateEmail,
-            $table_listaPasswordUtenti, $table_listaDocenti, $table_listaAule, $table_listaCorsiConfigurazioni;
+            $table_listaPasswordUtenti, $table_listaDocenti, $table_listaAule, $table_listaCorsiConfigurazioni,
+            $table_listaProvvigioni;
 
    if($action==""){
        $action="".BASE_URL."/libreria/salva.php";
@@ -32,6 +33,14 @@ function stampa_bootstrap_form_horizontal($tabella,$id,$titolo,$action="".BASE_U
     }
 
     switch($tabella){
+        case 'lista_provvigioni':
+            $arrayReturn['tabella'] = "lista_provvigioni";
+            $arrayReturn['tbl'] = "lista_provvigioni";
+            $arrayReturn = get_campi_tabella($table_listaProvvigioni['modifica'], $arrayReturn);
+            $arrayReturn['where'] = " `id` =".$id;
+            $arrayReturn['titolo'] = 'Modifica Partner';
+        break;
+        
         case 'lista_corsi_configurazioni':
             $arrayReturn['tabella'] = "lista_corsi_configurazioni";
             $arrayReturn['tbl'] = "lista_corsi_configurazioni";
