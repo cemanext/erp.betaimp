@@ -46,4 +46,60 @@ function Stampa_HTML_index_Provvigioni($tabella){
 
     }
 }
+
+function Stampa_HTML_Dettaglio_Provvigioni($tabella, $id){
+    global $dblink, $table_listaProvvigioni;
+    
+    switch ($tabella) {
+        case 'lista_provvigioni':
+            echo '<div class="row"><div class="col-md-12 col-sm-12">';
+                $tabella = "lista_provvigioni";
+                $where = "id = '$id'";
+                $campi_visualizzati = "CONCAT('<a class=\"btn btn-circle btn-icon-only blue btn-outline\" href=\"modifica.php?tbl=lista_provvigioni&id=',id,'\" title=\"MODIFICA\" alt=\"MODIFICA\"><i class=\"fa fa-edit\"></i></a>') AS 'fa-edit',
+                                        CONCAT('<span class=\"btn btn-lg sbold uppercase btn-outline blue-madison\">',codice,'</span>') AS 'Codice',
+                                        CONCAT('<span class=\"btn sbold uppercase btn-outline blue-dark\">',`nome`,'</span>') AS Nome,
+                                        descrizione,
+                                        (SELECT DISTINCT CONCAT('<B>',`nome` ,'</B><BR><SMALL>',codice,'</SMALL>')FROM `lista_prodotti` WHERE `id` = `id_prodotto`) AS 'Prodotto',
+                                        prezzo_sconto,
+                                        provvigione AS 'Provvigione &euro;',
+                                        provvigione_percentuale AS 'Provvigione %',
+                                        `stato`";
+                $titolo = 'Dettaglio Partener';
+                $colore = COLORE_PRIMARIO;
+                $ordine = $table_listaProvvigioni['index']['order'];
+                $sql_0001 = "SELECT " . $campi_visualizzati . " FROM " . $tabella . " WHERE $where $ordine LIMIT 1";
+                stampa_table_static_basic($sql_0001, '', $titolo, '');
+            echo '</div></div>';
+            
+            echo '<div class="row"><div class="col-md-12 col-sm-12">';
+                $sql_0002 = "SELECT 
+                (SELECT nome FROM lista_provvigioni WHERE id = id_provvigione) as Partner,
+                YEAR(data_creazione) AS Anno, MONTH(data_creazione) AS Mese, SUM(imponibile) AS Imponibile, COUNT(lista_fatture.stato) AS CONTEGGIO, lista_fatture.tipo, lista_fatture.sezionale, lista_fatture.stato 
+                FROM lista_fatture_dettaglio INNER JOIN lista_fatture ON lista_fatture.id = lista_fatture_dettaglio.id_fattura WHERE id_provvigione = '$id'
+                GROUP BY YEAR(data_creazione), MONTH(data_creazione), lista_fatture.tipo, lista_fatture.sezionale, lista_fatture.stato 
+                ORDER BY YEAR(data_creazione) DESC, MONTH(data_creazione) DESC, lista_fatture.tipo, lista_fatture.sezionale, lista_fatture.stato ASC;";
+                stampa_table_static_basic($sql_0002, 'tabella_base2', 'Andamento Fatture Partners', '', 'fa fa-user');
+            echo '</div></div>';
+            
+            /*echo '<div class="row"><div class="col-md-12 col-sm-12">';
+            $sql_0001 = "SELECT CONCAT('<a class=\"btn btn-circle btn-icon-only blue btn-outline\" href=\"modifica.php?tbl=lista_docenti&id=',id,'\" title=\"MODIFICA\" alt=\"MODIFICA\"><i class=\"fa fa-edit\"></i></a>') AS 'fa-edit',
+            CONCAT('<b>',`cognome`,' ',`nome`,'</b>') AS 'Docente', codice_fiscale, cellulare, telefono, email, stato
+            FROM lista_docenti
+            WHERE id='".$id."'";
+            stampa_table_static_basic($sql_0001, '', 'Docente', '');
+            echo '</div></div>';
+            //CONCAT('<a class=\"btn btn-circle btn-icon-only blue btn-outline\" href=\"modifica.php?tbl=lista_iscrizioni&id=',id,'\" title=\"MODIFICA\" alt=\"MODIFICA\"><i class=\"fa fa-edit\"></i></a>') AS 'fa-edit',
+
+            echo '<div class="row"><div class="col-md-12 col-sm-12">';
+            $sql_0001 = "SELECT id, data
+            FROM calendario
+            WHERE id_docente = '".$id."' ORDER BY id DESC";
+            stampa_table_static_basic($sql_0001, '', 'Esami', '');
+            echo '</div></div>';*/
+        break;
+        
+        default:
+        break;
+    }
+}
 ?>

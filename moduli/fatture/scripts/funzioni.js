@@ -481,4 +481,8 @@ $( document ).ready(function() {
     TableDatatablesFattureResponsive.init();
     TableDatatablesAjaxFatture.init();
     ComponentsSelectProvvigione.init();
+    
+    $('#ajax').on('hidden.bs.modal', function () {
+        ComponentsEditors.destroy();
+    });
 });

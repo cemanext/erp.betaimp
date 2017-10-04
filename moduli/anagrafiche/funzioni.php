@@ -20,7 +20,6 @@ function Stampa_HTML_index_Anagrafica($tabella) {
             $titolo = 'Elenco Aziende';
             $limite = ' LIMIT 1';
             $sql_0001 = "SELECT " . $campi_visualizzati . " FROM " . $tabella . " WHERE $where $ordine $limite";
-            //stampa_table_datatables_responsive($sql_0001, $titolo);
             stampa_table_datatables_ajax($sql_0001, "datatable_ajax", $titolo, '', '', false);
             break;
 
@@ -38,7 +37,6 @@ function Stampa_HTML_index_Anagrafica($tabella) {
             $titolo = 'Elenco Professionisti';
             $limite = ' LIMIT 1';
             $sql_0001 = "SELECT " . $campi_visualizzati . " FROM " . $tabella . " WHERE $where $ordine $limite";
-            //stampa_table_datatables_responsive($sql_0001, $titolo);
             stampa_table_datatables_ajax($sql_0001, "datatable_ajax", $titolo, '', '', false);
             break;
 
@@ -87,7 +85,7 @@ function Stampa_HTML_Dettaglio_Anagrafica($tabella, $id) {
             IF(stato LIKE '%Elimi%',CONCAT('<span class=\"btn sbold uppercase btn-outline red-flamingo\">',stato,'</span>'),CONCAT('<span class=\"btn sbold uppercase btn-outline blue\">',stato,'</span>')) AS 'Stato',
             CONCAT('<H3>',ragione_sociale,' ',forma_giuridica,'</h3>') AS 'Ragione Sociale'
             FROM lista_aziende WHERE id = " . $id;
-            stampa_table_static_basic($sql_0001, '', 'Dettaglio Professionista', '', 'fa fa-user');
+            stampa_table_static_basic($sql_0001, '', 'Dettaglio Azienda', '', 'fa fa-user');
             echo '</div></div>';
 
             echo '<div class="row">';
@@ -299,6 +297,7 @@ IF(tipo LIKE 'Fattura',CONCAT('<span class=\"btn sbold uppercase btn-outline blu
             foreach ($campi as $nome_colonna) {
                  $campi_visualizzati.= "`".$nome_colonna->name."`, ";
             }
+            $campi_visualizzati = substr($campi_visualizzati, 0, -2);
             stampa_table_static_basic("SELECT $campi_visualizzati FROM " . $tabella . " WHERE id = '" . $id . "'", '', 'Dettaglio', '');
             break;
     }

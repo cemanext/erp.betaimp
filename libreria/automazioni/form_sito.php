@@ -63,26 +63,33 @@ if(isset($_GET['url']) && !empty($_GET['url'])){
     <!-- END HEAD -->
     <body class="page-sidebar-closed-hide-logo page-content-white" style="background-color: transparent;">
         <?php if(isset($_GET['ret']) && $_GET['ret']==="1"){ ?>
-        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <div class="row">
-                  <div class="col-md-12" style="padding-left: 0px; padding-right: 0px">
-                      <h2>Grazie !</h2>
-                      <div>
-                          La tua richiesta è stata inoltrata da un nostro operatore.
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="row">
+                      <div class="col-md-12" style="padding-left: 0px; padding-right: 0px">
+                          <h2>Grazie !</h2>
+                          <div>
+                              La tua richiesta è stata inoltrata da un nostro operatore.
+                          </div>
+                          <div>
+                              La preghiamo di attendere, sarà ricontattato al più presto.
+                          </div>
                       </div>
-                      <div>
-                          La preghiamo di attendere, sarà ricontattato al più presto.
-                      </div>
-                  </div>
+                </div>
             </div>
-            <!--<div class="row">
-                  <div class="col-md-12" style="padding-left: 0px; padding-right: 0px">
-                      <div>
-                          Per altre richieste ci contatti al 0545 1763034 e fornisca i suoi dati e il codice richiesta.
+        <?php }elseif(isset($_GET['ret']) && $_GET['ret']==="2"){ ?>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="row">
+                      <div class="col-md-12 alert alert-danger" style="padding-left: 0px; padding-right: 0px">
+                          <h2>ATTENZIONE !</h2>
+                          <div>
+                              I campi obbligatori non sono stati complitati.
+                          </div>
+                          <div>
+                              La richiesta non &egrave; stata inviata!
+                          </div>
                       </div>
-                  </div>
-            </div>-->
-        </div>
+                </div>
+            </div>
         <?php } else { ?>
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <form role="form" id="inviaRichiestaSito" name="inviaRichiestaSito" action="<?=ERP_DOMAIN_NAME?>/automazioni.php" method="POST">

@@ -11,6 +11,24 @@ $referer = recupera_referer();
 
 if(isset($_GET['fn'])){
     switch ($_GET['fn']) {
+        case "ripristinaContatto":
+            $dblink->begin();
+            $ok = true;
+            $idCalendario = $_GET['idCalendario'];
+            
+            $ok = $ok && $dblink->update("calendario",array("id_professionista"=>"0","id_azienda"=>"0"), array("id" => $idCalendario));
+            
+            if($ok){
+                $ok = 1;
+                $dblink->commit();
+            }else{
+                $ok = 0;
+                $dblink->rollback();
+            }
+            
+            header("Location:".$referer."&res=$ok");
+        break;
+        
         case "eliminaUtenteMoodle":
             $dblink->begin();
             $ok = true;
@@ -722,11 +740,7 @@ if(isset($_GET['fn'])){
             $ok = true;
             $continue = true;
             $codice_fiscale = strlen($_POST['codice_fiscale'])>5 ? $_POST['codice_fiscale'] : $_POST['cerca_professionista'];
-            if(!preg_match('/^[a-z]{6}[0-9]{2}[a-z][0-9]{2}[a-z][0-9]{3}[a-z]{1}$/i', trim($codice_fiscale))) {
-            //if(!preg_match("^[A-Z]{6}[0-9]{2}[A-Z][0-9]{2}[A-Z][0-9]{3}[A-Z]{1}$", $codice_fiscale)){
-                $ok = "KO2:KO2";
-                $continue = false;
-            }
+            
             $where = "";
             $whereAdd = "";
             
@@ -737,6 +751,10 @@ if(isset($_GET['fn'])){
             if($richiesta_id_professionista>0 && strlen($codice_fiscale)!=16){
                 $where = "id='$richiesta_id_professionista'";
             }else{
+                if(!preg_match('/^[a-z]{6}[0-9]{2}[a-z][0-9]{2}[a-z][0-9]{3}[a-z]{1}$/i', trim($codice_fiscale))) {
+                    $ok = "KO2:KO2";
+                    $continue = false;
+                }
                 $where = "codice_fiscale LIKE '$codice_fiscale'";
             }
             if((strlen($codice_fiscale)==16 || $richiesta_id_professionista>0) && $continue){
@@ -987,6 +1005,12 @@ if(isset($_GET['fn'])){
                     $tuttiCampi['calendario']['id_classe'] = $tuttiCampi['lista_professionisti']['id_classe'];
                 }
                 unset($tuttiCampi['calendario']['id']);
+                
+                $rowCampagna = $dblink->get_row("SELECT id_tipo_marketing FROM lista_campagne WHERE id = '".$tuttiCampi['calendario']['id_campagna']."'", true);
+                $rowMarketing = $dblink->get_row("SELECT nome FROM lista_tipo_marketing WHERE id = '".$rowCampagna['id_tipo_marketing']."'", true);
+                $tuttiCampi['calendario']['id_tipo_marketing'] = $rowCampagna['id_tipo_marketing'];
+                $tuttiCampi['calendario']['tipo_marketing'] = $rowMarketing['nome'];
+                
                 $ok = $dblink->update("calendario", $tuttiCampi['calendario'], array("id"=>$idCalendario));                
             }
             

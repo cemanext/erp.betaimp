@@ -559,8 +559,7 @@ if($richiestaReadonly===false){
                                                                         
                                                                         echo "<hr>";
                                                                         
-                                                                        $sql_0080 = "SELECT
-                                                                                   nome_prodotto, prezzo_prodotto AS euro, quantita as qta, id_provvigione AS partner"
+                                                                        $sql_0080 = "SELECT nome_prodotto, prezzo_prodotto AS euro, quantita as qta, id_provvigione AS partner "
                                                                                 . "FROM lista_preventivi_dettaglio "
                                                                                 . "WHERE id_calendario= '" . $idCalendario_daPassare . "' AND stato='In Attesa' ORDER BY dataagg DESC";;
                                                                           //stampa_table_datatables_responsive($sql_0001, 'Ordini', '', 'grey');
@@ -796,10 +795,11 @@ if($richiestaReadonly===false){
                                                         <label class="control-label font-dark bold">Campagna</label>
                                                         <?php if($livelloAdmin){ ?>
                                                         <?php   //print_bs_select("SELECT nome as valore, nome, colore_sfondo as colore FROM lista_tipo_marketing WHERE stato='Attivo' ORDER BY nome", "calendario_txt_tipo_marketing", $row_00003['tipo_marketing'], "", true); ?>
-                                                        <?php   print_bs_select("SELECT nome as valore, nome, colore_sfondo as colore FROM lista_campagne WHERE stato='Attivo' ORDER BY nome", "calendario_txt_id_campagna", $row_00003['id_campagna'], "", true); ?>
+                                                        <?php   print_select2("SELECT id as valore, nome FROM lista_campagne WHERE stato='Attiva' OR stato='In Corso' ORDER BY nome", "calendario_txt_id_campagna", $row_00003['id_campagna'], "", true); ?>
                                                         <?php }else{ ?>
                                                                 <?php //print_input("calendario_txt_tipo_marketing", $row_00003['tipo_marketing'],"Canale Marketing",true, false); ?>
-                                                                <?=print_input("calendario_txt_id_campagna", $row_00003['id_campagna'],"Campagna",true, false); ?>
+                                                                <?=print_hidden("calendario_txt_id_campagna", $row_00003['id_campagna'],true); ?>
+                                                                <br><span class="col-md-12  btn uppercase btn-outline grey-mint"><?=ottieniNomeCampagna($row_00003['id_campagna'])?></span>
                                                         <?php } ?>
                                                         <!--<select class="bs-select form-control" data-show-subtext="true"  id="calendario_txt_tipoChiusura" name="calendario_txt_tipoChiusura" >
                                                             <option  value="E_ABBING_17" data-content="<span class='label bg-green-jungle bg-font-green-jungle bold'>E_ABBING_17 </span>" selected>E_ABBING_17</option>
@@ -891,6 +891,10 @@ if($richiestaReadonly===false){
                                             <a href="salva.php?idPreventivo=<?=$row_0019['id']?>&idCalendario=<?=$idCalendario_daPassare?>&fn=preventivoVenduto" class="btn btn-icon blue-steel" alt="ISCRITTO" title="ISCRITTO" style="margin-right: 10px"><i class="fa fa-check"></i> ISCRITTO</a>
                                             <a href="salva.php?idPreventivo=<?=$row_0019['id']?>&idCalendario=<?=$idCalendario_daPassare?>&fn=preventivoNegativo" class="btn btn-icon red-intense" alt="NEGATIVO" title="NEGATIVO"><i class="fa fa-close"></i> NEGATIVO</a>
                                             <hr>
+                                                <?php if($id_professionista_presente>0){ ?>
+                                                    <a href="salva.php?idCalendario=<?=$idCalendario_daPassare?>&fn=ripristinaContatto" class="btn btn-icon grey-mint" alt="RIPORTA A CONTATTO" title="RIPORTA A CONTATTO"><i class="fa fa-exclamation-circle"></i> RIPORTA A CONTATTO</a>
+                                                    <hr>
+                                                <?php } ?>
                                             <?php } ?>
                                             
                                             <?php if($richiestaReadonly){ ?>

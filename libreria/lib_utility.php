@@ -286,6 +286,12 @@ function getIdTipoMarketing($nomeTipoMarketing){
     return $row_1['id'];
 }
 
+function ottieniNomeCampagna($idCampagna){
+    global $dblink;
+    
+    return $dblink->get_field("SELECT nome FROM lista_campagne WHERE id = '".$idCampagna."' ORDER BY id DESC");
+}
+
 function ottieniIdCampagna($nomeCampagna){
     global $dblink;
     
