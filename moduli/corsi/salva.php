@@ -7,6 +7,28 @@ $referer = recupera_referer();
 if(isset($_GET['fn'])){
     switch ($_GET['fn']) {
         
+        case "inviaAttestatiMultipli":
+            $arrayCampi = $_POST;
+            unset($arrayCampi['txt_checkbox_all']);
+            $conto = 0;
+            foreach ($arrayCampi as $key => $value) {
+                $pos = strpos($key, "txt_checkbox_");
+                if ($pos === false) {
+                    //echo '<li style="color:red;">' . $key . ' = ' . $arrayCampi[$key] . '</li>';
+                } else {
+                    $idIscrizione = $arrayCampi[$key];
+                    //echo '<li style="color:green;">idIscrizione = ' . $idIscrizione . '</li>';
+                    $sql_0001 = "UPDATE lista_iscrizioni
+                        SET dataagg=NOW(),
+                        scrittore='" . addslashes($_SESSION['cognome_nome_utente']) . "',
+                        stato_invio_attestato = 'In Attesa di Invio'
+                        WHERE id='" . $idIscrizione . "'";
+                    $rs_0001 = $dblink->query($sql_0001);
+                }
+            }
+            header("Location:" . $referer . "&res=6");
+        break;
+        
         case "aggiungiConfigurazioneCorso":
             $ok = true;
             $dblink->begin();
