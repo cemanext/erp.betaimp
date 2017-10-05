@@ -61,7 +61,9 @@ switch ($tabella) {
             $richiestaReadonly = false;
         }
         
-        $dblink->update("lista_preventivi", array("id_professionista" => $id_professionista_presente, "id_azienda"=>$id_azienda_presente), array("id_calendario"=>$idCalendario_daPassare, "id_professionista"=>0));
+        if($idCalendario_daPassare>0 && $id_professionista_presente > 0) {
+            $dblink->update("lista_preventivi", array("id_professionista" => $id_professionista_presente, "id_azienda"=>$id_azienda_presente), array("id_calendario"=>$idCalendario_daPassare, "id_professionista"=>'0'));
+        }
         
         if($row_00004['id_professionista']>0){
             $sql_00001 = "SELECT * FROM lista_professionisti WHERE id=" . $row_00004['id_professionista'];

@@ -15,6 +15,8 @@ if (isset($_GET['id'])) {
     $id = $_GET['id'];
 }
 
+$orderColumn = $_REQUEST['order']; //numero colonna
+
 $arrayCampoRicerca = array();
 $campoRicerca = $_REQUEST['search']['value'];
 if(strpos($campoRicerca," ")!==false){
@@ -113,33 +115,61 @@ switch($funzione){
     break;
 
     default:
-        $campi_visualizzati = "";
-        $campi     = 	$dblink->list_fields("SELECT * FROM ".$tabella."");
-        foreach ($campi as $nome_colonna) {
-             $campi_visualizzati.= "`".$nome_colonna->name."`, ";
-        }
-
-
-        $campi_visualizzati = substr($campi_visualizzati, 0, -2);
-        $campi_visualizzati = "
-        CONCAT('<a class=\"btn btn-circle btn-icon-only yellow btn-outline\" href=\"dettaglio.php?tbl=".$tabella."&id=',id,'\" title=\"DETTAGLIO\" alt=\"DETTAGLIO\"><i class=\"fa fa-search\"></i></a>') AS 'fa-search',
-        CONCAT('<a class=\"btn btn-circle btn-icon-only blue btn-outline\" href=\"modifica.php?tbl=".$tabella."&id=',id,'\" title=\"MODIFICA\" alt=\"MODIFICA\"><i class=\"fa fa-edit\"></i></a>') AS 'fa-edit',
-        CONCAT('<a class=\"btn btn-circle btn-icon-only green btn-outline\" href=\"duplica.php?tbl=".$tabella."&id=',id,'\" title=\"DUPLICA\" alt=\"DUPLICA\"><i class=\"fa fa-copy\"></i></a>') AS 'fa-copy',
-        ".$campi_visualizzati.",
-        CONCAT('<a class=\"btn btn-circle btn-icon-only red btn-outline\" href=\"cancella.php?tbl=".$tabella."&id=',id,'\" title=\"ELIMINA\" alt=\"ELIMINA\"><i class=\"fa fa-trash\"></i></a>') AS 'fa-trash'
-        ";
-         $where = " 1 ";
-        if(!empty($arrayCampoRicerca)){
-            foreach ($arrayCampoRicerca as $campoRicerca) {
-                $where.= " AND (";
-                foreach ($campi as $nome_colonna) {
-                    $where.= $nome_colonna->name." LIKE '%".$campoRicerca."%' OR ";
+        switch ($tabella) {
+            case "lista_consuntivo_vendite":
+                $tabella = "lista_preventivi";
+                $campi_visualizzati = $table_listaConsuntivoVendite['index']['campi'];
+                if($_SESSION['livello_utente'] == 'commerciale'){
+                    $where = " (lista_preventivi.stato LIKE 'Venduto' OR lista_preventivi.stato LIKE 'Chiuso') AND sezionale NOT LIKE 'CN%' AND (lista_preventivi.id_agente='" . $_SESSION['id_utente'] . "' OR md5(lista_preventivi.cognome_nome_agente)='" . MD5($_SESSION['cognome_nome_utente']) . "') ";
+                }else{
+                    $where = $table_listaConsuntivoVendite['index']['where'];
                 }
-                $where = substr($where, 0, -4);
-                $where.= ")";
-            }
+                if(!empty($arrayCampoRicerca)){
+                    foreach ($arrayCampoRicerca as $campoRicerca) {
+                        if(!empty($campoRicerca)){
+                            //  $campoRicerca = $dblink->filter($campoRicerca);
+                            $where.= " AND ( data_iscrizione LIKE '%".$campoRicerca."%' OR codice LIKE '%".$campoRicerca."%'";
+                            $where.= " OR id_agente IN (SELECT id FROM lista_password WHERE nome LIKE '%".$campoRicerca."%' OR cognome LIKE '%".$campoRicerca."%' )";
+                            $where.= " OR id_professionista IN (SELECT id FROM lista_professionisti WHERE nome LIKE '%".$campoRicerca."%' OR cognome LIKE '%".$campoRicerca."%' )";
+                            $where.= " OR id IN (SELECT id_preventivo FROM lista_fatture WHERE lista_fatture.stato LIKE '%".$campoRicerca."%' OR lista_fatture.data_creazione LIKE '%".$campoRicerca."%' OR lista_fatture.imponibile LIKE '%".$campoRicerca."%' )";
+                            $where.= " OR codice_ricerca LIKE '%".$campoRicerca."%' OR imponibile LIKE '%".$campoRicerca."%')";
+                        }
+                    }
+                }
+                $ordine = $table_listaConsuntivoVendite['index']['order'];
+            break;
+
+            default:
+                $campi_visualizzati = "";
+                $campi     = 	$dblink->list_fields("SELECT * FROM ".$tabella."");
+                foreach ($campi as $nome_colonna) {
+                     $campi_visualizzati.= "`".$nome_colonna->name."`, ";
+                }
+
+
+                $campi_visualizzati = substr($campi_visualizzati, 0, -2);
+                $campi_visualizzati = "
+                CONCAT('<a class=\"btn btn-circle btn-icon-only yellow btn-outline\" href=\"dettaglio.php?tbl=".$tabella."&id=',id,'\" title=\"DETTAGLIO\" alt=\"DETTAGLIO\"><i class=\"fa fa-search\"></i></a>') AS 'fa-search',
+                CONCAT('<a class=\"btn btn-circle btn-icon-only blue btn-outline\" href=\"modifica.php?tbl=".$tabella."&id=',id,'\" title=\"MODIFICA\" alt=\"MODIFICA\"><i class=\"fa fa-edit\"></i></a>') AS 'fa-edit',
+                CONCAT('<a class=\"btn btn-circle btn-icon-only green btn-outline\" href=\"duplica.php?tbl=".$tabella."&id=',id,'\" title=\"DUPLICA\" alt=\"DUPLICA\"><i class=\"fa fa-copy\"></i></a>') AS 'fa-copy',
+                ".$campi_visualizzati.",
+                CONCAT('<a class=\"btn btn-circle btn-icon-only red btn-outline\" href=\"cancella.php?tbl=".$tabella."&id=',id,'\" title=\"ELIMINA\" alt=\"ELIMINA\"><i class=\"fa fa-trash\"></i></a>') AS 'fa-trash'
+                ";
+                 $where = " 1 ";
+                if(!empty($arrayCampoRicerca)){
+                    foreach ($arrayCampoRicerca as $campoRicerca) {
+                        $where.= " AND (";
+                        foreach ($campi as $nome_colonna) {
+                            $where.= $nome_colonna->name." LIKE '%".$campoRicerca."%' OR ";
+                        }
+                        $where = substr($where, 0, -4);
+                        $where.= ")";
+                    }
+                }
+                $ordine = " ORDER BY id DESC";
+            break;
         }
-        $ordine = " ORDER BY id DESC";
+        
     break;
 }
 

@@ -1,4 +1,7 @@
 <?php
+
+require_once(BASE_ROOT . 'config/confPermessi.php');
+
 $id_del_menu_padre = 0;
 $idMenu = "";
 

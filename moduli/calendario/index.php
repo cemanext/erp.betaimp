@@ -2,7 +2,7 @@
 ini_set('display_errors', '1');
 include_once('../../config/connDB.php');
 include_once(BASE_ROOT.'config/confAccesso.php');
-include_once(BASE_ROOT.'config/confPermessi.php');
+
 include_once(BASE_ROOT.'moduli/calendario/funzioni.php');
 /* 	fine post ricerca sinistra	 */
 

@@ -310,6 +310,12 @@ function ottieniIdAzienda($idProfessionista){
     }
 }
 
+function ottieniNomeClasse($idClasse){
+    global $dblink;
+    
+    return $dblink->get_field("SELECT nome FROM lista_classi WHERE id = '".$idClasse."' ORDER BY id DESC");
+}
+
 function ordinaDataAgg($dataAgg){
     $tmp = explode(" ", $dataAgg);
     $tmpData = explode("-", $tmp[0]);

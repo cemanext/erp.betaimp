@@ -2,9 +2,20 @@
 
 /** FUNZIONI DI CROCCO */
 function Stampa_HTML_index_Commerciali($tabella){
-    global $table_listaCommerciali;
+    global $table_listaCommerciali, $table_listaConsuntivoVendite, $where_lista_consuntivo_vendite;
 
     switch($tabella){
+        case 'lista_consuntivo_vendite':
+            $tabella = "lista_preventivi";
+            $campi_visualizzati = $table_listaConsuntivoVendite['index']['campi'];
+            $where = $table_listaConsuntivoVendite['index']['where'];
+            $ordine = $table_listaConsuntivoVendite['index']['order'];
+            $titolo = 'Consuntivo Vendite';
+            $limit = "LIMIT 1";
+            $sql_0001 = "SELECT ".$campi_visualizzati." FROM ".$tabella." WHERE $where $ordine $limit";
+            stampa_table_datatables_ajax($sql_0001, "datatable_ajax", $titolo, '', '', false);
+        break;
+        
         case 'lista_password':
             $tabella = "lista_password";
             $campi_visualizzati = $table_listaCommerciali['index']['campi'];

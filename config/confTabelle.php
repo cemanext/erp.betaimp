@@ -4201,4 +4201,45 @@ $table_listaProvvigioni = array(
                     )
                 )
         );
+
+$table_listaConsuntivoVendite = array(
+                "index" => array("campi" => "IF(id_calendario > 0, "
+                    . "                         CONCAT('<a class=\"btn btn-circle btn-icon-only green btn-outline\" href=\"".BASE_URL."/moduli/anagrafiche/dettaglio_tab.php?tbl=calendario&id=',id_calendario,'\" title=\"DETTAGLIO\" alt=\"DETTAGLIO\"><i class=\"fa fa-book\"></i></a>'),
+                                                IF(id_professionista > 0,
+                                                    CONCAT('<a class=\"btn btn-circle btn-icon-only yellow btn-outline\" href=\"".BASE_URL."/moduli/anagrafiche/dettaglio.php?tbl=lista_professionisti&id=',id_professionista,'\" title=\"DETTAGLIO\" alt=\"DETTAGLIO\"><i class=\"fa fa-search\"></i></a>'),
+                                                    CONCAT('<a class=\"btn btn-circle btn-icon-only yellow btn-outline\" href=\"".BASE_URL."/moduli/preventivi/dettaglio.php?tbl=lista_preventivi&id=',id,'\" title=\"DETTAGLIO\" alt=\"DETTAGLIO\"><i class=\"fa fa-search\"></i></a>')
+                                                )
+                                            ) AS 'fa-search',
+                                            (SELECT CONCAT(cognome, ' ', nome) FROM lista_password WHERE lista_password.id = lista_preventivi.id_agente LIMIT 1) AS 'Commerciale',
+                                            (SELECT CONCAT(cognome, ' ', nome) FROM lista_professionisti WHERE lista_professionisti.id = lista_preventivi.id_professionista LIMIT 1) AS 'Professionista',
+                                            data_iscrizione, imponibile AS 'importo_preventivo', 
+                                            (SELECT GROUP_CONCAT(lista_fatture.data_creazione SEPARATOR '<br>') FROM lista_fatture WHERE lista_fatture.id_preventivo = lista_preventivi.id) AS 'data_fattura',
+                                            (SELECT GROUP_CONCAT(lista_fatture.imponibile SEPARATOR '<br>') FROM lista_fatture WHERE lista_fatture.id_preventivo = lista_preventivi.id) AS 'importo_fattura',
+                                            (SELECT GROUP_CONCAT(lista_fatture.stato SEPARATOR '<br>') FROM lista_fatture WHERE lista_fatture.id_preventivo = lista_preventivi.id) AS 'stato_fattura'
+                                            ",
+                                "where" => " (lista_preventivi.stato LIKE 'Venduto' OR lista_preventivi.stato LIKE 'Chiuso') ".$where_lista_consuntivo_vendite,
+                                "order" => "ORDER BY data_iscrizione DESC"),
+                "modifica" => array(
+                    array(  "campo" => "id",
+                            "tipo" => "hidden",
+                            "etichetta" => "ID",
+                            "readonly" => true
+                    ),
+                    array(  "campo" => "id_professionista",
+                            "tipo" => "hidden",
+                            "etichetta" => "ID Professionista",
+                            "readonly" => true
+                    ),
+                    array(  "campo" => "dataagg",
+                            "tipo" => "hidden",
+                            "etichetta" => "Data Agg.",
+                            "readonly" => true
+                    ),
+                    array(  "campo" => "scrittore",
+                            "tipo" => "hidden",
+                            "etichetta" => "Scrittore",
+                            "readonly" => true
+                    )
+                )
+            );
 ?>

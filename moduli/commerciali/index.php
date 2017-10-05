@@ -14,8 +14,9 @@ if(isset($_GET['idMenu'])){
 
 if (isset($_GET['tbl'])) {
     $tabella = $_GET['tbl'];
+}else{
+    $tabella = 'lista_password';
 }
-$tabella = 'lista_password';
 ?>
 <!DOCTYPE html>
 <!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
@@ -132,7 +133,7 @@ $tabella = 'lista_password';
         <script src="<?= BASE_URL ?>/assets/global/scripts/datatable.js" type="text/javascript"></script>
         <script src="<?= BASE_URL ?>/assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
         <script src="<?= BASE_URL ?>/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
-
+        <script src="<?= BASE_URL ?>/assets/global/plugins/bootstrap-toastr/toastr.min.js" type="text/javascript"></script>
         <!-- END PAGE LEVEL PLUGINS -->
         <!-- BEGIN THEME GLOBAL SCRIPTS -->
         <script src="<?= BASE_URL ?>/assets/global/scripts/app.min.js" type="text/javascript"></script>
@@ -142,11 +143,14 @@ $tabella = 'lista_password';
 <!--<script src="<?= BASE_URL ?>/assets/apps/scripts/todo-2.min.js" type="text/javascript"></script>-->
         <script src="<?= BASE_URL ?>/assets/pages/scripts/components-select2.min.js" type="text/javascript"></script>
         <script src="<?= BASE_URL ?>/assets/apps/scripts/index.js" type="text/javascript"></script>
+        <script src="<?= BASE_URL ?>/assets/pages/scripts/ui-toastr.min.js" type="text/javascript"></script>
         <!-- END PAGE LEVEL SCRIPTS -->
         <!-- BEGIN THEME LAYOUT SCRIPTS -->
+        <script src="<?= BASE_URL ?>/assets/apps/scripts/php.min.js" type="text/javascript"></script>
+        <script src="<?= BASE_URL ?>/assets/apps/scripts/utility.js" type="text/javascript"></script>
         <script src="<?= BASE_URL ?>/assets/layouts/layout/scripts/layout.min.js" type="text/javascript"></script>
-        <script src="<?= BASE_URL ?>/assets/layouts/layout/scripts/demo.min.js" type="text/javascript"></script>
         <script src="<?= BASE_URL ?>/assets/layouts/global/scripts/quick-sidebar.min.js" type="text/javascript"></script>
+        <script src="<?= BASE_URL ?>/moduli/commerciali/scripts/funzioni.js" type="text/javascript"></script>
         <!-- END THEME LAYOUT SCRIPTS -->
     </body>
     <?php

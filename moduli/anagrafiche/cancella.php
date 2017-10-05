@@ -27,4 +27,7 @@ if($_GET['tbl']=="lista_preventivi_dettaglio"){
     
 }
 
+if($ok) header("Location:".recupera_referer());
+else echo "error deleteWhere";
+
 ?>
