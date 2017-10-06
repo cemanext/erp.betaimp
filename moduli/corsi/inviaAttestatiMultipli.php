@@ -172,7 +172,9 @@ if (isset($_POST['intervallo_data'])) {
                 ON iscrizioniCompletate.id_fattura=iscrizioniPagate.id_fattura_iscr)");
                 
                 
-                $sql_0001 = "SELECT CONCAT('<a class=\"btn btn-circle btn-icon-only yellow btn-outline\" href=\"".BASE_URL."/moduli/iscrizioni/dettaglio.php?tbl=lista_iscrizioni_partecipanti&id=',id,'\" title=\"DETTAGLIO\" alt=\"DETTAGLIO\"><i class=\"fa fa-search\"></i></a>') AS 'fa-search', dataagg, scrittore, 
+                $sql_0001 = "SELECT 
+                CONCAT('<a class=\"btn btn-circle btn-icon-only yellow btn-outline\" href=\"".BASE_URL."/moduli/iscrizioni/dettaglio.php?tbl=lista_iscrizioni_partecipanti&id=',id,'\" title=\"DETTAGLIO\" alt=\"DETTAGLIO\"><i class=\"fa fa-search\"></i></a>') AS 'fa-search',  
+                CONCAT('<a class=\"btn btn-circle btn-icon-only red btn-outline\" href=\"".BASE_URL."/moduli/corsi/printAttestatoPDF.php?idIscrizione=',id,'\" title=\"ATTESTATO\" alt=\"ATTESTATO\" target=\"_blank\"><i class=\"fa fa-file-pdf-o\"></i></a>') AS 'fa-file-pdf-o', dataagg, scrittore,
                 CONCAT('<span class=\"btn sbold uppercase btn-outline blue-steel\">',cognome_nome_professionista,'</span>') AS cognome_nome_professionista, 
                 CONCAT('<span class=\"btn sbold uppercase btn-outline red\">',nome_corso,'</span>') AS nome_corso, 
                 data_completamento, stato_completamento AS Stato, 

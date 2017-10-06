@@ -2814,7 +2814,9 @@ LISTA_ISCRIZIONI X PARTECIPANTI
 
 */
 $table_listaIscrizioniPartecipantiCompletati = array(
-                "index" => array("campi" => "IF(abbonamento>=1,'<span class=\"btn sbold uppercase btn-outline blue-steel\">Abbonamento</span>', '<span class=\"btn sbold uppercase btn-outline green-seagreen\">Singolo Corso</span>') AS 'Tipo',
+                "index" => array("campi" => "
+                CONCAT('<a class=\"btn btn-circle btn-icon-only red btn-outline\" href=\"".BASE_URL."/moduli/corsi/printAttestatoPDF.php?idIscrizione=',id,'\" title=\"ATTESTATO\" alt=\"ATTESTATO\" target=\"_blank\"><i class=\"fa fa-file-pdf-o\"></i></a>') AS 'fa-file-pdf-o',
+                IF(abbonamento>=1,'<span class=\"btn sbold uppercase btn-outline blue-steel\">Abbonamento</span>', '<span class=\"btn sbold uppercase btn-outline green-seagreen\">Singolo Corso</span>') AS 'Tipo',
                                             DATE_FORMAT(data_inizio,'%d-%m-%Y') AS data_inizio,
                                             DATE_FORMAT(data_completamento,'%d-%m-%Y') AS data_completamento,
                                             (SELECT CONCAT(cognome, ' ', nome) AS nome FROM lista_professionisti WHERE id = id_professionista LIMIT 1) AS Partecipante,
@@ -2830,7 +2832,7 @@ $table_listaIscrizioniPartecipantiCompletati = array(
                                             (SELECT nome_prodotto FROM lista_corsi WHERE id = id_corso LIMIT 1) AS 'Corso',
                                             (SELECT codice FROM lista_corsi WHERE id = id_corso LIMIT 1) AS 'Codice Corso',
                                             IF(id_fattura>0,
-                                                (SELECT if(stato LIKE 'Pagata%','<span class=\"btn sbold uppercase btn-outline green-jungle\">SI</span>','<span class=\"btn sbold uppercase btn-outline red-intense\">NO</span>') FROM lista_fatture WHERE id = lista_iscrizioni.id_fattura AND stato NOT LIKE 'In Attesa di Emissione' AND sezionale NOT LIKE '%CN%' LIMIT 1),
+                                                (SELECT if(stato LIKE 'Pagata%','<span class=\"btn sbold uppercase btn-outline green-jungle\">SI</span>','<span class=\"btn sbold uppercase btn-outline red-intense\">NO</span>') FROM lista_fatture WHERE id = lista_iscrizioni.id_fattura AND tipo  LIKE 'Fattura' AND sezionale NOT LIKE '%CN%' LIMIT 1),
                                                 '<span class=\"btn sbold uppercase btn-outline yellow-saffron\">FATTURA NON ASSOCIATA</span>'
                                             ) AS 'Fattura Pagata',
                                             stato,
@@ -2897,6 +2899,176 @@ $table_listaIscrizioniPartecipantiCompletati = array(
                 )
         );
 
+$table_listaIscrizioniPartecipantiCompletatiPagati = array(
+                "index" => array("campi" => "CONCAT('<a class=\"btn btn-circle btn-icon-only yellow btn-outline\" href=\"dettaglio.php?tbl=lista_iscrizioni_partecipanti&id=',id,'\" title=\"DETTAGLIO\" alt=\"DETTAGLIO\"><i class=\"fa fa-search\"></i></a>') AS 'fa-search',
+                CONCAT('<a class=\"btn btn-circle btn-icon-only red btn-outline\" href=\"".BASE_URL."/moduli/corsi/printAttestatoPDF.php?idIscrizione=',id,'\" title=\"ATTESTATO\" alt=\"ATTESTATO\" target=\"_blank\"><i class=\"fa fa-file-pdf-o\"></i></a>') AS 'fa-file-pdf-o',
+                IF(abbonamento>=1,'<span class=\"btn sbold uppercase btn-outline blue-steel\">Abbonamento</span>', '<span class=\"btn sbold uppercase btn-outline green-seagreen\">Singolo Corso</span>') AS 'Tipo',
+                                            (SELECT CONCAT('<span class=\"btn sbold uppercase btn-outline blue-steel\">',cognome,' ',nome,'</span>') AS nome FROM lista_professionisti WHERE id = id_professionista LIMIT 1) AS Partecipante,
+                                            (SELECT CONCAT('<span class=\"btn sbold uppercase btn-outline blue-steel\">',nome_prodotto,'</span>') AS nome_prodotto FROM lista_corsi WHERE id = id_corso LIMIT 1) AS 'Corso',
+                                            DATE_FORMAT(data_completamento,'%d-%m-%Y') AS data_completamento,
+                                            CONCAT('<span class=\"btn sbold uppercase btn-circle btn-outline green-sharp\">',avanzamento_completamento,'%</span>') AS 'Perc.',
+                                            IF(id_fattura>0,
+                                                (SELECT IF(sezionale LIKE '%CN%','<span class=\"btn sbold uppercase btn-outline red\">CN</span>',if(stato LIKE 'Pagata%','<span class=\"btn sbold uppercase btn-outline green-jungle\">SI</span>','<span class=\"btn sbold uppercase btn-outline red-intense\">NO</span>')) FROM lista_fatture WHERE id = lista_iscrizioni.id_fattura AND tipo  LIKE 'Fattura' LIMIT 1),
+                                                '<span class=\"btn sbold uppercase btn-outline yellow-saffron\">FATTURA NON ASSOCIATA</span>'
+                                            ) AS 'Fattura Pagata',
+                                            stato,
+                                            (SELECT codice FROM lista_corsi WHERE id = id_corso LIMIT 1) AS 'Codice Corso',
+                                            DATE_FORMAT(data_inizio,'%d-%m-%Y') AS data_inizio,
+                                            (SELECT nome FROM lista_classi WHERE id = id_classe LIMIT 1) AS Classe,
+                                            (SELECT codice_fiscale FROM lista_professionisti WHERE id = id_professionista LIMIT 1) AS Codice_Fiscale,
+                                            (SELECT professione FROM lista_professionisti WHERE id = id_professionista LIMIT 1) AS professione,
+                                            (SELECT numero_albo FROM lista_professionisti WHERE id = id_professionista LIMIT 1) AS Iscirizone_Ordine,
+                                            (SELECT provincia_albo FROM lista_professionisti WHERE id = id_professionista LIMIT 1) AS Provincia_Ordine,
+                                            (SELECT email FROM lista_professionisti WHERE id = id_professionista LIMIT 1) AS Email,
+                                            (SELECT luogo_di_nascita FROM lista_professionisti WHERE id = id_professionista LIMIT 1) AS luogo_di_nascita,
+                                            (SELECT DATE_FORMAT(data_di_nascita,'%d-%m-%Y') FROM lista_professionisti WHERE id = id_professionista LIMIT 1) AS Data_di_Nascita,
+                                            (SELECT provincia_di_nascita FROM lista_professionisti WHERE id = id_professionista LIMIT 1) AS Provincia_di_Nascita",
+                                "where" => " stato='Completato' AND id_fattura IN (SELECT id FROM lista_fatture WHERE stato LIKE 'Pagata%') ".$where_lista_iscrizioni,
+                                "order" => "ORDER BY dataagg DESC"),
+            "modifica" => array(
+                array(  "campo" => "id",
+                        "tipo" => "hidden",
+                        "etichetta" => "ID",
+                        "readonly" => true
+                    ),
+                array(  "campo" => "dataagg",
+                        "tipo" => "hidden",
+                        "etichetta" => "Data Agg.",
+                        "readonly" => true
+                    ),
+                array(  "campo" => "scrittore",
+                        "tipo" => "hidden",
+                        "etichetta" => "Scrittore",
+                        "readonly" => true
+                    ),
+                array(  "campo" => "nome_corso",
+                    "tipo" => "input",
+                    "etichetta" => "Corso",
+                    "readonly" => true
+                ),
+                array(  "campo" => "cognome_nome_professionista",
+                    "tipo" => "input",
+                    "etichetta" => "Professionista",
+                    "readonly" => true
+                ),
+                array(  "campo" => "nome_classe",
+                    "tipo" => "input",
+                    "etichetta" => "Classe",
+                    "readonly" => true
+                ),
+                array(  "campo" => "data_inizio_iscrizione",
+                    "tipo" => "data",
+                    "etichetta" => "Data Attivazione",
+                    "readonly" => true
+                ),
+                array(  "campo" => "data_fine_iscrizione",
+                    "tipo" => "data",
+                    "etichetta" => "Data Scadenza",
+                    "readonly" => false
+                ),
+                array(  "campo" => "data_inizio",
+                    "tipo" => "data",
+                    "etichetta" => "Data Inizio",
+                    "readonly" => true
+                ),
+                array(  "campo" => "data_fine",
+                    "tipo" => "data",
+                    "etichetta" => "Data Fine",
+                    "readonly" => true
+                ),
+                array(  "campo" => "avanzamento_completamento",
+                    "tipo" => "input",
+                    "etichetta" => "Avanzamento %",
+                    "readonly" => true
+                )
+                )
+        );
+        
+$table_listaIscrizioniPartecipantiCompletatiNonPagati = array(
+                "index" => array("campi" => "CONCAT('<a class=\"btn btn-circle btn-icon-only yellow btn-outline\" href=\"dettaglio.php?tbl=lista_iscrizioni_partecipanti&id=',id,'\" title=\"DETTAGLIO\" alt=\"DETTAGLIO\"><i class=\"fa fa-search\"></i></a>') AS 'fa-search',
+                CONCAT('<a class=\"btn btn-circle btn-icon-only red btn-outline\" href=\"".BASE_URL."/moduli/corsi/printAttestatoPDF.php?idIscrizione=',id,'\" title=\"ATTESTATO\" alt=\"ATTESTATO\" target=\"_blank\"><i class=\"fa fa-file-pdf-o\"></i></a>') AS 'fa-file-pdf-o',
+                IF(abbonamento>=1,'<span class=\"btn sbold uppercase btn-outline blue-steel\">Abbonamento</span>', '<span class=\"btn sbold uppercase btn-outline green-seagreen\">Singolo Corso</span>') AS 'Tipo',
+                                            (SELECT CONCAT('<span class=\"btn sbold uppercase btn-outline blue-steel\">',cognome,' ',nome,'</span>') AS nome FROM lista_professionisti WHERE id = id_professionista LIMIT 1) AS Partecipante,
+                                            (SELECT CONCAT('<span class=\"btn sbold uppercase btn-outline blue-steel\">',nome_prodotto,'</span>') AS nome_prodotto FROM lista_corsi WHERE id = id_corso LIMIT 1) AS 'Corso',
+                                            DATE_FORMAT(data_completamento,'%d-%m-%Y') AS data_completamento,
+                                            CONCAT('<span class=\"btn sbold uppercase btn-circle btn-outline green-sharp\">',avanzamento_completamento,'%</span>') AS 'Perc.',
+                                            IF(id_fattura>0,
+                                                (SELECT IF(sezionale LIKE '%CN%','<span class=\"btn sbold uppercase btn-outline red\">CN</span>',if(stato LIKE 'Pagata%','<span class=\"btn sbold uppercase btn-outline green-jungle\">SI</span>','<span class=\"btn sbold uppercase btn-outline red-intense\">NO</span>')) FROM lista_fatture WHERE id = lista_iscrizioni.id_fattura AND tipo  LIKE 'Fattura' LIMIT 1),
+                                                '<span class=\"btn sbold uppercase btn-outline yellow-saffron\">FATTURA NON ASSOCIATA</span>'
+                                            ) AS 'Fattura Pagata',
+                                            stato,
+                                            (SELECT codice FROM lista_corsi WHERE id = id_corso LIMIT 1) AS 'Codice Corso',
+                                            DATE_FORMAT(data_inizio,'%d-%m-%Y') AS data_inizio,
+                                            (SELECT nome FROM lista_classi WHERE id = id_classe LIMIT 1) AS Classe,
+                                            (SELECT codice_fiscale FROM lista_professionisti WHERE id = id_professionista LIMIT 1) AS Codice_Fiscale,
+                                            (SELECT professione FROM lista_professionisti WHERE id = id_professionista LIMIT 1) AS professione,
+                                            (SELECT numero_albo FROM lista_professionisti WHERE id = id_professionista LIMIT 1) AS Iscirizone_Ordine,
+                                            (SELECT provincia_albo FROM lista_professionisti WHERE id = id_professionista LIMIT 1) AS Provincia_Ordine,
+                                            (SELECT email FROM lista_professionisti WHERE id = id_professionista LIMIT 1) AS Email,
+                                            (SELECT luogo_di_nascita FROM lista_professionisti WHERE id = id_professionista LIMIT 1) AS luogo_di_nascita,
+                                            (SELECT DATE_FORMAT(data_di_nascita,'%d-%m-%Y') FROM lista_professionisti WHERE id = id_professionista LIMIT 1) AS Data_di_Nascita,
+                                            (SELECT provincia_di_nascita FROM lista_professionisti WHERE id = id_professionista LIMIT 1) AS Provincia_di_Nascita",
+                                "where" => " stato='Completato' AND id_fattura IN (SELECT id FROM lista_fatture WHERE stato LIKE 'In Attesa%') ".$where_lista_iscrizioni,
+                                "order" => "ORDER BY dataagg DESC"),
+            "modifica" => array(
+                array(  "campo" => "id",
+                        "tipo" => "hidden",
+                        "etichetta" => "ID",
+                        "readonly" => true
+                    ),
+                array(  "campo" => "dataagg",
+                        "tipo" => "hidden",
+                        "etichetta" => "Data Agg.",
+                        "readonly" => true
+                    ),
+                array(  "campo" => "scrittore",
+                        "tipo" => "hidden",
+                        "etichetta" => "Scrittore",
+                        "readonly" => true
+                    ),
+                array(  "campo" => "nome_corso",
+                    "tipo" => "input",
+                    "etichetta" => "Corso",
+                    "readonly" => true
+                ),
+                array(  "campo" => "cognome_nome_professionista",
+                    "tipo" => "input",
+                    "etichetta" => "Professionista",
+                    "readonly" => true
+                ),
+                array(  "campo" => "nome_classe",
+                    "tipo" => "input",
+                    "etichetta" => "Classe",
+                    "readonly" => true
+                ),
+                array(  "campo" => "data_inizio_iscrizione",
+                    "tipo" => "data",
+                    "etichetta" => "Data Attivazione",
+                    "readonly" => true
+                ),
+                array(  "campo" => "data_fine_iscrizione",
+                    "tipo" => "data",
+                    "etichetta" => "Data Scadenza",
+                    "readonly" => false
+                ),
+                array(  "campo" => "data_inizio",
+                    "tipo" => "data",
+                    "etichetta" => "Data Inizio",
+                    "readonly" => true
+                ),
+                array(  "campo" => "data_fine",
+                    "tipo" => "data",
+                    "etichetta" => "Data Fine",
+                    "readonly" => true
+                ),
+                array(  "campo" => "avanzamento_completamento",
+                    "tipo" => "input",
+                    "etichetta" => "Avanzamento %",
+                    "readonly" => true
+                )
+                )
+        );
+        
 /*
 LISTA_ISCRIZIONI X CONFIGURAZIONE
 

@@ -49,6 +49,38 @@ switch($tabella){
         $groupby = " GROUP BY id_corso ";
         $ordine = $table_listaIscrizioniCompletati['index']['order'];
     break;
+    
+    case 'table_listaIscrizioniCompletatiPagati':
+        $tabella = "lista_iscrizioni";
+        $campi_visualizzati = $table_listaIscrizioniPartecipantiCompletatiPagati['index']['campi'];
+        $where = $table_listaIscrizioniPartecipantiCompletatiPagati['index']['where'];
+        if(!empty($arrayCampoRicerca)){
+            foreach ($arrayCampoRicerca as $campoRicerca) {
+                $where.= " AND (nome_corso LIKE '%".$campoRicerca."%' OR nome_classe LIKE '%".$campoRicerca."%'";
+                $where.= " OR data_inizio_iscrizione LIKE '%".$campoRicerca."%' OR data_fine_iscrizione LIKE '%".$campoRicerca."%'";
+                $where.= " OR stato_completamento LIKE '%".$campoRicerca."%' OR avanzamento_completamento LIKE '%".$campoRicerca."%'";
+                $where.= " OR cognome_nome_professionista LIKE '%".$campoRicerca."%')";
+            }
+        }
+        $groupby = "";
+        $ordine = $table_listaIscrizioniPartecipantiCompletatiPagati['index']['order'];
+    break;
+    
+    case 'table_listaIscrizioniCompletatiNonPagati':
+        $tabella = "lista_iscrizioni";
+        $campi_visualizzati = $table_listaIscrizioniPartecipantiCompletatiNonPagati['index']['campi'];
+        $where = $table_listaIscrizioniPartecipantiCompletatiNonPagati['index']['where'];
+         if(!empty($arrayCampoRicerca)){
+            foreach ($arrayCampoRicerca as $campoRicerca) {
+                $where.= " AND (nome_corso LIKE '%".$campoRicerca."%' OR nome_classe LIKE '%".$campoRicerca."%'";
+                $where.= " OR data_inizio_iscrizione LIKE '%".$campoRicerca."%' OR data_fine_iscrizione LIKE '%".$campoRicerca."%'";
+                $where.= " OR stato_completamento LIKE '%".$campoRicerca."%' OR avanzamento_completamento LIKE '%".$campoRicerca."%'";
+                $where.= " OR cognome_nome_professionista LIKE '%".$campoRicerca."%')";
+            }
+        }
+        $groupby = "";
+        $ordine = $table_listaIscrizioniPartecipantiCompletatiNonPagati['index']['order'];
+    break;
         
     case 'table_listaIscrizioniInAttesa':
         $tabella = "lista_iscrizioni";

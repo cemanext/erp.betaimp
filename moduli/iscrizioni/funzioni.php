@@ -3,7 +3,7 @@
 /** FUNZIONI DI CROCCO */
 function Stampa_HTML_index_Iscrizioni($tabella){
     global $table_listaIscrizioni, $table_listaIscrizioniPartecipanti, $table_listaIscrizioniInCorso, 
-           $table_listaIscrizioniInAttesa, $table_listaIscrizioniCompletati, $table_listaIscrizioniConfigurazioni,
+           $table_listaIscrizioniInAttesa, $table_listaIscrizioniCompletati, $table_listaIscrizioniPartecipantiCompletatiPagati, $table_listaIscrizioniPartecipantiCompletatiNonPagati, $table_listaIscrizioniConfigurazioni,
            $table_listaIscrizioniControlloDoppi, $table_listaIscrizioniPartecipantiCompletati, $dblink;
     
     $sql_0007 = "UPDATE lista_iscrizioni, lista_corsi
@@ -35,6 +35,30 @@ function Stampa_HTML_index_Iscrizioni($tabella){
             $sql_0001_1 = "SELECT COUNT(id) AS conto FROM ".$tabella." WHERE $where $ordine";
             $conto = $dblink->get_field($sql_0001_1);
             stampa_table_datatables_ajax($sql_0001, "datatable_ajax", $titolo.' ['.$conto.' Record]', '', '', false);
+        break;
+        
+        case 'table_listaIscrizioniCompletatiPagati':
+             $tabella = "lista_iscrizioni";
+            $campi_visualizzati = $table_listaIscrizioniPartecipantiCompletatiPagati['index']['campi'];
+            $where = $table_listaIscrizioniPartecipantiCompletatiPagati['index']['where'];
+            $ordine = $table_listaIscrizioniPartecipantiCompletatiPagati['index']['order'];
+            $titolo = 'Elenco Attestati - Completati e Pagati';
+            $sql_0001 = "SELECT ".$campi_visualizzati." FROM ".$tabella." WHERE $where $ordine LIMIT 1";
+            $sql_0001_1 = "SELECT COUNT(id) AS conto FROM ".$tabella." WHERE $where $ordine";
+            $conto = $dblink->get_field($sql_0001_1);
+            stampa_table_datatables_ajax($sql_0001, "datatable_ajax", $titolo.' ['.$conto.' Record]', '', '', false);
+        break;
+        
+        case 'table_listaIscrizioniCompletatiNonPagati':
+             $tabella = "lista_iscrizioni";
+            $campi_visualizzati = $table_listaIscrizioniPartecipantiCompletatiNonPagati['index']['campi'];
+            $where = $table_listaIscrizioniPartecipantiCompletatiNonPagati['index']['where'];
+            $ordine = $table_listaIscrizioniPartecipantiCompletatiNonPagati['index']['order'];
+            $titolo = 'Elenco Attestati - Completati e NON Pagati';
+            $sql_0001 = "SELECT ".$campi_visualizzati." FROM ".$tabella." WHERE $where $ordine LIMIT 1";
+            $sql_0001_1 = "SELECT COUNT(id) AS conto FROM ".$tabella." WHERE $where $ordine";
+            $conto = $dblink->get_field($sql_0001_1);
+            stampa_table_datatables_ajax($sql_0001, "datatable_ajax", $titolo.' ['.$conto.' Record]', '', 'red-thunderbird', false);
         break;
         
         case 'table_listaIscrizioniInAttesa':
