@@ -224,11 +224,21 @@ function stampa_bootstrap_form_esporta($tabella,$id,$titolo,$action="".BASE_URL.
 
 
     $arrayReturn['referer'] = $_SERVER['HTTP_REFERER'];
+    
+    $campi_non_editabili = explode(",",$arrayReturn['campi_non_editabili']);
+    $campi_visualizzati = explode(",",$arrayReturn['campi_visualizzati']);
+    
+    foreach ($campi_non_editabili as $search){
+        $key = array_search("`".$search."`", $campi_visualizzati);
+        unset($campi_visualizzati[$key]);
+    }
+    
+    $campi_visualizzati = implode(",", $campi_visualizzati);
 
     $arrayReturn['esporta'] = false;
     $arrayReturn['esporta'] = true;
-    $arrayReturn['num_campi'] = $dblink->num_fields("SELECT ".$arrayReturn['campi_visualizzati']." FROM ".$arrayReturn['tabella']." LIMIT 1");
-    $arrayReturn['sql'] = "SELECT ".$arrayReturn['campi_visualizzati']." FROM ".$arrayReturn['tabella']." WHERE ".$arrayReturn['where'];
+    $arrayReturn['num_campi'] = $dblink->num_fields("SELECT ".$campi_visualizzati." FROM ".$arrayReturn['tabella']." LIMIT 1");
+    $arrayReturn['sql'] = "SELECT ".$campi_visualizzati." FROM ".$arrayReturn['tabella']." WHERE ".$arrayReturn['where'];
     $row = $dblink->get_row($arrayReturn['sql']);
 ?>
         <!-- INIZIO FORM-->
@@ -292,14 +302,14 @@ function stampa_bootstrap_form_esporta($tabella,$id,$titolo,$action="".BASE_URL.
     echo "<div class=\"col-md-12 form-group\">";
     foreach ($arrayCampi as $key => $campo) {
         $countCampi++;
-        if(trim($arrayTipoCampi[$key])=="hidden"){
+        /*if(trim($arrayTipoCampi[$key])=="hidden"){
                 $hidden.=print_hidden($campo,(isset($_POST[$campo]) ? $_POST[$campo] : $row[$key]),false);
             continue;
-        }
+        }*/
         
-        if($countCampi > $countCampiAll){
+        /*if($countCampi > $countCampiAll){
             $colNum = (5-$count)*$colNum;
-        }
+        }*/
         
         if(($stile=="tripla" && $count==7) || ($stile=="doppia" && $count==5) || ($stile=="singola" && $count==3)){
             echo "</div><div class=\"col-md-12 form-group\">";
@@ -316,7 +326,7 @@ function stampa_bootstrap_form_esporta($tabella,$id,$titolo,$action="".BASE_URL.
                         <label>".$arrayReturn['campi_etichette'][$key]."</label><br />
                         <div class=\"input-group\">
                         <span class=\"input-group-addon\">
-                        <input type=\"checkbox\" id=\"chk_$campo\" name=\"chk_$campo\" ".(isset($_POST['chk_'.$campo]) ? "checked" : ($arrayReturn['chk'][$campo] ? "checked" : ""))."><span></span>
+                        <input type=\"checkbox\" id=\"chk_$campo\" name=\"chk_$campo\" ".(isset($_POST['chk_'.$campo]) ? "checked" : (!isset($_POST) && $arrayReturn['chk'][$campo] ? "checked" : ""))."><span></span>
                         </span>";
                         print_hidden("etk_".$campo,$arrayReturn['campi_etichette'][$key]);
                         print_input($campo,(isset($_POST[$campo]) ? $_POST[$campo] : $arrayReturn['default'][$campo]),$arrayReturn['campi_etichette'][$key],'');
@@ -325,16 +335,17 @@ function stampa_bootstrap_form_esporta($tabella,$id,$titolo,$action="".BASE_URL.
                     </div>";
             break;
         
-            case "hidden":
+            case "inner_select":
                 echo "<div class=\"col-md-$colNum\">
                         <label>".$arrayReturn['campi_etichette'][$key]."</label><br />
                         <div class=\"input-group\">
                         <span class=\"input-group-addon\">
-                        <input type=\"checkbox\" id=\"chk_$campo\" name=\"chk_$campo\" ".(isset($_POST['chk_'.$campo]) ? "checked" : ($arrayReturn['chk'][$campo] ? "checked" : ""))."><span></span>
+                        <input type=\"checkbox\" id=\"chk_$campo\" name=\"chk_$campo\" ".(isset($_POST['chk_'.$campo]) ? "checked" : (!isset($_POST) && $arrayReturn['chk'][$campo] ? "checked" : ""))."><span></span>
                         </span>";
                         print_hidden("etk_".$campo,$arrayReturn['campi_etichette'][$key]);
-                        print_input($campo,(isset($_POST[$campo]) ? $_POST[$campo] : $arrayReturn['default'][$campo]),$arrayReturn['campi_etichette'][$key],true);
-                        print_select_static(array($arrayReturn['slk_default'][$campo] => $arrayReturn['slk_default'][$campo]), "slk_$campo", (isset($_POST["slk_$campo"]) ? $_POST["slk_$campo"] : (isset($arrayReturn['slk_default'][$campo]) ? $arrayReturn['slk_default'][$campo] : "")));
+                        print_hidden("inner_select_".$campo,(isset($_POST[$campo]) ? $_POST[$campo] : $arrayReturn['default'][$campo]),$arrayReturn['campi_etichette'][$key],true);
+                        echo "<span class=\"btn btn-outline black input-sm\" style=\"width: 100%; border: 1px solid #ccc;\">".$arrayReturn['campi_etichette'][$key]."</span>";
+                        //print_select_static(array($arrayReturn['slk_default'][$campo] => $arrayReturn['slk_default'][$campo]), "slk_$campo", (isset($_POST["slk_$campo"]) ? $_POST["slk_$campo"] : (isset($arrayReturn['slk_default'][$campo]) ? $arrayReturn['slk_default'][$campo] : "")));
                 echo "</div>
                     </div>";
             break;
@@ -344,7 +355,7 @@ function stampa_bootstrap_form_esporta($tabella,$id,$titolo,$action="".BASE_URL.
                         <label>".$arrayReturn['campi_etichette'][$key]."</label><br />
                         <div class=\"input-group\">
                         <span class=\"input-group-addon\">
-                        <input type=\"checkbox\" id=\"chk_$campo\" name=\"chk_$campo\" ".(isset($_POST['chk_'.$campo]) ? "checked" : ($arrayReturn['chk'][$campo] ? "checked" : ""))."><span></span>
+                        <input type=\"checkbox\" id=\"chk_$campo\" name=\"chk_$campo\" ".(isset($_POST['chk_'.$campo]) ? "checked" : (!isset($_POST) && $arrayReturn['chk'][$campo] ? "checked" : ""))."><span></span>
                         </span>";
                         print_hidden("etk_".$campo,$arrayReturn['campi_etichette'][$key]);
                         print_input_ora($campo,(isset($_POST[$campo]) ? $_POST[$campo] : $arrayReturn['default'][$campo]),$arrayReturn['campi_etichette'][$key],'');
@@ -358,7 +369,7 @@ function stampa_bootstrap_form_esporta($tabella,$id,$titolo,$action="".BASE_URL.
                         <label>".$arrayReturn['campi_etichette'][$key]."</label><br />
                         <div class=\"input-group\">
                         <span class=\"input-group-addon\">
-                        <input type=\"checkbox\" id=\"chk_$campo\" name=\"chk_$campo\" ".(isset($_POST['chk_'.$campo]) ? "checked" : ($arrayReturn['chk'][$campo] ? "checked" : ""))."><span></span>
+                        <input type=\"checkbox\" id=\"chk_$campo\" name=\"chk_$campo\" ".(isset($_POST['chk_'.$campo]) ? "checked" : (!isset($_POST) && $arrayReturn['chk'][$campo] ? "checked" : ""))."><span></span>
                         </span>";
                         print_hidden("etk_".$campo,$arrayReturn['campi_etichette'][$key]);
                         print_input_date($campo,(isset($_POST[$campo]) ? $_POST[$campo] : (isset($arrayReturn['default'][$campo]) ? $arrayReturn['default'][$campo] : "")),$arrayReturn['campi_etichette'][$key],'');
@@ -372,7 +383,7 @@ function stampa_bootstrap_form_esporta($tabella,$id,$titolo,$action="".BASE_URL.
                         <label>".$arrayReturn['campi_etichette'][$key]."</label><br />
                         <div class=\"input-group\">
                         <span class=\"input-group-addon\">
-                        <input type=\"checkbox\" id=\"chk_$campo\" name=\"chk_$campo\" ".(isset($_POST['chk_'.$campo]) ? "checked" : ($arrayReturn['chk'][$campo] ? "checked" : ""))."><span></span>
+                        <input type=\"checkbox\" id=\"chk_$campo\" name=\"chk_$campo\" ".(isset($_POST['chk_'.$campo]) ? "checked" : (!isset($_POST) && $arrayReturn['chk'][$campo] ? "checked" : ""))."><span></span>
                         </span>";
                         $arrayReturn['slk'][$campo]['BETWEEN'] = "BETWEEN";
                         $arrayReturn['slk'][$campo]['ESCLUDI'] = "ESCLUDI";
@@ -510,7 +521,7 @@ function stampa_bootstrap_form_esporta($tabella,$id,$titolo,$action="".BASE_URL.
                         <label>".$arrayReturn['campi_etichette'][$key]."</label><br />
                         <div class=\"input-group\">
                         <span class=\"input-group-addon\">
-                        <input type=\"checkbox\" id=\"chk_$campo\" name=\"chk_$campo\" ".(isset($_POST['chk_'.$campo]) ? "checked" : ($arrayReturn['chk'][$campo] ? "checked" : ""))."><span></span>
+                        <input type=\"checkbox\" id=\"chk_$campo\" name=\"chk_$campo\" ".(isset($_POST['chk_'.$campo]) ? "checked" : (!isset($_POST) && $arrayReturn['chk'][$campo] ? "checked" : ""))."><span></span>
                         </span>";
                         print_hidden("etk_".$campo,$arrayReturn['campi_etichette'][$key]);
                         print_select_static($arrayReturn['campi_select'][$campo],$campo,(isset($_POST[$campo]) ? $_POST[$campo] : $arrayReturn['default'][$campo]), "", true,"select2-allow-clear");
@@ -524,7 +535,7 @@ function stampa_bootstrap_form_esporta($tabella,$id,$titolo,$action="".BASE_URL.
                         <label>".$arrayReturn['campi_etichette'][$key]."</label><br />
                         <div class=\"input-group\">
                         <span class=\"input-group-addon\">
-                        <input type=\"checkbox\" id=\"chk_$campo\" name=\"chk_$campo\" ".(isset($_POST['chk_'.$campo]) ? "checked" : ($arrayReturn['chk'][$campo] ? "checked" : ""))."><span></span>
+                        <input type=\"checkbox\" id=\"chk_$campo\" name=\"chk_$campo\" ".(isset($_POST['chk_'.$campo]) ? "checked" : (!isset($_POST) && $arrayReturn['chk'][$campo] ? "checked" : ""))."><span></span>
                         </span>";
                         print_hidden("etk_".$campo,$arrayReturn['campi_etichette'][$key]);
                         if(!empty($arrayReturn['ajax'])){
@@ -543,7 +554,7 @@ function stampa_bootstrap_form_esporta($tabella,$id,$titolo,$action="".BASE_URL.
                         <label>".$arrayReturn['campi_etichette'][$key]."</label><br />
                         <div class=\"input-group\">
                         <span class=\"input-group-addon\">
-                        <input type=\"checkbox\" id=\"chk_$campo\" name=\"chk_$campo\" ".(isset($_POST['chk_'.$campo]) ? "checked" : ($arrayReturn['chk'][$campo] ? "checked" : ""))."><span></span>
+                        <input type=\"checkbox\" id=\"chk_$campo\" name=\"chk_$campo\" ".(isset($_POST['chk_'.$campo]) ? "checked" : (!isset($_POST) && $arrayReturn['chk'][$campo] ? "checked" : ""))."><span></span>
                         </span>";
                         $arrayReturn['slk'][$campo]['IN'] = "IN";
                         $arrayReturn['slk'][$campo]['NOT IN'] = "NOT IN";
@@ -560,7 +571,7 @@ function stampa_bootstrap_form_esporta($tabella,$id,$titolo,$action="".BASE_URL.
                         <label>".$arrayReturn['campi_etichette'][$key]."</label><br />
                         <div class=\"input-group\">
                         <span class=\"input-group-addon\">
-                        <input type=\"checkbox\" id=\"chk_$campo\" name=\"chk_$campo\" ".(isset($_POST['chk_'.$campo]) ? "checked" : ($arrayReturn['chk'][$campo] ? "checked" : ""))."><span></span>
+                        <input type=\"checkbox\" id=\"chk_$campo\" name=\"chk_$campo\" ".(isset($_POST['chk_'.$campo]) ? "checked" : (!isset($_POST) && $arrayReturn['chk'][$campo] ? "checked" : ""))."><span></span>
                         </span>";
                         print_hidden("etk_".$campo,$arrayReturn['campi_etichette'][$key]);
                         print_bs_select($arrayReturn['campi_select'][$campo],$campo,(isset($_POST[$campo]) ? $_POST[$campo] : $arrayReturn['default'][$campo]));

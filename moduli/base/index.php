@@ -103,6 +103,9 @@ if (isset($_GET['tbl'])) {
                     get_pagina_titolo($idMenu, $where_lista_menu);
                     ?>
                     <!-- END PAGE TITLE -->
+                    <div style="text-align: right; margin-top: -50px; margin-bottom: 15px;"> 
+                        <button id="cancellaRicarcaTabella" type="button" class="btn btn-icon btn-outline green-steel" alt="CANCELLA RICERCA" title="CANCELLA RICERCA"><i class="fa fa-eraser"></i> Cancella Ricerca</button>
+                    </div>
                     <!-- END PAGE HEADER-->
                     <?php Stampa_HTML_index_Base($tabella); ?>
                     <div class="form-actions left">

@@ -630,6 +630,14 @@ function stampa_bootstrap_form_horizontal($tabella,$id,$titolo,$action="".BASE_U
                         echo'</div>';
                 }
             break;
+            
+            case "file":
+                echo "<label class=\"col-md-$colNum control-label\">".$arrayReturn['campi_etichette'][$key]."</label>
+                        <div class=\"col-md-$inputColNum\">";
+                        print_hidden($campo."_directoryFile",$arrayReturn['campi_file'][$campo],true);
+                        print_input_file($campo,$row[$key],$arrayReturn['campi_etichette'][$key],in_array($campo, $arrayCampiNonEditabili));
+                echo "</div>";
+            break;
         }
         $count++;
     }
@@ -657,6 +665,12 @@ function stampa_bootstrap_form_horizontal($tabella,$id,$titolo,$action="".BASE_U
 
 function print_input($nomeInput,$valoreSelezionato,$placeHolder="",$readonly=false,$echo = true){
     $ret = "<input type=\"text\" id=\"$nomeInput\" name=\"$nomeInput\" value=\"$valoreSelezionato\" class=\"form-control input-sm\" placeholder=\"".$placeHolder."\" ".($readonly ? "readonly" : "").">";
+    if($echo)  echo $ret;
+    else return $ret;
+}
+
+function print_input_file($nomeInput,$valoreSelezionato,$placeHolder="",$readonly=false,$echo = true){
+    $ret = "<input type=\"file\" id=\"$nomeInput\" name=\"$nomeInput\" value=\"$valoreSelezionato\" class=\"form-control input-sm\" placeholder=\"".$placeHolder."\" ".($readonly ? "readonly" : "").">";
     if($echo)  echo $ret;
     else return $ret;
 }
@@ -873,6 +887,10 @@ function get_campi_tabella($dati, $ret = array()){
 
                 case "sql":
                     $ret['campi_select'][$value['campo']] = $val;
+                break;
+            
+                case "dir":
+                    $ret['campi_file'][$value['campo']] = $val;
                 break;
 
                 case "ajax":
@@ -1178,6 +1196,14 @@ function get_campi_tabella($dati, $ret = array()){
             $arrayETK[$key] = $value;
             unset($arrayCampi[$key]);
         }
+        $pos_5 = strpos($key, "inner_select_");
+        if($pos_5 !== false){
+            if(!empty($arrayCampi[str_replace('inner_select_','chk_',$key)])){
+                unset($arrayCampi[str_replace('inner_select_','chk_',$key)]);
+            }else{
+                unset($arrayCampi[$key]);
+            }
+        }
     }
 
     $campi_visualizzati = "";
@@ -1187,8 +1213,9 @@ function get_campi_tabella($dati, $ret = array()){
         $arrayCampi[$key] = trim(str_replace("`", "", $value));
         $pos = strpos($key, "txt_");
         $pos_2 = strpos($key, "chk_");
+        $pos_3 = strpos($key, "inner_select_");
         if($pos !== false) {
-        }elseif($pos_2 !== false){
+        }elseif($pos_2 !== false && $pos_3 === false){
             switch (str_replace('chk_','',$key)) {
                 case "id_azienda":
                     $campi_visualizzati .= "(SELECT CONCAT(lista_aziende.ragione_sociale,' ',lista_aziende.forma_giuridica) AS nome FROM lista_aziende WHERE lista_aziende.id=".$nome_tabella.".".str_replace('chk_','',$key).")  AS '".$arrayETK[str_replace('chk_','etk_',$key)]."', ";
@@ -1220,6 +1247,22 @@ function get_campi_tabella($dati, $ret = array()){
                 
                 default:
                     $campi_visualizzati .= str_replace('chk_','',$key)." AS '".$arrayETK[str_replace('chk_','etk_',$key)]."', ";
+                break;
+            }
+        }elseif($pos_3 !== false){
+            switch ($nome_tabella) {
+                case "lista_preventivi":
+                    $campi_visualizzati .= $value." AS '".$arrayETK[str_replace('inner_select_','etk_',$key)]."', ";
+                    
+                    /*$campi_visualizzati .= "(SELECT email AS email_professionista FROM lista_professionisti WHERE lista_professionisti.id=lista_preventivi.id_professionista)  AS email_professionista, ";
+                    $campi_visualizzati .= "(SELECT CONCAT(lista_aziende.indirizzo,' ',lista_aziende.cap,' ',lista_aziende.citta,' (',lista_aziende.provincia,')') AS Indirizzo FROM lista_aziende WHERE lista_aziende.id=lista_preventivi.id_azienda)  AS indirizzo_professionista, ";
+                    $campi_visualizzati .= "CONCAT((SELECT GROUP_CONCAT(lista_preventivi_dettaglio.nome_prodotto,' (', lista_preventivi_dettaglio.codice_prodotto ,')' SEPARATOR '<br>') FROM lista_preventivi_dettaglio WHERE lista_preventivi_dettaglio.id_preventivo = lista_preventivi.id)) AS elenco_prodotti, ";
+                    $campi_visualizzati .= "(SELECT professione AS email_professionista FROM lista_professionisti WHERE lista_professionisti.id=lista_preventivi.id_professionista)  AS professione, ";
+                    $campi_visualizzati .= "(SELECT provincia_albo AS email_professionista FROM lista_professionisti WHERE lista_professionisti.id=lista_preventivi.id_professionista)  AS provincia_albo, ";
+                    $campi_visualizzati .= "(SELECT numero_albo AS email_professionista FROM lista_professionisti WHERE lista_professionisti.id=lista_preventivi.id_professionista)  AS numero_albo, ";*/
+                break;
+                
+                default:
                 break;
             }
         }else{
@@ -1281,15 +1324,6 @@ function get_campi_tabella($dati, $ret = array()){
             }
         }
         $tuttiCampi[$key] = trim(str_replace("`", "", $value));
-     }
-     
-     if($nome_tabella == "lista_preventivi"){
-         $campi_visualizzati .= "(SELECT email AS email_professionista FROM lista_professionisti WHERE lista_professionisti.id=lista_preventivi.id_professionista)  AS email_professionista, ";
-         $campi_visualizzati .= "(SELECT CONCAT(lista_aziende.indirizzo,' ',lista_aziende.cap,' ',lista_aziende.citta,' (',lista_aziende.provincia,')') AS Indirizzo FROM lista_aziende WHERE lista_aziende.id=lista_preventivi.id_azienda)  AS indirizzo, ";
-         $campi_visualizzati .= "CONCAT((SELECT GROUP_CONCAT(lista_preventivi_dettaglio.nome_prodotto,' (', lista_preventivi_dettaglio.codice_prodotto ,')' SEPARATOR '<br>') FROM lista_preventivi_dettaglio WHERE lista_preventivi_dettaglio.id_preventivo = lista_preventivi.id)) AS Prodotti, ";
-         $campi_visualizzati .= "(SELECT professione AS email_professionista FROM lista_professionisti WHERE lista_professionisti.id=lista_preventivi.id_professionista)  AS professione, ";
-         $campi_visualizzati .= "(SELECT provincia_albo AS email_professionista FROM lista_professionisti WHERE lista_professionisti.id=lista_preventivi.id_professionista)  AS provincia_albo, ";
-         $campi_visualizzati .= "(SELECT numero_albo AS email_professionista FROM lista_professionisti WHERE lista_professionisti.id=lista_preventivi.id_professionista)  AS numero_albo, ";
      }
 
     $campi_visualizzati_perfetti = substr($campi_visualizzati,0,-2);

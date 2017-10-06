@@ -38,6 +38,14 @@ $( document ).ready(function() {
         toastr.error("Si è verificato un errore nell'aggironamento dei dati.");
     }
     
+    $("#cancellaRicarcaTabella").on( "click", function(event) {
+        event.preventDefault(); 
+        var table = $('#datatable_ajax').DataTable();
+        table.state.clear();
+        table.destroy();
+        TableDatatablesAjaxBase.init();
+    });
+    
     TableDatatablesAjaxBase.init();
     ComponentsSelectProdotto.init();
     TabelleBase.init();
@@ -148,6 +156,7 @@ var TableDatatablesAjaxBase = function () {
 
             // setup responsive extension: http://datatables.net/extensions/responsive/
             responsive: false,
+            stateSave: true,
 
             "ajax": {
                 "url": BASE_URL_HOST+"/moduli/base/scripts/server_processing.php?tbl="+$.urlParam('tbl'), // ajax source

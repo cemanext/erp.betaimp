@@ -658,7 +658,8 @@ $table_listaPassword = array(
                 array(  "campo" => "avatar",
                         "tipo" => "file",
                         "etichetta" => "File Avatar",
-                        "readonly" => false
+                        "readonly" => false,
+                        "dir" => BASE_ROOT."media/users/"
                     ),
                 array(  "campo" => "stato",
                         "tipo" => "select_static",
@@ -791,7 +792,8 @@ $table_listaPasswordUtenti = array(
                 array(  "campo" => "avatar",
                         "tipo" => "file",
                         "etichetta" => "File Avatar",
-                        "readonly" => false
+                        "readonly" => false,
+                        "dir" => BASE_ROOT."media/users/"
                     ),
                 array(  "campo" => "stato",
                         "tipo" => "select_static",
@@ -1656,7 +1658,7 @@ $table_listaPreventivi = array(
                         "etichetta" => "Note",
                         "readonly" => false
                     )),
-                    "esporta" => array(
+            "esporta" => array( 
                     array( "campo" => "dataagg",
                         "tipo" => "confronto_data",
                         "etichetta" => "Data Ultimo Aggiornamento",
@@ -1787,6 +1789,76 @@ $table_listaPreventivi = array(
                         "uguale" => false,
                         "maggiore" => false,
                         "default" => "",
+                        "attivo" => true
+                    ),
+                    array("campo" => "id_provvigione",
+                        "tipo" => "inner_select",
+                        "etichetta" => "Codice Partner",
+                        "readonly" => true,
+                        "like" => false,
+                        "uguale" => false,
+                        "maggiore" => false,
+                        "default" => "(SELECT GROUP_CONCAT(lista_provvigioni.codice SEPARATOR '<br>') FROM lista_provvigioni WHERE lista_provvigioni.id IN (SELECT lista_preventivi_dettaglio.id_provvigione FROM lista_preventivi_dettaglio WHERE lista_preventivi_dettaglio.id_preventivo = lista_preventivi.id) ORDER BY lista_provvigioni.codice ASC)",
+                        "attivo" => true
+                    ),
+                    array("campo" => "email_professionista",
+                        "tipo" => "inner_select",
+                        "etichetta" => "Email Professionista",
+                        "readonly" => true,
+                        "like" => true,
+                        "uguale" => false,
+                        "maggiore" => false,
+                        "default" => "(SELECT email AS email_professionista FROM lista_professionisti WHERE lista_professionisti.id=lista_preventivi.id_professionista)",
+                        "attivo" => true
+                    ),
+                    array("campo" => "indirizzo_professionista",
+                        "tipo" => "inner_select",
+                        "etichetta" => "Indirizzo",
+                        "readonly" => true,
+                        "like" => true,
+                        "uguale" => false,
+                        "maggiore" => false,
+                        "default" => "(SELECT CONCAT(lista_aziende.indirizzo,' ',lista_aziende.cap,' ',lista_aziende.citta,' (',lista_aziende.provincia,')') AS Indirizzo FROM lista_aziende WHERE lista_aziende.id=lista_preventivi.id_azienda)",
+                        "attivo" => true
+                    ),
+                    array("campo" => "elenco_prodotti",
+                        "tipo" => "inner_select",
+                        "etichetta" => "Prodotti",
+                        "readonly" => true,
+                        "like" => true,
+                        "uguale" => false,
+                        "maggiore" => false,
+                        "default" => "CONCAT((SELECT GROUP_CONCAT(lista_preventivi_dettaglio.nome_prodotto,' (', lista_preventivi_dettaglio.codice_prodotto ,')' SEPARATOR '<br>') FROM lista_preventivi_dettaglio WHERE lista_preventivi_dettaglio.id_preventivo = lista_preventivi.id))",
+                        "attivo" => true
+                    ),
+                    array("campo" => "professione",
+                        "tipo" => "inner_select",
+                        "etichetta" => "professione",
+                        "readonly" => true,
+                        "like" => true,
+                        "uguale" => false,
+                        "maggiore" => false,
+                        "default" => "(SELECT professione AS email_professionista FROM lista_professionisti WHERE lista_professionisti.id=lista_preventivi.id_professionista)",
+                        "attivo" => true
+                    ),
+                    array("campo" => "provincia_albo",
+                        "tipo" => "inner_select",
+                        "etichetta" => "Provincia Albo",
+                        "readonly" => true,
+                        "like" => true,
+                        "uguale" => false,
+                        "maggiore" => false,
+                        "default" => "(SELECT provincia_albo AS email_professionista FROM lista_professionisti WHERE lista_professionisti.id=lista_preventivi.id_professionista)",
+                        "attivo" => true
+                    ),
+                    array("campo" => "numero_albo",
+                        "tipo" => "inner_select",
+                        "etichetta" => "Numero Albo",
+                        "readonly" => true,
+                        "like" => true,
+                        "uguale" => false,
+                        "maggiore" => false,
+                        "default" => "(SELECT numero_albo AS email_professionista FROM lista_professionisti WHERE lista_professionisti.id=lista_preventivi.id_professionista)",
                         "attivo" => true
                     )
                     )
@@ -2715,6 +2787,12 @@ $table_listaIscrizioniPartecipanti = array(
                     "etichetta" => "Avanzamento %",
                     "readonly" => true
                 ),
+                array(  "campo" => "id_fattura",
+                    "tipo" => "select2",
+                    "etichetta" => "Fattura Collegata",
+                    "readonly" => false,
+                    "sql" => "SELECT id as valore, CONCAT(codice,'/',sezionale,' del ',DATE_FORMAT(DATE(data_creazione), '%d-%m-%Y')) AS nome FROM lista_fatture WHERE lista_fatture.id_professionista IN (SELECT lista_iscrizioni.id_professionista FROM lista_iscrizioni WHERE id = '".$_GET['id']."')"
+                ),
                 /*array(
                 "campo" => "stato",
                 "tipo" => "select_static",
@@ -2901,6 +2979,7 @@ $table_listaIscrizioniPartecipantiCompletati = array(
 
 $table_listaIscrizioniPartecipantiCompletatiPagati = array(
                 "index" => array("campi" => "CONCAT('<a class=\"btn btn-circle btn-icon-only yellow btn-outline\" href=\"dettaglio.php?tbl=lista_iscrizioni_partecipanti&id=',id,'\" title=\"DETTAGLIO\" alt=\"DETTAGLIO\"><i class=\"fa fa-search\"></i></a>') AS 'fa-search',
+                CONCAT('<a class=\"btn btn-circle btn-icon-only blue-steel btn-outline\" href=\"".BASE_URL."/moduli/corsi/dettaglio.php?tbl=lista_corsi&id=',id_corso,'\" title=\"CONFIGURAZIONE\" alt=\"CONFIGURAZIONE\" target=\"_blank\"><i class=\"fa fa-cogs\"></i></a>') AS 'fa-cogs',
                 CONCAT('<a class=\"btn btn-circle btn-icon-only red btn-outline\" href=\"".BASE_URL."/moduli/corsi/printAttestatoPDF.php?idIscrizione=',id,'\" title=\"ATTESTATO\" alt=\"ATTESTATO\" target=\"_blank\"><i class=\"fa fa-file-pdf-o\"></i></a>') AS 'fa-file-pdf-o',
                 IF(abbonamento>=1,'<span class=\"btn sbold uppercase btn-outline blue-steel\">Abbonamento</span>', '<span class=\"btn sbold uppercase btn-outline green-seagreen\">Singolo Corso</span>') AS 'Tipo',
                                             (SELECT CONCAT('<span class=\"btn sbold uppercase btn-outline blue-steel\">',cognome,' ',nome,'</span>') AS nome FROM lista_professionisti WHERE id = id_professionista LIMIT 1) AS Partecipante,
@@ -2986,6 +3065,7 @@ $table_listaIscrizioniPartecipantiCompletatiPagati = array(
         
 $table_listaIscrizioniPartecipantiCompletatiNonPagati = array(
                 "index" => array("campi" => "CONCAT('<a class=\"btn btn-circle btn-icon-only yellow btn-outline\" href=\"dettaglio.php?tbl=lista_iscrizioni_partecipanti&id=',id,'\" title=\"DETTAGLIO\" alt=\"DETTAGLIO\"><i class=\"fa fa-search\"></i></a>') AS 'fa-search',
+                CONCAT('<a class=\"btn btn-circle btn-icon-only blue-steel btn-outline\" href=\"".BASE_URL."/moduli/corsi/dettaglio.php?tbl=lista_corsi&id=',id_corso,'\" title=\"CONFIGURAZIONE\" alt=\"CONFIGURAZIONE\" target=\"_blank\"><i class=\"fa fa-cogs\"></i></a>') AS 'fa-cogs',
                 CONCAT('<a class=\"btn btn-circle btn-icon-only red btn-outline\" href=\"".BASE_URL."/moduli/corsi/printAttestatoPDF.php?idIscrizione=',id,'\" title=\"ATTESTATO\" alt=\"ATTESTATO\" target=\"_blank\"><i class=\"fa fa-file-pdf-o\"></i></a>') AS 'fa-file-pdf-o',
                 IF(abbonamento>=1,'<span class=\"btn sbold uppercase btn-outline blue-steel\">Abbonamento</span>', '<span class=\"btn sbold uppercase btn-outline green-seagreen\">Singolo Corso</span>') AS 'Tipo',
                                             (SELECT CONCAT('<span class=\"btn sbold uppercase btn-outline blue-steel\">',cognome,' ',nome,'</span>') AS nome FROM lista_professionisti WHERE id = id_professionista LIMIT 1) AS Partecipante,
@@ -3329,7 +3409,8 @@ $table_listaCommerciali = array(
                 array(  "campo" => "avatar",
                         "tipo" => "file",
                         "etichetta" => "File Avatar",
-                        "readonly" => false
+                        "readonly" => false,
+                        "dir" => BASE_ROOT."media/users/"
                     ),
                 array(  "campo" => "stato",
                         "tipo" => "select_static",
@@ -3745,11 +3826,15 @@ $table_listaFattureInvioMultiplo = array(
  `id`, `dataagg`, `data_creazione`, `id_fattura`, `id_commessa`, `id_commessa_dettaglio`, `id_preventivo`,
  `id_prodotto`, `id_contatto`, `id_bolla`, `id_costo`, `tipo_documento`, `categoria`, `nome`, `descrizione`, `estensione`, `orientamento`,
  `note`, `scrittore`, `stato`, `tabella`, `id_corso`, `id_classe`
- */
+
+ * CONCAT('<a class=\"btn btn-circle btn-icon-only yellow btn-outline\" href=\"dettaglio.php?tbl=lista_attestati&id=',id,'\" title=\"DETTAGLIO\" alt=\"DETTAGLIO\"><i class=\"fa fa-search\"></i></a>') AS 'fa-search',
+   CONCAT('<a class=\"btn btn-circle btn-icon-only red btn-outline\" href=\"printAttestatoPDF_',orientamento,'.php?idAttestato=',id,'\" title=\"STAMPA\" alt=\"STAMPA\" target=\"_blank\"><i class=\"fa fa-file-pdf-o\"></i></a>') AS 'fa-file-pdf-o',
+                                            
+ * 
+ *  */
+
 $table_documentiAttestati = array(
-                "index" => array("campi" => "CONCAT('<a class=\"btn btn-circle btn-icon-only yellow btn-outline\" href=\"dettaglio.php?tbl=lista_attestati&id=',id,'\" title=\"DETTAGLIO\" alt=\"DETTAGLIO\"><i class=\"fa fa-search\"></i></a>') AS 'fa-search',
-                                            CONCAT('<a class=\"btn btn-circle btn-icon-only red btn-outline\" href=\"printAttestatoPDF_',orientamento,'.php?idAttestato=',id,'\" title=\"STAMPA\" alt=\"STAMPA\" target=\"_blank\"><i class=\"fa fa-file-pdf-o\"></i></a>') AS 'fa-file-pdf-o',
-                                            CONCAT('<a class=\"btn btn-circle btn-icon-only blue btn-outline\" href=\"modifica.php?tbl=lista_attestati&id=',id,'\" title=\"MODIFICA\" alt=\"MODIFICA\"><i class=\"fa fa-edit\"></i></a>') AS 'fa-edit',
+                "index" => array("campi" => "CONCAT('<a class=\"btn btn-circle btn-icon-only blue btn-outline\" href=\"modifica.php?tbl=lista_attestati&id=',id,'\" title=\"MODIFICA\" alt=\"MODIFICA\"><i class=\"fa fa-edit\"></i></a>') AS 'fa-edit',
                                             CONCAT('<a class=\"btn btn-circle btn-icon-only red btn-outline\" href=\"cancella.php?tbl=lista_attestati&id=',id,'\" title=\"ELIMINA\" alt=\"ELIMINA\"><i class=\"fa fa-trash\"></i></a>') AS 'fa-trash',
                                             nome, orientamento, tipo_documento AS 'Tipo', descrizione",
                                 "where" => "1 ".$where_lista_attestati,
@@ -3773,7 +3858,8 @@ $table_documentiAttestati = array(
                      array(  "campo" => "nome",
                         "tipo" => "file",
                         "etichetta" => "File",
-                        "readonly" => true
+                        "readonly" => true,
+                        "dir" => BASE_ROOT."moduli/corsi/"
                     ),
                     array(  "campo" => "tipo_documento",
                         "tipo" => "input",

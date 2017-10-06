@@ -24,8 +24,9 @@ $sql_0005 = "UPDATE lista_iscrizioni, lista_password
 $dblink->query($sql_0005);
 */
 
-$sql_004 = "SELECT lista_iscrizioni.id, lista_iscrizioni.id_professionista, lista_iscrizioni.id_utente_moodle, lista_corsi.id_corso_moodle 
-FROM lista_iscrizioni  INNER JOIN lista_corsi
+$sql_004 = "SELECT lista_iscrizioni.id, lista_iscrizioni.id_professionista, lista_iscrizioni.id_utente_moodle,
+        lista_corsi.id_corso_moodle, lista_iscrizioni.id_corso, lista_iscrizioni.id_classe 
+        FROM lista_iscrizioni  INNER JOIN lista_corsi
         ON lista_corsi.id=lista_iscrizioni.id_corso
         WHERE 1
         AND lista_iscrizioni.stato = 'In Corso'";
@@ -55,6 +56,9 @@ foreach ($rowsIscrizioni as $rowIscrizione) {
         $rowCompleto = $dblink->get_row($sql_001_moodle_001, true);
 
         if($dblink->num_rows($sql_001_moodle_001)){
+            
+            $rowConfig = $dblink->get_row("SELECT id_fattura, id_fattura_dettaglio FROM lista_iscrizioni WHERE data_fine_iscrizione >= '".date("Y-m-d", $rowCompleto['timemodified'])."' AND data_inizio_iscrizione <= '".date("Y-m-d", $rowCompleto['timemodified'])."' AND abbonamento = '1' AND id_professionista = '".$rowIscrizione['id_professionista']."' AND id_classe = '".$rowIscrizione['id_classe']."' AND stato LIKE 'Configurazione' ", true);
+            
             $updateIscrizione = array(
                 "dataagg" => date("Y-m-d H:i:s"),
                 "scrittore"=>$dblink->filter("autoCorsiCompletati"),
@@ -63,8 +67,14 @@ foreach ($rowsIscrizioni as $rowIscrizione) {
                 //"data_fine" => date("Y-m-d H:i:s", $rowCompleto['timemodified']),
                 "stato_completamento" => "Completato"
             );
+            
+            if(!empty($rowConfig)){
+                $updateIscrizione['id_fattura'] = $rowConfig['id_fattura'];
+                $updateIscrizione['id_fattura_dettaglio'] = $rowConfig['id_fattura_dettaglio'];
+            }
 
             $ok = $dblink->update("lista_iscrizioni", $updateIscrizione, array("id"=>$rowIscrizione['id']));
+            
             //CORSO COMPLETATO
              if($ok){
                 if (DISPLAY_DEBUG) echo '<li style="color: GREEN;"> OK !</li>';

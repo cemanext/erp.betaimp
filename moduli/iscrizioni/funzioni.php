@@ -311,10 +311,10 @@ function Stampa_HTML_Dettaglio_Iscrizioni($tabella, $id) {
 
             echo '<div class="row"><div class="col-md-12 col-sm-12">';
             if($tipoAbbonamento>=1){
+                //CONCAT('<a class=\"btn btn-circle btn-icon-only red btn-outline\" href=\"#####.php?tbl=lista_documenti&id=',id_professionista,'\" title=\"ATTESTATO\" alt=\"ATTESTATO\"><i class=\"fa fa fa-file-pdf-o\"></i></a>') AS 'fa-file-text',
             $sql_0001 = "SELECT
             IF(lista_iscrizioni.id_classe>0,(SELECT nome FROM lista_classi WHERE id = lista_iscrizioni.id_classe LIMIT 1),'') AS 'Classe',
-            CONCAT('<a class=\"btn btn-circle btn-icon-only red btn-outline\" href=\"#####.php?tbl=lista_documenti&id=',id_professionista,'\" title=\"ATTESTATO\" alt=\"ATTESTATO\"><i class=\"fa fa fa-file-pdf-o\"></i></a>') AS 'fa-file-pdf-o',
-            CONCAT('<a class=\"btn btn-circle btn-icon-only red btn-outline\" href=\"#####.php?tbl=lista_documenti&id=',id_professionista,'\" title=\"ATTESTATO\" alt=\"ATTESTATO\"><i class=\"fa fa fa-file-pdf-o\"></i></a>') AS 'fa-file-text',
+            CONCAT('<a class=\"btn btn-circle btn-icon-only red btn-outline\" href=\"".BASE_URL."/moduli/corsi/printAttestatoPDF.php?idIscrizione=',lista_iscrizioni.id,'\" target=\"_blank\" title=\"ATTESTATO\" alt=\"ATTESTATO\"><i class=\"fa fa fa-file-pdf-o\"></i></a>') AS 'fa-file-pdf-o',
             lista_corsi_configurazioni.`crediti`,
             CONCAT(lista_corsi_configurazioni.`avanzamento`,'%') AS 'Perc. Completamento',
             IF(lista_iscrizioni.avanzamento_completamento >= lista_corsi_configurazioni.`avanzamento`,'<i class=\"fa fa-thumbs-o-up\"></i>','<i class=\"fa fa-thumbs-o-down\"></i>')  AS 'fa-graduation-cap'

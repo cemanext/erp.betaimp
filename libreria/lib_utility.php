@@ -108,6 +108,8 @@ function salvaGenerale(){
         $conto = 0;
 
         $tuttiCampi = array();
+        $nomeCampoFile = null;
+        
         foreach ($arrayCampi as $key => $value) {
              $arrayCampi[$key] = trim(str_replace("`", "", $value));
              $pos = strpos($key, "txt_");
@@ -126,11 +128,58 @@ function salvaGenerale(){
                     break;
 
                     default:
-                        $isData = substr($key, 0, 4);
-                        if(strtolower($isData) == "data"){
-                            $tuttiCampi[$key] = $dblink->filter(GiraDataOra(trim(str_replace("`", "", $value))));
+                        if(strpos($key,"_directoryFile")){
+                            $nomeCampoFile = str_replace("_directoryFile", "", $key);
+                            
+                            if(!empty($_FILES)){
+                                
+                                $dir = $arrayCampi[$key];
+                                if(isset($_FILES[$nomeCampoFile]) and strlen($_FILES[$nomeCampoFile]["name"])>3 ){
+
+                                    $allegato = $_FILES[$nomeCampoFile]["name"];
+
+                                    /*	UPLOAD IMMAGINE     */
+                                    if(!is_dir(substr($dir, 0, -1))){
+                                        mkdir(substr($dir, 0, -1), 0777);
+                                    }
+
+                                    if($_FILES[$nomeCampoFile]["error"] > 0 and strlen($_FILES[$nomeCampoFile]["name"])>1){
+                                        //$testo_debug .= "<li>Return Code: " . $_FILES[$nomeCampoFile]["error"] . "</li>";
+                                    }else{
+
+                                       if (file_exists("".$dir. $_FILES[$nomeCampoFile]["name"])){
+
+                                            chmod($dir. $_FILES[$nomeCampoFile]["name"], 0777);
+                                            move_uploaded_file($_FILES[$nomeCampoFile]["tmp_name"],
+                                            "".$dir. $_FILES[$nomeCampoFile]["name"]);
+
+                                            $tuttiCampi[$nomeCampoFile] = $dblink->filter(trim(str_replace("`", "", $_FILES[$nomeCampoFile]["name"])));
+
+                                        }else{
+                                            
+                                            $fileUnlink = $dblink->get_field("SELECT $nomeCampoFile FROM $nome_tabella WHERE $nome_where");
+                                            
+                                            unlink($dir.$fileUnlink);
+                                            
+                                            move_uploaded_file($_FILES[$nomeCampoFile]["tmp_name"],
+                                            "".$dir. $_FILES[$nomeCampoFile]["name"]);
+
+                                            $tuttiCampi[$nomeCampoFile] = $dblink->filter(trim(str_replace("`", "", $_FILES[$nomeCampoFile]["name"])));
+                                        }
+
+                                   }
+
+                                   $nomeCampoFile = null;
+                                }
+                            }
+                            
                         }else{
-                            $tuttiCampi[$key] = $dblink->filter(trim(str_replace("`", "", $value)));
+                            $isData = substr($key, 0, 4);
+                            if(strtolower($isData) == "data"){
+                                $tuttiCampi[$key] = $dblink->filter(GiraDataOra(trim(str_replace("`", "", $value))));
+                            }else{
+                                $tuttiCampi[$key] = $dblink->filter(trim(str_replace("`", "", $value)));
+                            }
                         }
                     break;
                 }
@@ -158,7 +207,7 @@ function salvaGenerale(){
            //if($ok) header("Location:".$nome_referer."");
            //     else echo "error insert";
     }
-
+    
     return $ok;
 }
 

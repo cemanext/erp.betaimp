@@ -24,6 +24,19 @@ if(isset($_GET['tbl'])){
             }
             
         break;
+        
+        case "lista_attestati":
+            
+            if(isset($_GET['id'])){
+                $fileUnlink = $dblink->get_field("SELECT nome FROM lista_attestati WHERE id='".$_GET['id']."'");
+
+                unlink($fileUnlink);
+            }
+            
+            $ok = cancellaGenerale();
+            //$referer = $_POST['txt_referer'];
+            header("Location:".$referer."");
+        break;
 
         default:
             $ok = cancellaGenerale();
