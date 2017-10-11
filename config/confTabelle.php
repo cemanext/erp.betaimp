@@ -2798,7 +2798,7 @@ $table_listaIscrizioniPartecipanti = array(
                     "tipo" => "select2",
                     "etichetta" => "Fattura Collegata",
                     "readonly" => false,
-                    "sql" => "SELECT id as valore, CONCAT(codice,'/',sezionale,' del ',DATE_FORMAT(DATE(data_creazione), '%d-%m-%Y')) AS nome FROM lista_fatture WHERE lista_fatture.id_professionista IN (SELECT lista_iscrizioni.id_professionista FROM lista_iscrizioni WHERE id = '".$_GET['id']."')"
+                    "sql" => "SELECT id as valore, CONCAT(codice,'/',sezionale,' del ',DATE_FORMAT(DATE(data_creazione), '%d-%m-%Y')) AS nome FROM lista_fatture WHERE lista_fatture.id_professionista IN (SELECT lista_iscrizioni.id_professionista FROM lista_iscrizioni WHERE id = '".(isset($_GET['id']) ? $_GET['id'] : 0 )."')"
                 ),
                 /*array(
                 "campo" => "stato",

@@ -330,7 +330,7 @@ if(isset($_GET['fn'])){
             $ok = true;
             $dblink->begin();
             $id_azienda = $_GET['id'];
-            $sql_0001 = "INSERT INTO lista_professionisti (id, dataagg, scrittore, stato, cognome, nome) SELECT '', NOW(), '".$dblink->filter($_SESSION['cognome_nome_utente'])."', 'Attivo', ragione_sociale, ragione_sociale 
+            $sql_0001 = "INSERT INTO lista_professionisti (dataagg, scrittore, stato, cognome, nome) SELECT NOW(), '".$dblink->filter($_SESSION['cognome_nome_utente'])."', 'Attivo', ragione_sociale, ragione_sociale 
             FROM lista_aziende WHERE id =".$id_azienda;
             $ok = $ok && $dblink->query($sql_0001);
             $id_professionista_nuovo = $dblink->insert_id();
@@ -350,7 +350,7 @@ if(isset($_GET['fn'])){
             $ok = true;
             $dblink->begin();
             $id_professionista = $_GET['id'];
-            $sql_0001 = "INSERT INTO calendario (id, dataagg, data, ora, datainsert, orainsert, etichetta, scrittore, mittente, destinatario, id_professionista) SELECT '', NOW(), NOW(), NOW(), NOW(), NOW(), 'Nota', '".$dblink->filter($_SESSION['cognome_nome_utente'])."','".$dblink->filter($_SESSION['cognome_nome_utente'])."','".$dblink->filter($_SESSION['cognome_nome_utente'])."', '$id_professionista'
+            $sql_0001 = "INSERT INTO calendario (dataagg, data, ora, datainsert, orainsert, etichetta, scrittore, mittente, destinatario, id_professionista) SELECT NOW(), NOW(), NOW(), NOW(), NOW(), 'Nota', '".$dblink->filter($_SESSION['cognome_nome_utente'])."','".$dblink->filter($_SESSION['cognome_nome_utente'])."','".$dblink->filter($_SESSION['cognome_nome_utente'])."', '$id_professionista'
             FROM lista_professionisti WHERE id =".$id_professionista;
             $ok = $ok && $dblink->query($sql_0001);
             if($ok){
@@ -386,7 +386,7 @@ if(isset($_GET['fn'])){
 
                 $ok = $ok && $dblink->update("lista_preventivi_dettaglio", $update, array("id"=>$insertId), 1);
             }else{
-                $sql_0001 = "INSERT INTO lista_preventivi_dettaglio (id, dataagg, scrittore, id_calendario, id_preventivo, stato) SELECT '', NOW(), '".$dblink->filter($_SESSION['cognome_nome_utente'])."', '$id_calendario', '$id_preventivo', 'In Attesa'
+                $sql_0001 = "INSERT INTO lista_preventivi_dettaglio (dataagg, scrittore, id_calendario, id_preventivo, stato) SELECT NOW(), '".$dblink->filter($_SESSION['cognome_nome_utente'])."', '$id_calendario', '$id_preventivo', 'In Attesa'
                 FROM calendario WHERE id =".$id_calendario;
                 $ok = $ok && $dblink->query($sql_0001);
             }
@@ -407,7 +407,7 @@ if(isset($_GET['fn'])){
             $dblink->begin();
             $id_professionista = $_GET['id'];
             
-            $sql_0001 = "INSERT INTO lista_preventivi_dettaglio (id, dataagg, scrittore, id_professionista) SELECT '', NOW(), '".$dblink->filter($_SESSION['cognome_nome_utente'])."', '$id_professionista'
+            $sql_0001 = "INSERT INTO lista_preventivi_dettaglio (dataagg, scrittore, id_professionista) SELECT NOW(), '".$dblink->filter($_SESSION['cognome_nome_utente'])."', '$id_professionista'
             FROM lista_professionisti WHERE id =".$id_professionista;
             $ok = $ok && $dblink->query($sql_0001);
             if($ok){

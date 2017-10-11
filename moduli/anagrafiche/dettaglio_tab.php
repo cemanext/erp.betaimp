@@ -167,15 +167,15 @@ switch ($tabella) {
         //echo '<h1>conta_preventivi = '.$conta_preventivi.'</h1>';
         if($conta_preventivi<=0 && (($id_professionista_presente>=0 && $livelloCommerciale) OR ($id_professionista_presente>=0 && !$livelloCommerciale)) && !$richiestaReadonly){
 
-            $sql_0013 = "INSERT INTO lista_preventivi (id, dataagg, data_creazione, data_scadenza, codice, `id_professionista`, `id_azienda`, `id_campagna`, `id_calendario`, `imponibile`, `importo`,  `scrittore`, `id_agente`, `stato`, note, nome_campagna, cognome_nome_professionista)
-                        SELECT '', NOW(), datainsert, DATE_ADD(datainsert, INTERVAL 10 DAY), 'xxx',  `id_professionista`, `id_azienda`, `id_campagna`, `id`, '','', '".addslashes($_SESSION['cognome_nome_utente'])."', `id_agente`, 'In Attesa', messaggio, campo_7, mittente
+            $sql_0013 = "INSERT INTO lista_preventivi (dataagg, data_creazione, data_scadenza, codice, `id_professionista`, `id_azienda`, `id_campagna`, `id_calendario`, `imponibile`, `importo`,  `scrittore`, `id_agente`, `stato`, note, nome_campagna, cognome_nome_professionista)
+                        SELECT NOW(), datainsert, DATE_ADD(datainsert, INTERVAL 10 DAY), 'xxx',  `id_professionista`, `id_azienda`, `id_campagna`, `id`, '','', '".addslashes($_SESSION['cognome_nome_utente'])."', `id_agente`, 'In Attesa', messaggio, campo_7, mittente
                         FROM calendario WHERE id=".$idCalendario_daPassare." AND calendario.etichetta='Nuova Richiesta' AND calendario.id_professionista>=0";
             $rs_00013 = $dblink->query($sql_0013, true);
             $idAutoPreventivoCampagna = $dblink->lastid();
             //echo '<h1>idAutoPreventivoCampagna = '.$idAutoPreventivoCampagna.'</h1>';
 
-            $sql_0014 = "INSERT INTO lista_preventivi_dettaglio (id, dataagg, id_preventivo, id_prodotto, quantita, id_campagna, id_calendario, scrittore, stato, id_professionista)
-                        SELECT '', NOW(), '".$idAutoPreventivoCampagna."',  id_prodotto, '1', id_campagna, id, '".addslashes($_SESSION['cognome_nome_utente'])."', 'In Attesa' , `id_professionista`
+            $sql_0014 = "INSERT INTO lista_preventivi_dettaglio (dataagg, id_preventivo, id_prodotto, quantita, id_campagna, id_calendario, scrittore, stato, id_professionista)
+                        SELECT NOW(), '".$idAutoPreventivoCampagna."',  id_prodotto, '1', id_campagna, id, '".addslashes($_SESSION['cognome_nome_utente'])."', 'In Attesa' , `id_professionista`
                         FROM calendario WHERE id=".$idCalendario_daPassare." AND calendario.etichetta='Nuova Richiesta'";
             $rs_00014 = $dblink->query($sql_0014, true);
             

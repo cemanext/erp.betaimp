@@ -11,7 +11,7 @@ if(isset($_GET['fn'])){
         case "inserisciProdottoDettaglioPacchetto":
         case "inserisciProdottoDettaglioAbbonamento":
             $dblink->begin();
-            $sql_inserisci_prodotto_dettaglio_abbonamento = "INSERT INTO lista_prodotti_dettaglio (id, dataagg, scrittore, id_prodotto_0, stato, gruppo, ordine) VALUES ('', NOW(), '".$_SESSION['cognome_nome_utente']."','".$_GET['idAbbonamento']."','Non Attivo', 'CORSO', '1000')";
+            $sql_inserisci_prodotto_dettaglio_abbonamento = "INSERT INTO lista_prodotti_dettaglio (dataagg, scrittore, id_prodotto_0, stato, gruppo, ordine) VALUES (NOW(), '".$_SESSION['cognome_nome_utente']."','".$_GET['idAbbonamento']."','Non Attivo', 'CORSO', '1000')";
             $ok = $dblink->query($sql_inserisci_prodotto_dettaglio_abbonamento);
             $lastId=$dblink->insert_id();
             if($ok){

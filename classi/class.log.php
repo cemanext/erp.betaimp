@@ -31,7 +31,7 @@ class logerp {
         if(!defined( 'LOG_DEBUG_ALL' ) || ( defined( 'LOG_DEBUG_ALL' ) && LOG_DEBUG_ALL )){
             $formatted_message = '*'.$level.'* '."\t".date('d-m-Y - H:i:s')."\tFILE: ".($_SERVER["REQUEST_URI"])."\t"."MESSAGGIO: ".$message."\r\n";
 
-            $this->setFilenameError = $this->dir.'/log/'.date('Ymd').'_errori_erp.log';
+            $this->setFilenameError = $this->dir.'log/'.date('Ymd').'_errori_erp.log';
 
             if(file_put_contents($this->setFilenameError, $formatted_message, FILE_APPEND)){
                 /*if (file_exists(_PS_ROOT_DIR_.'/error500.html') && $level!="AVVISO")
@@ -40,7 +40,7 @@ class logerp {
         }else if(( defined( 'LOG_DEBUG_ALL' ) && !LOG_DEBUG_ALL && (strtoupper($level)=="KO" || strtoupper($level)=="ERRORE"))){
             $formatted_message = '*'.$level.'* '."\t".date('d-m-Y - H:i:s')."\tFILE: ".($_SERVER["REQUEST_URI"])."\t"."MESSAGGIO: ".$message."\r\n";
 
-            $this->setFilenameError = $this->dir.'/log/'.date('Ymd').'_errori_erp.log';
+            $this->setFilenameError = $this->dir.'log/'.date('Ymd').'_errori_erp.log';
         }
     }
     
@@ -48,7 +48,7 @@ class logerp {
     {
         $formatted_message = '*'.$level.'* '."\t".date('d-m-Y - H:i:s')."\tFILE: ".($_SERVER["REQUEST_URI"])."\t"."Query: ".htmlentities( $query )."\t"."Errore: ".$error."\r\n";
 
-        $this->setFilenameError = $this->dir.'/log/'.date('Ymd').'_errori_database_erp.log';
+        $this->setFilenameError = $this->dir.'log/'.date('Ymd').'_errori_database_erp.log';
 
         if(file_put_contents($this->setFilenameError, $formatted_message, FILE_APPEND)){
             /*if (file_exists($this->dir.'/error500.html') && $level!="AVVISO")

@@ -34,7 +34,7 @@ if (isset($_POST['txt1']) and isset($_POST['txt2']) and strlen($_POST['txt1']) >
             /* echo '<div class="nNote nSuccess hideit">
               <strong>CORRETTO: </strong>Benvenuto '.$_SESSION['cognome_nome_utente'].', autenticazione eseguita!
               </div>'; */
-            $sql_accesso = "INSERT INTO `lista_accessi` (`id`, `dataagg`, `REMOTE_ADDR`, `HTTP_REFERER`, `PHP_SELF`, `HTTP_USER_AGENT`, `HTTP_ACCEPT_LANGUAGE`, `REMOTE_PORT`, `scrittore`, `id_password`) VALUES ('',NOW(), '" . $_SERVER['REMOTE_ADDR'] . "', '" . $_SERVER['HTTP_REFERER'] . "', '" . $_SERVER['PHP_SELF'] . "', '" . $_SERVER['HTTP_USER_AGENT'] . "', '" . $_SERVER['HTTP_ACCEPT_LANGUAGE'] . "', '" . $_SERVER['REMOTE_PORT'] . "', '" . $_SESSION['cognome_nome_utente'] . "', '" . $_SESSION['id_utente'] . "');";
+            $sql_accesso = "INSERT INTO `lista_accessi` (`dataagg`, `REMOTE_ADDR`, `HTTP_REFERER`, `PHP_SELF`, `HTTP_USER_AGENT`, `HTTP_ACCEPT_LANGUAGE`, `REMOTE_PORT`, `scrittore`, `id_password`) VALUES (NOW(), '" . $_SERVER['REMOTE_ADDR'] . "', '" . $_SERVER['HTTP_REFERER'] . "', '" . $_SERVER['PHP_SELF'] . "', '" . $_SERVER['HTTP_USER_AGENT'] . "', '" . $_SERVER['HTTP_ACCEPT_LANGUAGE'] . "', '" . $_SERVER['REMOTE_PORT'] . "', '" . $_SESSION['cognome_nome_utente'] . "', '" . $_SESSION['id_utente'] . "');";
             $rs_accesso = $dblink->query($sql_accesso);
             if ($rs_accesso) {
                 //echo "<script>$.jGrowl('Benvenuto ".$_SESSION['cognome_nome_utente']."!', { header: 'Autenticazione eseguita!' });</script>";

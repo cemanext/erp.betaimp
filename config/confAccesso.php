@@ -38,6 +38,8 @@ if ($_SESSION['livello_utente'] == 'amministratore') {
     $where_lista_template_email = "";
     $where_lista_docenti = "";
     $where_lista_aule = "";
+    $where_lista_corsi_configurazioni = "";
+    $where_lista_provvigioni = "";
     $where_lista_consuntivo_vendite = " AND sezionale NOT LIKE 'CN%' ";
 } elseif ($_SESSION['livello_utente'] == 'betaadmin') {
     $where_scrittore = '';
