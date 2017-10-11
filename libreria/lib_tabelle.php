@@ -411,6 +411,15 @@ function stampa_table_static_basic_input($tabella, $query, $stile, $titolo, $col
                             else
                                 $rowTable .=  '<td style="text-align:center; vertical-align:middle;"><input name="txt_' . $record . '_' . $nome_colonna . '" id="txt_' . $record . '_' . $nome_colonna . '" type="text" class="form-control" placeholder="' . $nome_colonna . '" value="' . $column . '"></td>';
                         break;
+                        
+                        
+                        case "id_professione":
+                        case "professione":
+                            if($tabella == "lista_corsi_configurazioni")
+                                $rowTable .=  '<td style="text-align:center; vertical-align:middle;">' . print_select2("SELECT nome as valore, nome FROM lista_professioni WHERE 1 ORDER BY nome ASC", "txt_" . $record . "_" . $nome_colonna, $column, "", false, 'tooltips select_classi', 'data-container="body" data-placement="top" data-original-title="PROFESSIONE"') . '</td>';
+                            else
+                                $rowTable .=  '<td style="text-align:center; vertical-align:middle;"><input name="txt_' . $record . '_' . $nome_colonna . '" id="txt_' . $record . '_' . $nome_colonna . '" type="text" class="form-control" placeholder="' . $nome_colonna . '" value="' . $column . '"></td>';
+                        break;
 
                         case "id_agente":
                         case "commerciale":

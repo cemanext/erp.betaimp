@@ -217,6 +217,13 @@ $table_listaProfessionisti = array(
                         "readonly" => false,
                         "sql" => "SELECT nome AS valore, nome AS nome FROM  `lista_professioni` WHERE  `stato` LIKE 'Attivo' ORDER BY  `nome` ASC"
                     ),
+                    array(
+                        "campo" => "attestato_classe",
+                        "tipo" => "select_static",
+                        "etichetta" => "Usa Classe per Attestato",
+                        "readonly" => false,
+                        "sql" => array("Si"=>"Si", "No"=>"No")
+                    ),
                 array(  "campo" => "id_classe",
                         "tipo" => "select2",
                         "etichetta" => "Tipo Albo",

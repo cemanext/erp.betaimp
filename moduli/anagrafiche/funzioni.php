@@ -148,7 +148,7 @@ function Stampa_HTML_Dettaglio_Anagrafica($tabella, $id) {
             IF(stato LIKE '%Elimi%',CONCAT('<span class=\"btn sbold uppercase btn-outline red-flamingo\">',stato,'</span>'),CONCAT('<span class=\"btn sbold uppercase btn-outline blue\">',stato,'</span>')) AS 'Stato',
             CONCAT('<H3>',cognome,'</h3>') AS Cognome, 
             CONCAT('<H3>',nome,'</h3>') AS Nome, 
-            (SELECT nome FROM lista_classi WHERE id = id_classe) AS Classe, 
+            (SELECT nome FROM lista_classi WHERE id = id_classe) AS Classe, professione, attestato_classe AS 'Usa Classe per Attestato',
             email , id_moodle_user AS 'Id Moodle'
             FROM lista_professionisti WHERE id = " . $id;
             stampa_table_static_basic($sql_0001, '', 'Dettaglio Professionista', '', 'fa fa-user');
