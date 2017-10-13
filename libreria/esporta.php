@@ -1,12 +1,17 @@
 <?php
 include_once('../config/connDB.php');
 include_once(BASE_ROOT . 'config/confAccesso.php');
+ini_set('display_errors', '1');
 
-$sql_0001 = creaSQLesporta();
+//$sql_0001 = creaSQLesporta();
+$sql_0001 = "SELECT IF(tipo='Fattura', 'Fatt. Imm.', 'N. C.') AS 'Tipo doc.', sezionale AS 'Sz.', codice AS 'Nr.doc.', DATE_FORMAT(DATE(data_creazione), '%d/%m/%Y') AS 'Data Doc.',
+            (SELECT CONCAT(ragione_sociale,' ',forma_giuridica) AS rag_soc FROM lista_aziende WHERE id = id_azienda) AS 'Ragione Sociale Anagrafica',
+            ABS(imponibile) AS 'Tot. imponibile', (ABS(importo)-ABS(imponibile)) AS 'Tot. Iva', ABS(importo) AS 'Tot. Documento' 
+            FROM lista_fatture WHERE MONTH(data_creazione) = '09' AND YEAR(data_creazione) = '2017' AND sezionale NOT LIKE '%CN%' AND stato NOT LIKE 'Accorpata' ";
 $titolo = "Esportazione del ".date("d/m/Y H:i:s");
 //stampa_table_datatables_responsive($sql_0001, $titolo, 'tabella_base');
 
-$result = $sblink->get_results($sql_0001);
+$result = $dblink->get_results($sql_0001);
 $fields = $dblink->list_fields($sql_0001);
 
 //header info for browser
@@ -31,7 +36,7 @@ print("\n");
             if(!isset($row))
                 $schema_insert .= "NULL".$sep;
             elseif ($row != "")
-                $schema_insert .= "".$row.$sep;
+                $schema_insert .= "".html_entity_decode($row).$sep;
             else
                 $schema_insert .= "".$sep;
         }

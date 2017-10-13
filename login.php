@@ -85,7 +85,7 @@ if (isset($_POST['txt1']) and isset($_POST['txt2']) and strlen($_POST['txt1']) >
         <link href="<?=BASE_URL?>/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
         <!-- END THEME GLOBAL STYLES -->
         <!-- BEGIN PAGE LEVEL STYLES -->
-        <link href="<?=BASE_URL?>/assets/pages/css/login-2.min.css" rel="stylesheet" type="text/css" />
+        <link href="<?=BASE_URL?>/assets/pages/css/login-4.min.css" rel="stylesheet" type="text/css" />
         <!-- END PAGE LEVEL STYLES -->
         <!-- BEGIN THEME LAYOUT STYLES -->
         <!-- END THEME LAYOUT STYLES -->
@@ -121,8 +121,6 @@ if (isset($_POST['txt1']) and isset($_POST['txt2']) and strlen($_POST['txt1']) >
         <div class="content">
             <!-- BEGIN LOGIN FORM -->
             <form class="login.php" action="<?=BASE_URL?>/login.php" method="post">
-                <h1>ATTENZIONE!!!</h1>
-                <h2>AREA DI SVILUPPO<br>CEMA NEXT SRL</h2>
                 <h3 class="form-title">Accedi al tuo account</h3>
                 <div class="alert alert-danger display-hide">
                     <button class="close" data-close="alert"></button>
