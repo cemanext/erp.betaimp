@@ -418,7 +418,7 @@ function Stampa_HTML_Dettaglio_Iscrizioni($tabella, $id) {
                     stampa_table_static_basic($sql_0001, '', 'Esami - Iscrizioni', 'green');
                 }else{
                     $sql_0001 = "SELECT data, ora, oggetto, stato,
-                    CONCAT('<a class=\"btn btn-circle btn-icon-only green btn-outline\" href=\"salva.php?tbl=calendario_esami&idCalendario=',id,'&idProfessionista=".$id_professionista."&idIscrizione=".$id."&fn=iscriviEsameUtente\" title=\"ISCRIVI ESAME\" alt=\"ISCRIVI ESAMES\"><i class=\"fa fa-user-plus\"></i></a>') AS 'fa-user-plus'
+                    CONCAT('<a class=\"btn btn-circle btn-icon-only green btn-outline\" href=\"salva.php?tbl=calendario_esami&idCalendario=',id,'&idProfessionista=".$id_professionista."&idIscrizione=".$id."&fn=iscriviEsameUtente\" title=\"ISCRIVI ESAME\" alt=\"ISCRIVI ESAME\"><i class=\"fa fa-user-plus\"></i></a>') AS 'fa-user-plus'
                     FROM calendario
                     WHERE id_corso=" . $id_corso."
                     AND etichetta LIKE 'Calendario Esami'

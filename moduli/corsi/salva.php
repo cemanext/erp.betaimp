@@ -7,6 +7,108 @@ $referer = recupera_referer();
 if(isset($_GET['fn'])){
     switch ($_GET['fn']) {
         
+        
+        case 'iscriviCorsoUtente':
+            $ok = true;
+            $dblink->begin();
+            
+            $idCalendario = $_GET['idCalendario'];
+            $idProfessionista = $_GET['idProfessionista'];
+            $idProdotto = $_GET['idProdotto'];
+            
+            $sql_iscrivi_corso_utente = "INSERT INTO calendario (id, dataagg, scrittore, id_calendario_0, etichetta, id_professionista, stato, id_prodotto, oggetto, data, ora) 
+            SELECT '', NOW(), '".$_SESSION['cognome_nome_utente']."', '".$idCalendario."', 'Iscrizione Corso', '".$idProfessionista."', 'Iscritto', '".$idProdotto."', oggetto, data, ora FROM calendario WHERE id='".$idCalendario."'";
+            $ok = $ok && $dblink->query($sql_iscrivi_corso_utente);
+            $lastId=$dblink->insert_id();
+            
+            $numero_iscritti_al_corso = $dblink->get_field("SELECT COUNT(*) AS conteggio FROM calendario WHERE id_calendario_0='".$idCalendario."' AND etichetta='Iscrizione Corso'");
+            
+            $sql_002 = "UPDATE calendario SET numerico_10 = '".$numero_iscritti_al_corso."' WHERE id='".$idCalendario."' AND etichetta LIKE 'Calendario Corsi'";
+            $ok = $ok && $dblink->query($sql_002);
+            
+            if($ok){
+                $ok = 1;
+                $dblink->commit();
+            }else{
+                $ok = 0;
+                $dblink->rollback();
+            }
+            header("Location:".$referer."&ret=$ok");
+        break;
+        
+        case 'SalvaDocenteCorso':
+            //print_r($_POST);
+            $arrayRisultati = $_POST;
+
+            $conto = 0;
+
+            $tuttiCampi = array();
+            foreach ($arrayRisultati as $key => $value) {
+                //echo "<br>KEY: $key<br>";
+                $pos_001 = strpos($key, "txt_");
+                //echo "POS: ".$pos_001."<br>";
+                if ($pos_001 === false) {
+                    
+                } else {
+                    $tmp = explode("_", $key);
+                    //print_r($tmp);
+                    $nome_campo = substr($key, (strlen("txt_" . $tmp[1] . "_")));
+                    //echo "<br>$nome_campo<br>";
+                    $tuttiCampi[$tmp[1]][$nome_campo] = $dblink->filter(trim(str_replace("`", "", $value)));
+                }
+                $conto++;
+            }
+            /* print_r($tuttiCampi); */
+            $count = 0;
+
+            foreach ($tuttiCampi as $record) {
+                $count++;
+                /* foreach($record as $nomi_colonne => $valore){
+                  echo '<lI>$nomi_colonne = '.$nomi_colonne.' / $valore = '.$valore.'</li>';
+                  } */
+            }
+
+            for ($r = 0; $r < $count; $r++) {
+                $tuttiCampi[$r]['dataagg'] = date("Y-m-d H:i:s");
+                $tuttiCampi[$r]['scrittore'] = $dblink->filter($_SESSION['cognome_nome_utente']);
+
+                if ($tuttiCampi[$r]['id'] > 0) {
+                    $idWhere = $tuttiCampi[$r]['id'];
+                    //echo "<br>";
+                    unset($tuttiCampi[$r]['id']);
+                    //print_r($tuttiCampi[$r]);
+                    $ok = $dblink->update("matrice_corsi_docenti", $tuttiCampi[$r], array("id" => $idWhere));
+                    //if (!$ok)
+                        //echo "errore Database";
+                    //echo $dblink->get_query();
+                    //echo "<br>";
+                }
+            }
+
+            header("Location:$referer");
+        break;
+            
+        case "nuovoDocenteCorso":
+        $idProdotto = $_GET['idProdotto'];
+        $idCalendario = $_GET['id'];
+            $ok = true;
+            $dblink->begin();
+            //DAV IDE RIFAI QUESTO CON TUO CODICE
+            $sql_inserisci_docente_corso = "INSERT INTO `matrice_corsi_docenti` (`id`, `data_creazione`, `dataagg`, `id_calendario`, `id_prodotto`,`scrittore`,`stato`)   
+            SELECT '', NOW(), NOW(), '".$idCalendario."', '".$idProdotto."', '" .addslashes($_SESSION['cognome_nome_utente']) . "', 'Attivo' FROM lista_prodotti WHERE id=" . $_GET['idProdotto'];
+            $ok = $dblink->query($sql_inserisci_docente_corso);
+            $lastId = $dblink->insert_id();
+            if ($ok) {
+                $ok = 1;
+                $dblink->commit();
+            } else {
+                $ok = 0;
+                $dblink->rollback();
+            }
+            //header("Location:modifica.php?tbl=lista_preventivi_dettaglio&id=$lastId&res=$ok");
+            header("Location:" . $referer . "");
+        break;
+            
         case "inviaAttestatiMultipli":
             $arrayCampi = $_POST;
             unset($arrayCampi['txt_checkbox_all']);

@@ -602,6 +602,29 @@ function Stampa_HTML_Dettaglio_Fatture($tabella,$id){
             stampa_table_static_basic($sql_00011, '', 'test iscrizioni', 'red');
             echo '</div></div>';
             */
+            
+            $sql_00001_prodotto = "SELECT id_prodotto, nome_prodotto FROM lista_fatture_dettaglio WHERE id_fattura='" . $id . "' ORDER BY nome_prodotto";
+            $rs_00001_prodotto = $dblink->get_results($sql_00001_prodotto);
+                if (!empty($rs_00001_prodotto)) {
+                    foreach ($rs_00001_prodotto as $row_00001_prodotto) {
+                    $idProdotto = $row_00001_prodotto['id_prodotto'];
+                    $nomeProdotto = $row_00001_prodotto['nome_prodotto'];
+                        echo '<BR><div class="row"><div class="col-md-12 col-sm-12">';
+                        $sql_0001 = "SELECT 
+                        CONCAT('<a class=\"btn btn-circle btn-icon-only yellow btn-outline\" href=\"".BASE_URL."/moduli/corsi/dettaglio.php?tbl=calendario_esami&id=',id,'&idProdotto=',id_prodotto,'\" title=\"DETTAGLIO\" alt=\"DETTAGLIO\"><i class=\"fa fa-search\"></i></a>') AS 'fa-search',
+                        CONCAT('<a class=\"btn btn-circle btn-icon-only green btn-outline\" href=\"".BASE_URL."/moduli/corsi/salva.php?tbl=calendario_esami&idCalendario=',id,'&idProfessionista=".$idProfessionista."&idProdotto=',id_prodotto,'&fn=iscriviCorsoUtente\" title=\"ISCRIVI CORSO\" alt=\"ISCRIVI CORSO\"><i class=\"fa fa-user-plus\"></i></a>') AS 'fa-user-plus', 
+                        (SELECT IF(id_calendario_0<=0,CONCAT('<a class=\"btn btn-circle btn-icon-only green btn-outline\" href=\"".BASE_URL."/moduli/corsi/salva.php?tbl=calendario_esami&idCalendario=',id,'&idProfessionista=".$idProfessionista."&idProdotto=',id_prodotto,'&fn=iscriviCorsoUtente\" title=\"ISCRIVI CORSO\" alt=\"ISCRIVI CORSO\"><i class=\"fa fa-user-plus\"></i></a>'),
+                        CONCAT('<a class=\"btn btn-circle btn-icon-only red btn-outline\" href=\"".BASE_URL."/moduli/corsi/cancella.php?tbl=calendario_corsi&idCalendario=',id,'\" title=\"DISISCRIVI CORSO\" alt=\"DISISCRIVI CORSO\"><i class=\"fa fa-user-times\"></i></a>')) FROM calendario WHERE id_professionista = '".$idProfessionista."' AND id_prodotto='" . $idProdotto."' AND etichetta LIKE 'Iscrizione Corso') AS 'fa-user-times',
+                            data, ora, etichetta AS tipo, oggetto, numerico_10 AS 'Iscritti', 
+                            (SELECT IF(id_calendario_0>0,CONCAT('<span class=\"btn sbold uppercase btn-outline green\">ISCRITTO</span>'),CONCAT('<span class=\"btn sbold uppercase btn-outline red-thunderbird\">NON ISCRITTO</span>')) AS 'Tipo' FROM calendario WHERE id_professionista = '".$idProfessionista."' AND id_prodotto='" . $idProdotto."' AND etichetta LIKE 'Iscrizione Corso') AS stato 
+                            FROM calendario
+                            WHERE id_prodotto='" . $idProdotto."'
+                            AND etichetta LIKE 'Calendario Corsi'
+                            ORDER BY data DESC, ora ASC";
+                            stampa_table_static_basic($sql_0001, '', $nomeProdotto.' - Corsi Disponibili', 'blue');
+                        echo '</div></div>';
+                    }
+                }
         break;
     }
 }

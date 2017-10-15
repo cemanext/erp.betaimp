@@ -22,7 +22,7 @@ function Stampa_HTML_index_Corsi($tabella){
             $campi_visualizzati = $table_calendarioEsami['index']['campi'];
             $where = $table_calendarioEsami['index']['where'];
             $ordine = $table_calendarioEsami['index']['order'];
-            $titolo = 'Calendario Corsi';
+            $titolo = 'Calendario Corsi / Esami';
             $sql_0001 = "SELECT ".$campi_visualizzati." FROM ".$tabella." WHERE $where $ordine";
             //echo '<li>$sql_0001 = '.$sql_0001.'</li>';
             stampa_table_datatables_responsive($sql_0001, $titolo, 'tabella_base');
@@ -56,21 +56,65 @@ function Stampa_HTML_Dettaglio_Corsi($tabella,$id){
     
     switch ($tabella) {
         case 'calendario_esami':
+        $idProdotto = $_GET['idProdotto'];
+        $idCalendario = $_GET['id'];
         $idCorso = $_GET['idCorso'];
         
-            echo '<div class="row"><div class="col-md-12 col-sm-12">';
-            $sql_0001 = "SELECT CONCAT('<H3>',nome_prodotto,'</H3>') AS 'Corso', 
-            (SELECT codice FROM lista_prodotti WHERE id = id_prodotto LIMIT 1) AS 'Codice', 
-            (SELECT codice_esterno FROM lista_prodotti WHERE id = id_prodotto LIMIT 1) AS 'ID MOODLE', durata, stato 
-            FROM `lista_corsi` WHERE id =" . $idCorso;
+            echo '<div class="row"><div class="col-md-12 col-sm-12">';            
+            $sql_0001 = "SELECT CONCAT('<H3>',nome,'</H3>') AS 'Corso',  tipologia, categoria, gruppo,
+            codice AS 'Codice', 
+            codice_esterno AS 'ID MOODLE' 
+            FROM `lista_prodotti` WHERE id ='" . $idProdotto."'";
             stampa_table_static_basic($sql_0001, '', 'Corso', 'green-haze');
+            echo '</div></div>';
+            
+            echo '<form method="POST" action="salva.php?idCalendario=' . $id . '&fn=SalvaDocenteCorso">';
+            echo '<div class="row"><div class="col-md-12 col-sm-12">';
+            $sql_0001 = "SELECT id, id_docente AS 'Docente' 
+            FROM `matrice_corsi_docenti` WHERE id_prodotto ='" . $idProdotto."' AND id_calendario='".$idCalendario."'";
+            //stampa_table_static_basic_input($sql_0001, '', 'Docenti Disponibili', '');
+            stampa_table_static_basic_input('matrice_corsi_docenti',$sql_0001,'','Docenti Assegnati', '');
+            echo '<div class="row">';
+			//echo '------------->'.$stile_form;
+            echo '<center><a href="salva.php?tbl=matrice_corsi_docenti&id='.$id.'&idProdotto='.$idProdotto.'&fn=nuovoDocenteCorso" class="btn green-meadow">
+                Aggiungi Docente
+                <i class="fa fa-plus"></i>
+                </a> <input class="btn green-sharp" value="Salva" type="submit"></center>';
+            echo '</div><br>';
+            echo '</div></div>';
+            echo '</form>';
+            
+            
+            echo '<div class="row"><div class="col-md-12 col-sm-12">';
+            $sql_0001 = "SELECT   CONCAT('<a class=\"btn btn-circle btn-icon-only blue btn-outline\" href=\"modifica.php?tbl=calendario_esami&id=',id,'\" title=\"MODIFICA\" alt=\"MODIFICA\"><i class=\"fa fa-edit\"></i></a>') AS 'fa-edit',
+            data, ora, etichetta AS tipo, oggetto, numerico_10 AS 'Iscritti', numerico_4  AS 'Costo Aula', numerico_5 AS 'Costo Docenti', stato
+            FROM calendario
+            WHERE id_prodotto='" . $idProdotto."'
+            AND id = '".$id."'
+            AND etichetta LIKE 'Calendario Corsi'
+            ORDER BY data DESC, ora ASC";
+            stampa_table_static_basic($sql_0001, '', 'Corsi Disponibili', 'blue');
+            echo '</div></div>';
+            
+            echo '<div class="row"><div class="col-md-12 col-sm-12">';
+            $sql_0001 = "SELECT 
+            data, ora, etichetta As Tipo, oggetto, 
+            (SELECT CONCAT(cognome, ' ', nome) FROM lista_professionisti WHERE id=id_professionista) AS 'Iscritto', stato,
+            CONCAT('<a class=\"btn btn-circle btn-icon-only red-thunderbird btn-outline\" href=\"cancella.php?tbl=calendario_corsi&idCalendario=',id,'&idCalendarioCorso=',id_calendario_0,'&idIscrizione=',id_iscrizione,'\" title=\"DISISCRIVI DAL CORSO\" alt=\"DISISCRIVI DAL CORSO\"><i class=\"fa fa-user-times\"></i></a>') AS 'fa-user-times' 
+            FROM calendario
+            WHERE id_prodotto='" . $idProdotto."'
+            AND id_calendario_0 = '".$id."'
+            AND etichetta LIKE 'Iscrizione Corso'
+            ORDER BY data DESC, ora ASC";
+            stampa_table_static_basic($sql_0001, '', 'Corsi - Iscrizioni', 'green-steel');
             echo '</div></div>';
             
             echo '<div class="row"><div class="col-md-12 col-sm-12">';
             $sql_0001 = "SELECT   CONCAT('<a class=\"btn btn-circle btn-icon-only blue btn-outline\" href=\"modifica.php?tbl=calendario_esami&id=',id,'\" title=\"MODIFICA\" alt=\"MODIFICA\"><i class=\"fa fa-edit\"></i></a>') AS 'fa-edit',
-            data, ora, oggetto, numerico_10 AS 'Iscritti', stato
+            data, ora, etichetta AS tipo, oggetto, numerico_10 AS 'Iscritti', numerico_4  AS 'Costo Aula', numerico_5 AS 'Costo Docenti', stato
             FROM calendario
-            WHERE id_corso=" . $idCorso." 
+            WHERE id_prodotto='" . $idProdotto."'
+            AND id = '".$id."'
             AND etichetta LIKE 'Calendario Esami'
             ORDER BY data DESC, ora ASC";
             stampa_table_static_basic($sql_0001, '', 'Esami Disponibili', 'blue-steel');
@@ -78,17 +122,16 @@ function Stampa_HTML_Dettaglio_Corsi($tabella,$id){
          
             echo '<div class="row"><div class="col-md-12 col-sm-12">';
             $sql_0001 = "SELECT 
-            CONCAT('<a class=\"btn btn-circle btn-icon-only blue btn-outline\" href=\"modifica.php?tbl=calendario_iscrizioni&idCalendario=',id,'\" title=\"MODIFICA\" alt=\"MODIFICA\"><i class=\"fa fa-edit\"></i></a>') AS 'fa-edit',
-            data, ora, oggetto, 
+            data, ora, etichetta As Tipo, oggetto, 
             (SELECT CONCAT(cognome, ' ', nome) FROM lista_professionisti WHERE id=id_professionista) AS 'Iscritto', stato,
             CONCAT('<a class=\"btn btn-circle btn-icon-only red-thunderbird btn-outline\" href=\"cancella.php?tbl=calendario_esami&idCalendario=',id,'&idCalendarioCorso=',id_calendario_0,'&idIscrizione=',id_iscrizione,'\" title=\"DISISCRIVI DAL CORSO\" alt=\"DISISCRIVI DAL CORSO\"><i class=\"fa fa-user-times\"></i></a>') AS 'fa-user-times' 
             FROM calendario
-            WHERE id_corso=" . $idCorso." 
+            WHERE id_prodotto='" . $idProdotto."'
+            AND id_calendario_0 = '".$id."'
             AND etichetta LIKE 'Iscrizione Esame'
             ORDER BY data DESC, ora ASC";
             stampa_table_static_basic($sql_0001, '', 'Esami - Iscrizioni', 'green');
             echo '</div></div>';
-            
         break;
         
         case 'lista_corsi':

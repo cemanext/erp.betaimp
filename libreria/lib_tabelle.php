@@ -388,6 +388,14 @@ function stampa_table_static_basic_input($tabella, $query, $stile, $titolo, $col
                             else
                                 $rowTable .=  '<td style="text-align:center; vertical-align:middle;"><input name="txt_' . $record . '_' . $nome_colonna . '" id="txt_' . $record . '_' . $nome_colonna . '" type="text" class="form-control" placeholder="' . $nome_colonna . '" value="' . $column . '"></td>';
                         break;
+                        
+                        case "docente":
+                        case "id_docente":
+                            if($tabella == "matrice_corsi_docenti" OR $tabella == "matrice_corsi_docenti")
+                                $rowTable .=  '<td style="text-align:center; vertical-align:middle;">' . print_select2("SELECT id as valore, concat(cognome, ' ', nome) AS nome FROM lista_docenti WHERE 1 ORDER BY cognome, nome ASC", "txt_" . $record . "_" . $nome_colonna, $column, "", false, 'tooltips select_docente-allow-clear', 'data-container="body" data-placement="top" data-original-title="DOCENTE"') . '</td>';
+                            else
+                                $rowTable .=  '<td style="text-align:center; vertical-align:middle;"><input name="txt_' . $record . '_' . $nome_colonna . '" id="txt_' . $record . '_' . $nome_colonna . '" type="text" class="form-control" placeholder="' . $nome_colonna . '" value="' . $column . '"></td>';
+                        break;
 
                         case "nome_professionista":
                         case "id_professionista":
