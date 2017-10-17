@@ -62,10 +62,10 @@ if (isset($_POST['intervallo_data'])) {
     
     //echo '<h1>$intervallo_data = '.$intervallo_data.'</h1>';
 } else {
-    $whereTmkRinnovi = " AND id_campagna != 166";
+    /*$whereTmkRinnovi = " AND id_campagna != 166";
     $whereTmkRinnoviAll = " AND lp.id_campagna != 166";
     $whereTmkNegativi = " AND id_campagna != 181 ";
-    $whereTmkNegativiAll = " AND lp.id_campagna != 181 ";
+    $whereTmkNegativiAll = " AND lp.id_campagna != 181 ";*/
     
     $where_intervallo_cal = " $whereTmkRinnovi $whereTmkNegativi AND id_agente='".$_SESSION['id_utente'] ."'  AND YEAR(dataagg)=YEAR(CURDATE()) AND MONTH(dataagg)=MONTH(CURDATE()) AND DAY(dataagg)=DAY(CURDATE())";
     $where_intervallo_cal_richiami = " $whereTmkRinnovi $whereTmkNegativi AND YEAR(datainsert)=YEAR(CURDATE()) AND MONTH(datainsert)=MONTH(CURDATE()) AND DAY(datainsert)=DAY(CURDATE())";
@@ -80,8 +80,8 @@ if (isset($_POST['intervallo_data'])) {
     $setDataCalIn = date("d-m-Y");
     $setDataCalOut = date("d-m-Y");
     
-    $_POST['escludi_rinnovi'] = "1";
-    $_POST['escludi_tmk_negativi'] = "1";
+    $_POST['escludi_rinnovi'] = "0";
+    $_POST['escludi_tmk_negativi'] = "0";
 }
 
 if (isset($_POST['intervallo_data'])) {

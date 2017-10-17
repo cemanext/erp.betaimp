@@ -290,24 +290,6 @@ function creaFatturaPDF($idFatt, $echo = false) {
                             $pdf->Cell(30, 5, '' . $row_cliente['partita_iva'] . '', 0, 0, 'C', 0, 0);
                         }
 
-                        if(!empty($row_cliente['ragione_sociale'])){
-                            $azienda_creazione_fattura = utf8_decode(mb_convert_encoding($row_cliente['ragione_sociale'], "UTF-8", "HTML-ENTITIES"));
-                            $oldmask = umask(0);
-                            if(!is_dir(BASE_ROOT . "media")){
-                                mkdir(BASE_ROOT . "media", 0777);
-                            }
-                            if(!is_dir(BASE_ROOT . "media/Anagrafiche")){
-                                mkdir(BASE_ROOT . "media/Anagrafiche", 0777);
-                            }
-                            if(!is_dir(BASE_ROOT . "media/Anagrafiche/Clienti")){
-                                mkdir(BASE_ROOT . "media/Anagrafiche/Clienti", 0777);
-                            }
-                            if(!is_dir(BASE_ROOT . "media/Anagrafiche/Clienti/".$azienda_creazione_fattura)){
-                                @mkdir(BASE_ROOT . "media/Anagrafiche/Clienti/" . $azienda_creazione_fattura . "", 0777);
-                                @umask($oldmask);
-                            }
-                        }
-
                         //OGGETTO PREVENTIVO
                         //$codice_preventivo = $row_cliente['codice'];
                         //$imponibile_preventivo = $row_cliente['imponibile'];
@@ -328,7 +310,7 @@ function creaFatturaPDF($idFatt, $echo = false) {
                 $rs_1 = $dblink->get_results($sql_1);
                 if (!empty($rs_1)) {
                     foreach ($rs_1 as $row_1) {
-                        $note_fattura = strip_tags($row_1['campo_1']);
+                        $note_fattura = strip_tags($row_1['nota_documento']);
                         $pdf->SetFillColor(255, 255, 255);
                         $pdf->SetTextColor(0, 0, 0);
                         $pdf->SetFont('Times', 'B', 10);
@@ -350,24 +332,6 @@ function creaFatturaPDF($idFatt, $echo = false) {
 
                         $pdf->SetXY($margine_x_codice_fattura + 38, $margine_y_codice_fattura);
                         $pdf->Cell(17, 5, '' . $row_1['data_creazione'] . '', 0, 0, 'C', 0, 0);
-
-                        if(!is_dir(BASE_ROOT . "media")){
-                            mkdir(BASE_ROOT . "media", 0777);
-                        }
-                        if(!is_dir(BASE_ROOT . "media/Fatture")){
-                            mkdir(BASE_ROOT . "media/Fatture", 0777);
-                        }
-                        if(!is_dir(BASE_ROOT . "media/Fatture/Attive")){
-                            mkdir(BASE_ROOT . "media/Fatture/Attive", 0777);
-                        }
-                        if(!is_dir(BASE_ROOT . "media/Fatture/Attive/".$anno_creazione_fattura)){
-                            mkdir(BASE_ROOT . "media/Fatture/Attive/".$anno_creazione_fattura, 0777);
-                        }
-                        if(!is_dir(BASE_ROOT . "media/Fatture/Attive/".$anno_creazione_fattura."/".$mese_creazione_fattura)){
-                            $oldmask = umask(0);
-                            @mkdir(BASE_ROOT . "media/Fatture/Attive/" . $anno_creazione_fattura . "/" . $mese_creazione_fattura . "", 0777);
-                            @umask($oldmask);
-                        }
 
                         $pdf->SetFillColor(255, 255, 255);
                         $pdf->SetTextColor(0, 0, 0);
@@ -516,11 +480,11 @@ function creaFatturaPDF($idFatt, $echo = false) {
 
                 if (strlen($note_fattura) > 2) {
                     $pdf->SetFont('Times', '', 8);
-                    $pdf->SetFillColor(255, 255, 255);
+                    $pdf->SetFillColor(235, 235, 235);
                     $pdf->SetTextColor(0, 0, 0);
                     $pdf->SetFont('Times', 'I', 8);
                     $pdf->SetXY(20, 220);
-                    $pdf->Cell(167, 8, '' . $note_fattura . '', 1, 0, 'L', 0, 0);
+                    $pdf->Cell(167, 8, '' . $note_fattura . '', 1, 1, 'L', 1, 1);
                 }
             }
         }
@@ -533,12 +497,20 @@ function creaFatturaPDF($idFatt, $echo = false) {
         if(!is_dir(BASE_ROOT . "media/lista_fatture")){
             mkdir(BASE_ROOT . "media/lista_fatture", 0777);
         }
-        if(file_exists(BASE_ROOT . "media/lista_fatture/".$filename)){
-            chmod(BASE_ROOT. 'media/lista_fatture/' . $filename, 0777);
+        
+        if(!is_dir(BASE_ROOT . "media/lista_fatture/".$anno_creazione_fattura)){
+            mkdir(BASE_ROOT . "media/lista_fatture/".$anno_creazione_fattura, 0777);
         }
-        $pdf->Output(BASE_ROOT . 'media/lista_fatture/' . $filename, 'F');
-        //$pdf->Output(BASE_ROOT."media/Fatture/Attive/".$anno_creazione_fattura."/".$mese_creazione_fattura."/".$filename, F);
-        //$pdf->Output(BASE_ROOT."media/Anagrafiche/Clienti/".$azienda_creazione_fattura."/".$filename, F);
+        if(!is_dir(BASE_ROOT . "media/lista_fatture/".$anno_creazione_fattura."/".$mese_creazione_fattura)){
+            @mkdir(BASE_ROOT . "media/lista_fatture/" . $anno_creazione_fattura . "/" . $mese_creazione_fattura . "", 0777);
+        }
+        
+        if(file_exists(BASE_ROOT . "media/lista_fatture/".$anno_creazione_fattura . "/" . $mese_creazione_fattura . "/".$filename)){
+            chmod(BASE_ROOT. "media/lista_fatture/".$anno_creazione_fattura . "/" . $mese_creazione_fattura . "/". $filename, 0777);
+        }
+        
+        $pdf->Output(BASE_ROOT . 'media/lista_fatture/' . $anno_creazione_fattura . "/" . $mese_creazione_fattura . "/". $filename, 'F');
+        
         if($echo===true){
             $pdf->Output($filename, 'I');
         }

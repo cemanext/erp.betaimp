@@ -86,10 +86,10 @@ if (isset($_POST['intervallo_data'])) {
     $setDataCalIn = date("m")."/01/".date("Y");
     $setDataCalOut = date("m-t-Y");*/
     
-    $whereTmkRinnovi = " AND id_campagna != 166";
+    /*$whereTmkRinnovi = " AND id_campagna != 166";
     $whereTmkRinnoviAll = " AND lp.id_campagna != 166";
     $whereTmkNegativi = " AND id_campagna != 181 ";
-    $whereTmkNegativiAll = " AND lp.id_campagna != 181 ";
+    $whereTmkNegativiAll = " AND lp.id_campagna != 181 ";*/
     
     $where_intervalloCal = " $whereCommerciale $whereTmkRinnovi $whereTmkNegativi AND YEAR(datainsert)=YEAR(CURDATE()) AND MONTH(datainsert)=MONTH(CURDATE()) AND DAY(datainsert)=DAY(CURDATE())";
     $where_intervallo_cal = " $whereCommerciale $whereTmkRinnovi $whereTmkNegativi AND YEAR(dataagg)=YEAR(CURDATE()) AND MONTH(dataagg)=MONTH(CURDATE()) AND DAY(dataagg)=DAY(CURDATE())";
@@ -104,8 +104,8 @@ if (isset($_POST['intervallo_data'])) {
     $setDataCalIn = date("d-m-Y");
     $setDataCalOut = date("d-m-Y");
     
-    $_POST['escludi_rinnovi'] = "1";
-    $_POST['escludi_tmk_negativi'] = "1";
+    $_POST['escludi_rinnovi'] = "0";
+    $_POST['escludi_tmk_negativi'] = "0";
 }
 
 if(isset($_POST['id_agente']) && $_POST['id_agente']>0){
@@ -296,7 +296,7 @@ if (isset($_POST['intervallo_data'])) {
                     <!-- END PAGE TITLE-->
                     <!-- END PAGE HEADER-->
                     <!-- BEGIN DASHBOARD STATS 1-->
-                    <!--<div class="row">
+                    <div class="row">
                         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                             <?php
                             
@@ -370,8 +370,8 @@ if (isset($_POST['intervallo_data'])) {
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                             <?php
-                            $sql_003 = "SELECT SUM(imponibile) AS conteggio FROM lista_fatture WHERE (stato LIKE 'In Attesa' OR stato LIKE 'Pagata') " . $where_intervallo_fatture;
-                            $titolo = 'Totale Ordini Fatturati<br>' . $titolo_intervallo_fatture;
+                            $sql_003 = "SELECT SUM(imponibile) AS conteggio FROM lista_fatture WHERE (stato LIKE 'In Attesa' OR stato LIKE 'Pagata%') " . $where_intervallo_fatture;
+                            $titolo = 'Totale Fatturato Lordo<br>' . $titolo_intervallo_fatture;
                             $icona = 'fa fa-area-chart';
                             $colore = 'green-jungle';
                             //$link = '/moduli/anagrafiche/index.php?tbl=lista_professionisti&idMenu=3';
@@ -403,7 +403,7 @@ if (isset($_POST['intervallo_data'])) {
                             ?>
                         </div>
                     </div>
-                    <div class="clearfix"></div>-->
+                    <div class="clearfix"></div>
                     
                     <div class="row">
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">

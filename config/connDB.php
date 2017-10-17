@@ -1,6 +1,7 @@
 <?php
 session_start();
 ini_set('display_errors', '1');
+error_reporting(E_ALL & ~E_NOTICE);
 
 /* VERSIONE */
 define("VERSIONE", "v2.0.0 (AREA SVILUPPO PHP ".phpversion().")");

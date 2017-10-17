@@ -224,7 +224,7 @@ if(isset($_POST['intervallo_data'])) {
                                         </div>
                                         <div class="col-md-6">
                                             <?=print_select2("SELECT id AS valore, nome FROM lista_campagne WHERE 1 ORDER BY nome ASC", "id_campagna", $_POST['id_campagna'], "", false, 'tooltips select_campagna-allow-clear', 'data-container="body" data-placement="top" data-original-title="SELEZIONA CAMPAGNA"') ?>
-                                            </div>
+                                        </div>
                                     </div>
                                     <div class="form-group">
                                         <div class="col-md-6">
@@ -351,28 +351,59 @@ if(isset($_POST['intervallo_data'])) {
                             SUM((SELECT COUNT(*) AS conteggio_gestite FROM lista_preventivi AS lp WHERE (lp.stato LIKE 'Negativo') AND lp.id_campagna=ag.id $where_intervallo_negativo_all)) AS Negativo,
                             SUM((SELECT COUNT(*) AS conteggio_venduti FROM lista_preventivi AS lp WHERE (lp.stato LIKE 'Chiuso') AND lp.id_campagna=ag.id $where_intervallo_all)) AS Confermati,
                             SUM((SELECT IF(SUM(lp.imponibile)>0, SUM(lp.imponibile), 0) AS conteggio_preventivi FROM lista_preventivi AS lp WHERE (lp.stato LIKE 'Chiuso') AND lp.id_campagna=ag.id $where_intervallo_all)) AS Ordinato_Lordo,
-                            SUM((SELECT IF(SUM(ABS(lf.imponibile))>0, SUM(ABS(lf.imponibile)), 0) AS conteggio_annullate FROM lista_fatture AS lf WHERE (lf.stato LIKE 'Nota di Credito%') AND lf.tipo LIKE 'Nota di Credito%' AND lf.id_campagna=ag.id $where_intervallo_fatture_all)) AS Fatture_Annullate
+                            SUM((SELECT IF(SUM(ABS(lf.imponibile))>0, SUM(ABS(lf.imponibile)), 0) AS conteggio_annullate FROM lista_fatture AS lf WHERE (lf.stato LIKE 'Nota di Credito%') AND lf.tipo LIKE 'Nota di Credito%' AND lf.id_campagna=ag.id $where_intervallo_fatture_all)) AS Fatture_Annullate,
+                            SUM((SELECT IF(SUM(ABS(lf.imponibile))>0, SUM(ABS(lf.imponibile)), 0) AS conteggio_annullate FROM lista_fatture AS lf WHERE (lf.stato LIKE 'In Attesa' OR lf.stato LIKE 'Pagata%') AND lf.tipo LIKE 'Fattura%' AND lf.id_campagna=ag.id $where_intervallo_fatture_all)) AS Fatturato
                             FROM lista_campagne AS ag WHERE 1 $whereCampagnaId $whereTipoMarketing GROUP BY ag.id_tipo_marketing);";
                             $dblink->query($sql_0028, true);
                             
-                            $sql_0029 = "CREATE TEMPORARY TABLE stat_marketing_home_totale (SELECT tipo_marketing, Richiami, Tutte_Richieste, Tel_Richiami+Negativo+Confermati AS 'Tel_Gestite',"
-                                    . " Confermati, Negativo, Ordinato_Lordo, Fatture_Annullate, (Ordinato_Lordo-Fatture_Annullate) AS Ordinato_Netto, IF(Confermati>0,ROUND((Confermati*100)/(Negativo+Confermati), 2),0) AS Realizzato,"
-                                    . " IF(Ordinato_Lordo>0, ROUND((Ordinato_Lordo-Fatture_Annullate)/Confermati,2), 0) AS Media_part_su_Ordinato"
+                            $sql_0029 = "CREATE TEMPORARY TABLE stat_marketing_home_totale_tmp (SELECT tipo_marketing, Richiami, Tutte_Richieste, Tel_Richiami+Negativo+Confermati AS 'Tel_Gestite',"
+                                    . " Confermati, Negativo, Ordinato_Lordo, Fatture_Annullate, (Ordinato_Lordo-Fatture_Annullate) AS Ordinato_Netto, "
+                                    . " Fatturato AS Fatturato_Lordo, (Fatturato-Fatture_Annullate) AS Fatturato_Netto, IF(Confermati>0,ROUND((Confermati*100)/(Negativo+Confermati), 2),0) AS Realizzato,"
+                                    . " IF(Ordinato_Lordo>0, ROUND((Ordinato_Lordo-Fatture_Annullate)/Confermati,2), 0) AS Media_part_su_Ordinato,"
+                                    . " (Richiami+Tutte_Richieste+Tel_Richiami+Negativo+Confermati+Negativo) AS elimina_vuote"
                                     . " FROM stat_marketing_home_2);";
                             $dblink->query($sql_0029, true);
                             
                             $sql_0030 = "CREATE TEMPORARY TABLE stat_marketing_home_totale_tot_tmp (SELECT 'TOTALE', SUM(Richiami) AS Richiami, SUM(Tutte_Richieste) AS Tutte_Richieste, SUM(Tel_Richiami+Negativo+Confermati) AS 'Tel_Gestite', SUM(Confermati) AS Confermati,"
-                                    . " SUM(Negativo) AS Negativo, SUM(Ordinato_Lordo) AS Ordinato_Lordo, SUM(Fatture_Annullate) AS Fatture_Annullate, SUM((Ordinato_Lordo-Fatture_Annullate)) AS Ordinato_Netto, 0 AS Realizzato,"
+                                    . " SUM(Negativo) AS Negativo, SUM(Ordinato_Lordo) AS Ordinato_Lordo, SUM(Fatture_Annullate) AS Fatture_Annullate, SUM((Ordinato_Lordo-Fatture_Annullate)) AS Ordinato_Netto,"
+                                    . " SUM(Fatturato) AS Fatturato_Lordo, SUM((Fatturato-Fatture_Annullate)) AS Fatturato_Netto, 0 AS Realizzato,"
                                     . " 0 AS Media_part_su_Fattura FROM stat_marketing_home_2);";
                             $dblink->query($sql_0030, true);
                             
                             $sql_0031 = "CREATE TEMPORARY TABLE stat_marketing_home_totale_tot (SELECT '<b>TOTALE</b>', Richiami, Tutte_Richieste, Tel_Gestite,"
-                                    . " Confermati, Negativo, Ordinato_Lordo, Fatture_Annullate, Ordinato_Netto, ROUND((Confermati*100)/(Negativo+Confermati), 2) AS Realizzato,"
+                                    . " Confermati, Negativo, Ordinato_Lordo, Fatture_Annullate, Ordinato_Netto, Fatturato_Lordo, Fatturato_Netto, ROUND((Confermati*100)/(Negativo+Confermati), 2) AS Realizzato,"
                                     . " IF(Ordinato_Lordo>0, ROUND((Ordinato_Lordo-Fatture_Annullate)/Confermati,2), 0) AS Media_part_su_Fattura"
                                     . " FROM stat_marketing_home_totale_tot_tmp);";
                             $dblink->query($sql_0031, true);
                             
-                            stampa_table_datatables_responsive("SELECT * FROM stat_marketing_home_totale UNION SELECT * FROM stat_marketing_home_totale_tot;", "Statistiche per TIPO MARKETING".$titolo_intervallo, "tabella_base1");
+                            $sql_0032 = "CREATE TEMPORARY TABLE stat_marketing_home_totale (SELECT tipo_marketing, Richiami, Tutte_Richieste, Tel_Gestite,"
+                                    . " Confermati, Negativo, Ordinato_Lordo, Fatture_Annullate, Ordinato_Netto, "
+                                    . " Fatturato_Lordo, Fatturato_Netto, Realizzato,"
+                                    . " Media_part_su_Ordinato"
+                                    . " FROM stat_marketing_home_totale_tmp WHERE elimina_vuote > 0);";
+                            $dblink->query($sql_0032, true);
+                            
+                            $sql_0036 = "CREATE TEMPORARY TABLE stat_marketing_home_no_id_tmp (SELECT 
+                            'Nessun Tipo Marketing' AS tipo_marketing,
+                            (SELECT COUNT(*) AS conteggio FROM calendario AS ca WHERE etichetta='Nuova Richiesta' AND ca.id_campagna='0' $where_intervallo_tot $whereProdottoCal $whereCampagnaCal $whereTipoMarketingCal) AS Tutte_Richieste,
+                            (SELECT COUNT(*) AS conteggio FROM calendario AS ca WHERE etichetta='Nuova Richiesta' AND (ca.stato LIKE 'Mai Contattato' OR ca.stato LIKE 'Richiamare') AND ca.id_campagna='0') AS Richiami,
+                            (SELECT COUNT(*) AS conteggio FROM calendario AS ca WHERE etichetta='Nuova Richiesta' AND (ca.stato LIKE 'Mai Contattato' OR ca.stato LIKE 'Richiamare') AND ca.id_campagna='0' $where_intervallo_tot) AS Tel_Richiami,
+                            (SELECT COUNT(*) AS conteggio_gestite FROM lista_preventivi AS lp WHERE (lp.stato LIKE 'Negativo') AND lp.id_campagna='0' $where_intervallo_negativo_all) AS Negativo,
+                            (SELECT COUNT(*) AS conteggio_venduti FROM lista_preventivi AS lp WHERE (lp.stato LIKE 'Chiuso') AND lp.id_campagna='0' $where_intervallo_all) AS Confermati,
+                            (SELECT IF(SUM(lp.imponibile)>0, SUM(lp.imponibile), 0) AS conteggio_preventivi FROM lista_preventivi AS lp WHERE (lp.stato LIKE 'Chiuso') AND lp.id_campagna='0' $where_intervallo_all) AS Ordinato_Lordo,
+                            (SELECT IF(SUM(ABS(lf.imponibile))>0, SUM(ABS(lf.imponibile)), 0) AS conteggio_annullate FROM lista_fatture AS lf WHERE (lf.stato LIKE 'Nota di Credito%') AND lf.tipo LIKE 'Nota di Credito%' AND lf.id_campagna='0' $where_intervallo_fatture_all) AS Fatture_Annullate,
+                            (SELECT IF(SUM(ABS(lf.imponibile))>0, SUM(ABS(lf.imponibile)), 0) AS conteggio_annullate FROM lista_fatture AS lf WHERE (lf.stato LIKE 'In Attesa' OR lf.stato LIKE 'Pagata%') AND lf.tipo LIKE 'Fattura%' AND lf.id_campagna='0' $where_intervallo_fatture_all) AS Fatturato
+                            WHERE 1);";
+                            $dblink->query($sql_0036, true);
+                            
+                            $sql_0037 = "CREATE TEMPORARY TABLE stat_marketing_home_no_id (SELECT tipo_marketing, Richiami, Tutte_Richieste, Tel_Richiami+Negativo+Confermati AS 'Tel_Gestite',"
+                                    . " Confermati, Negativo, Ordinato_Lordo, Fatture_Annullate, (Ordinato_Lordo-Fatture_Annullate) AS Ordinato_Netto, "
+                                    . " Fatturato AS Fatturato_Lordo, (Fatturato-Fatture_Annullate) AS Fatturato_Netto, IF(Confermati>0,ROUND((Confermati*100)/(Negativo+Confermati), 2),0) AS Realizzato,"
+                                    . " IF(Ordinato_Lordo>0, ROUND((Ordinato_Lordo-Fatture_Annullate)/Confermati,2), 0) AS Media_part_su_Ordinato"
+                                    . " FROM stat_marketing_home_no_id_tmp);";
+                            $dblink->query($sql_0037, true);
+                            
+                            stampa_table_datatables_responsive("SELECT * FROM stat_marketing_home_no_id UNION SELECT * FROM stat_marketing_home_totale UNION SELECT * FROM stat_marketing_home_totale_tot;", "Statistiche per TIPO MARKETING".$titolo_intervallo, "tabella_base1");
                             
                             ?>
                         </div>
@@ -392,28 +423,60 @@ if(isset($_POST['intervallo_data'])) {
                             (SELECT COUNT(*) AS conteggio_gestite FROM lista_preventivi AS lp WHERE (lp.stato LIKE 'Negativo') AND lp.id_campagna=ag.id $where_intervallo_negativo_all) AS Negativo,
                             (SELECT COUNT(*) AS conteggio_venduti FROM lista_preventivi AS lp WHERE (lp.stato LIKE 'Chiuso') AND lp.id_campagna=ag.id $where_intervallo_all) AS Confermati,
                             (SELECT IF(SUM(lp.imponibile)>0, SUM(lp.imponibile), 0) AS conteggio_preventivi FROM lista_preventivi AS lp WHERE (lp.stato LIKE 'Chiuso') AND lp.id_campagna=ag.id $where_intervallo_all) AS Ordinato_Lordo,
-                            (SELECT IF(SUM(ABS(lf.imponibile))>0, SUM(ABS(lf.imponibile)), 0) AS conteggio_annullate FROM lista_fatture AS lf WHERE (lf.stato LIKE 'Nota di Credito%') AND lf.tipo LIKE 'Nota di Credito%' AND lf.id_campagna=ag.id $where_intervallo_fatture_all) AS Fatture_Annullate
+                            (SELECT IF(SUM(ABS(lf.imponibile))>0, SUM(ABS(lf.imponibile)), 0) AS conteggio_annullate FROM lista_fatture AS lf WHERE (lf.stato LIKE 'Nota di Credito%') AND lf.tipo LIKE 'Nota di Credito%' AND lf.id_campagna=ag.id $where_intervallo_fatture_all) AS Fatture_Annullate,
+                            (SELECT IF(SUM(ABS(lf.imponibile))>0, SUM(ABS(lf.imponibile)), 0) AS conteggio_annullate FROM lista_fatture AS lf WHERE (lf.stato LIKE 'In Attesa' OR lf.stato LIKE 'Pagata%') AND lf.tipo LIKE 'Fattura%' AND lf.id_campagna=ag.id $where_intervallo_fatture_all) AS Fatturato
                             FROM lista_campagne AS ag WHERE 1 $whereCampagnaId $whereTipoMarketing);";
                             $dblink->query($sql_0024, true);
                             
-                            $sql_0025 = "CREATE TEMPORARY TABLE stat_campagna_home_totale (SELECT Nome_Campagna, tipo_marketing, Richiami, Tutte_Richieste, Tel_Richiami+Negativo+Confermati AS 'Tel_Gestite',"
-                                    . " Confermati, Negativo, Ordinato_Lordo, Fatture_Annullate, (Ordinato_Lordo-Fatture_Annullate) AS Ordinato_Netto, IF(Confermati>0,ROUND((Confermati*100)/(Negativo+Confermati), 2),0) AS Realizzato,"
-                                    . " IF(Ordinato_Lordo>0, ROUND((Ordinato_Lordo-Fatture_Annullate)/Confermati,2), 0) AS Media_part_su_Ordinato"
+                            $sql_0025 = "CREATE TEMPORARY TABLE stat_campagna_home_totale_tmp (SELECT Nome_Campagna, tipo_marketing, Richiami, Tutte_Richieste, Tel_Richiami+Negativo+Confermati AS 'Tel_Gestite',"
+                                    . " Confermati, Negativo, Ordinato_Lordo, Fatture_Annullate, (Ordinato_Lordo-Fatture_Annullate) AS Ordinato_Netto, "
+                                    . " Fatturato AS Fatturato_Lordo, (Fatturato-Fatture_Annullate) AS Fatturato_Netto, IF(Confermati>0,ROUND((Confermati*100)/(Negativo+Confermati), 2),0) AS Realizzato,"
+                                    . " IF(Ordinato_Lordo>0, ROUND((Ordinato_Lordo-Fatture_Annullate)/Confermati,2), 0) AS Media_part_su_Ordinato,"
+                                    . " (Richiami+Tutte_Richieste+Tel_Richiami+Negativo+Confermati+Negativo) AS elimina_vuote"
                                     . " FROM stat_campagna_home_2);";
                             $dblink->query($sql_0025, true);
                             
                             $sql_0026 = "CREATE TEMPORARY TABLE stat_campagna_home_totale_tot_tmp (SELECT 'TOTALE', 'TUTTI', SUM(Richiami) AS Richiami, SUM(Tutte_Richieste) AS Tutte_Richieste, SUM(Tel_Richiami+Negativo+Confermati) AS 'Tel_Gestite', SUM(Confermati) AS Confermati,"
-                                    . " SUM(Negativo) AS Negativo, SUM(Ordinato_Lordo) AS Ordinato_Lordo, SUM(Fatture_Annullate) AS Fatture_Annullate, SUM((Ordinato_Lordo-Fatture_Annullate)) AS Ordinato_Netto, 0 AS Realizzato,"
+                                    . " SUM(Negativo) AS Negativo, SUM(Ordinato_Lordo) AS Ordinato_Lordo, SUM(Fatture_Annullate) AS Fatture_Annullate, SUM((Ordinato_Lordo-Fatture_Annullate)) AS Ordinato_Netto,"
+                                    . " SUM(Fatturato) AS Fatturato_Lordo, SUM((Fatturato-Fatture_Annullate)) AS Fatturato_Netto, 0 AS Realizzato,"
                                     . " 0 AS Media_part_su_Fattura FROM stat_campagna_home_2);";
                             $dblink->query($sql_0026, true);
                             
                             $sql_0027 = "CREATE TEMPORARY TABLE stat_campagna_home_totale_tot (SELECT '<b>TOTALE</b>', 'TUTTI', Richiami, Tutte_Richieste, Tel_Gestite,"
-                                    . " Confermati, Negativo, Ordinato_Lordo, Fatture_Annullate, Ordinato_Netto, ROUND((Confermati*100)/(Negativo+Confermati), 2) AS Realizzato,"
+                                    . " Confermati, Negativo, Ordinato_Lordo, Fatture_Annullate, Ordinato_Netto, Fatturato_Lordo, Fatturato_Netto, ROUND((Confermati*100)/(Negativo+Confermati), 2) AS Realizzato,"
                                     . " IF(Ordinato_Lordo>0, ROUND((Ordinato_Lordo-Fatture_Annullate)/Confermati,2), 0) AS Media_part_su_Fattura"
                                     . " FROM stat_campagna_home_totale_tot_tmp);";
                             $dblink->query($sql_0027, true);
                             
-                            stampa_table_datatables_responsive("SELECT * FROM stat_campagna_home_totale UNION SELECT * FROM stat_campagna_home_totale_tot;", "Statistiche per CAMPAGNA".$titolo_intervallo, "tabella_base_home");
+                            $sql_0033 = "CREATE TEMPORARY TABLE stat_campagna_home_totale (SELECT Nome_Campagna, tipo_marketing, Richiami, Tutte_Richieste, Tel_Gestite,"
+                                    . " Confermati, Negativo, Ordinato_Lordo, Fatture_Annullate, Ordinato_Netto, "
+                                    . " Fatturato_Lordo, Fatturato_Netto, Realizzato,"
+                                    . " Media_part_su_Ordinato"
+                                    . " FROM stat_campagna_home_totale_tmp WHERE elimina_vuote > 0);";
+                            $dblink->query($sql_0033, true);
+                            
+                            $sql_0034 = "CREATE TEMPORARY TABLE stat_campagna_home_no_id_tmp (SELECT 
+                            'Nessuna Campagna' as Nome_Campagna,
+                            'Nessun Tipo Marketing' AS tipo_marketing,
+                            (SELECT COUNT(*) AS conteggio FROM calendario AS ca WHERE etichetta='Nuova Richiesta' AND ca.id_campagna='0' $where_intervallo_tot $whereProdottoCal $whereCampagnaCal $whereTipoMarketingCal) AS Tutte_Richieste,
+                            (SELECT COUNT(*) AS conteggio FROM calendario AS ca WHERE etichetta='Nuova Richiesta' AND (ca.stato LIKE 'Mai Contattato' OR ca.stato LIKE 'Richiamare') AND ca.id_campagna='0') AS Richiami,
+                            (SELECT COUNT(*) AS conteggio FROM calendario AS ca WHERE etichetta='Nuova Richiesta' AND (ca.stato LIKE 'Mai Contattato' OR ca.stato LIKE 'Richiamare') AND ca.id_campagna='0' $where_intervallo_tot) AS Tel_Richiami,
+                            (SELECT COUNT(*) AS conteggio_gestite FROM lista_preventivi AS lp WHERE (lp.stato LIKE 'Negativo') AND lp.id_campagna='0' $where_intervallo_negativo_all) AS Negativo,
+                            (SELECT COUNT(*) AS conteggio_venduti FROM lista_preventivi AS lp WHERE (lp.stato LIKE 'Chiuso') AND lp.id_campagna='0' $where_intervallo_all) AS Confermati,
+                            (SELECT IF(SUM(lp.imponibile)>0, SUM(lp.imponibile), 0) AS conteggio_preventivi FROM lista_preventivi AS lp WHERE (lp.stato LIKE 'Chiuso') AND lp.id_campagna='0' $where_intervallo_all) AS Ordinato_Lordo,
+                            (SELECT IF(SUM(ABS(lf.imponibile))>0, SUM(ABS(lf.imponibile)), 0) AS conteggio_annullate FROM lista_fatture AS lf WHERE (lf.stato LIKE 'Nota di Credito%') AND lf.tipo LIKE 'Nota di Credito%' AND lf.id_campagna='0' $where_intervallo_fatture_all) AS Fatture_Annullate,
+                            (SELECT IF(SUM(ABS(lf.imponibile))>0, SUM(ABS(lf.imponibile)), 0) AS conteggio_annullate FROM lista_fatture AS lf WHERE (lf.stato LIKE 'In Attesa' OR lf.stato LIKE 'Pagata%') AND lf.tipo LIKE 'Fattura%' AND lf.id_campagna='0' $where_intervallo_fatture_all) AS Fatturato
+                            WHERE 1);";
+                            $dblink->query($sql_0034, true);
+                            
+                            $sql_0035 = "CREATE TEMPORARY TABLE stat_campagna_home_no_id (SELECT Nome_Campagna, tipo_marketing, Richiami, Tutte_Richieste, Tel_Richiami+Negativo+Confermati AS 'Tel_Gestite',"
+                                    . " Confermati, Negativo, Ordinato_Lordo, Fatture_Annullate, (Ordinato_Lordo-Fatture_Annullate) AS Ordinato_Netto, "
+                                    . " Fatturato AS Fatturato_Lordo, (Fatturato-Fatture_Annullate) AS Fatturato_Netto, IF(Confermati>0,ROUND((Confermati*100)/(Negativo+Confermati), 2),0) AS Realizzato,"
+                                    . " IF(Ordinato_Lordo>0, ROUND((Ordinato_Lordo-Fatture_Annullate)/Confermati,2), 0) AS Media_part_su_Ordinato"
+                                    . " FROM stat_campagna_home_no_id_tmp);";
+                            $dblink->query($sql_0035, true);
+                            
+                            stampa_table_datatables_responsive("SELECT * FROM stat_campagna_home_no_id UNION SELECT * FROM stat_campagna_home_totale UNION SELECT * FROM stat_campagna_home_totale_tot;", "Statistiche per CAMPAGNA".$titolo_intervallo, "tabella_base_home");
                            ?>
                         </div>
                     </div>
