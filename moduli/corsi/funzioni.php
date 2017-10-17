@@ -84,16 +84,16 @@ function Stampa_HTML_Dettaglio_Corsi($tabella,$id){
             echo '</div></div>';
             echo '</form>';
             
-            
+            if($_GET['esame']==0){
             echo '<div class="row"><div class="col-md-12 col-sm-12">';
             $sql_0001 = "SELECT   CONCAT('<a class=\"btn btn-circle btn-icon-only blue btn-outline\" href=\"modifica.php?tbl=calendario_esami&id=',id,'\" title=\"MODIFICA\" alt=\"MODIFICA\"><i class=\"fa fa-edit\"></i></a>') AS 'fa-edit',
-            data, ora, etichetta AS tipo, oggetto, numerico_10 AS 'Iscritti', numerico_4  AS 'Costo Aula', numerico_5 AS 'Costo Docenti', stato
+            data, ora,  IF(etichetta LIKE 'Calendario Esami',CONCAT('<span class=\"btn sbold uppercase btn-outline blue\">',etichetta,'</span>'),CONCAT('<span class=\"btn sbold uppercase btn-outline red-thunderbird\">',etichetta,'</span>')) AS 'Tipo', oggetto, numerico_10 AS 'Iscritti', numerico_4  AS 'Costo Aula', numerico_5 AS 'Costo Docenti', stato
             FROM calendario
             WHERE id_prodotto='" . $idProdotto."'
             AND id = '".$id."'
             AND etichetta LIKE 'Calendario Corsi'
             ORDER BY data DESC, ora ASC";
-            stampa_table_static_basic($sql_0001, '', 'Corsi Disponibili', 'blue');
+            stampa_table_static_basic($sql_0001, '', 'Edizioni Disponibili', 'blue');
             echo '</div></div>';
             
             echo '<div class="row"><div class="col-md-12 col-sm-12">';
@@ -106,12 +106,12 @@ function Stampa_HTML_Dettaglio_Corsi($tabella,$id){
             AND id_calendario_0 = '".$id."'
             AND etichetta LIKE 'Iscrizione Corso'
             ORDER BY data DESC, ora ASC";
-            stampa_table_static_basic($sql_0001, '', 'Corsi - Iscrizioni', 'green-steel');
+            stampa_table_static_basic($sql_0001, '', 'Edizioni - Iscrizioni', 'green-steel');
             echo '</div></div>';
-            
+            }else{
             echo '<div class="row"><div class="col-md-12 col-sm-12">';
             $sql_0001 = "SELECT   CONCAT('<a class=\"btn btn-circle btn-icon-only blue btn-outline\" href=\"modifica.php?tbl=calendario_esami&id=',id,'\" title=\"MODIFICA\" alt=\"MODIFICA\"><i class=\"fa fa-edit\"></i></a>') AS 'fa-edit',
-            data, ora, etichetta AS tipo, oggetto, numerico_10 AS 'Iscritti', numerico_4  AS 'Costo Aula', numerico_5 AS 'Costo Docenti', stato
+            data, ora,  IF(etichetta LIKE 'Calendario Esami',CONCAT('<span class=\"btn sbold uppercase btn-outline blue\">',etichetta,'</span>'),CONCAT('<span class=\"btn sbold uppercase btn-outline red-thunderbird\">',etichetta,'</span>')) AS 'Tipo', oggetto, numerico_10 AS 'Iscritti', numerico_4  AS 'Costo Aula', numerico_5 AS 'Costo Docenti', stato
             FROM calendario
             WHERE id_prodotto='" . $idProdotto."'
             AND id = '".$id."'
@@ -132,6 +132,7 @@ function Stampa_HTML_Dettaglio_Corsi($tabella,$id){
             ORDER BY data DESC, ora ASC";
             stampa_table_static_basic($sql_0001, '', 'Esami - Iscrizioni', 'green');
             echo '</div></div>';
+            }
         break;
         
         case 'lista_corsi':

@@ -2002,6 +2002,11 @@ $table_listaFatture = array(
                         "tipo" => "input",
                         "etichetta" => "Stato",
                         "readonly" => true
+                        ),
+                    array(  "campo" => "nota_documento",
+                        "tipo" => "text",
+                        "etichetta" => "Nota Documento",
+                        "readonly" => false
                         ))
             );
 
@@ -2798,7 +2803,7 @@ $table_listaIscrizioniPartecipanti = array(
                     "tipo" => "select2",
                     "etichetta" => "Fattura Collegata",
                     "readonly" => false,
-                    "sql" => "SELECT id as valore, CONCAT(codice,'/',sezionale,' del ',DATE_FORMAT(DATE(data_creazione), '%d-%m-%Y')) AS nome FROM lista_fatture WHERE lista_fatture.id_professionista IN (SELECT lista_iscrizioni.id_professionista FROM lista_iscrizioni WHERE id = '".$_GET['id']."')"
+                    "sql" => "SELECT id as valore, CONCAT(codice,'/',sezionale,' del ',DATE_FORMAT(DATE(data_creazione), '%d-%m-%Y')) AS nome FROM lista_fatture WHERE lista_fatture.id_professionista IN (SELECT lista_iscrizioni.id_professionista FROM lista_iscrizioni WHERE id = '".(isset($_GET['id']) ? $_GET['id'] : 0 )."')"
                 ),
                 /*array(
                 "campo" => "stato",
@@ -3640,15 +3645,15 @@ $table_listaCosti = array(
             );
 /** TABELLA CALENDARIO X ESAMI **/
 $table_calendarioEsami = array(
-                "index" => array("campi" => "CONCAT('<a class=\"btn btn-circle btn-icon-only yellow btn-outline\" href=\"dettaglio.php?tbl=calendario_esami&id=',id,'&idProdotto=',id_prodotto,'\" title=\"DETTAGLIO\" alt=\"DETTAGLIO\"><i class=\"fa fa-search\"></i></a>') AS 'fa-search',
+                "index" => array("campi" => "CONCAT('<a class=\"btn btn-circle btn-icon-only yellow btn-outline\" href=\"dettaglio.php?tbl=calendario_esami&id=',id,'&idProdotto=',id_prodotto,'',IF(etichetta LIKE 'Calendario Esami','&esame=1','&esame=0'),'\" title=\"DETTAGLIO\" alt=\"DETTAGLIO\"><i class=\"fa fa-search\"></i></a>') AS 'fa-search',
                 CONCAT('<a class=\"btn btn-circle btn-icon-only blue btn-outline\" href=\"modifica.php?tbl=calendario_esami&id=',id,'\" title=\"MODIFICA\" alt=\"MODIFICA\"><i class=\"fa fa-edit\"></i></a>') AS 'fa-edit',
                                             data, ora, 
                                             IF(etichetta LIKE 'Calendario Esami',CONCAT('<span class=\"btn sbold uppercase btn-outline blue\">',etichetta,'</span>'),CONCAT('<span class=\"btn sbold uppercase btn-outline red-thunderbird\">',etichetta,'</span>')) AS 'Tipo',
                                             CONCAT('<B>',oggetto,'</B>') AS Oggetto, 
                                             IF(id_aula>0, (SELECT nome FROM lista_aule WHERE id = id_aula),'') AS 'Aula',
-                                            numerico_4 AS 'Costo Aula',
                                             (SELECT COUNT(*) FROM matrice_corsi_docenti WHERE matrice_corsi_docenti.id_calendario = calendario.id AND calendario.id_prodotto = matrice_corsi_docenti.id_prodotto) AS 'N. Docente',
-                                            numerico_5 AS 'Costo Docenti',
+                                            
+                                            CONCAT('Aula: ',numerico_4,'<br>Docenti: ',numerico_5,'<br>Extra: ',numerico_3) AS 'Costi', 
                                             numerico_10 AS 'Iscritti', stato,
                                             CONCAT('<a class=\"btn btn-circle btn-icon-only red btn-outline\" href=\"cancella.php?tbl=calendario&id=',id,'\" title=\"ELIMINA\" alt=\"ELIMINA\"><i class=\"fa fa-trash\"></i></a>') AS 'fa-trash'",
                                             //CONCAT('link:dettaglio.php?tbl=calendario&id=',id,'|icona:fa fa-search font-yellow|nome:Dettaglio||link:modifica.php?tbl=calendario&id=',id,'|icona:fa fa-edit font-blue|nome:Modifica||divider||link:cancella.php?tbl=calendario&id=',id,'|icona:fa fa-trash font-red|nome:Elimina') AS Azioni,
@@ -3709,7 +3714,12 @@ $table_calendarioEsami = array(
                         "readonly" => false,
                         "sql" => "SELECT id AS valore, nome AS nome FROM lista_aule WHERE stato='Attivo' ORDER BY nome ASC"
                     ),
-                     array(  "campo" => "numerico_4",
+                     array(  "campo" => "numerico_3",
+                        "tipo" => "numerico",
+                        "etichetta" => "Costo Extra",
+                        "readonly" => false
+                    ),
+                    array(  "campo" => "numerico_4",
                         "tipo" => "numerico",
                         "etichetta" => "Costo Aula",
                         "readonly" => false

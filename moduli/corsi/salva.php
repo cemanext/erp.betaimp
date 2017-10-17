@@ -8,6 +8,35 @@ if(isset($_GET['fn'])){
     switch ($_GET['fn']) {
         
         
+        case 'iscriviEsameUtente':
+            $ok = true;
+            $dblink->begin();
+            
+            $idCalendario = $_GET['idCalendario'];
+            $idProfessionista = $_GET['idProfessionista'];
+            $idProdotto = $_GET['idProdotto'];
+            $idPreventivo = $_GET['idPreventivo'];
+            
+            $sql_iscrivi_corso_utente = "INSERT INTO calendario (id, dataagg, scrittore, id_preventivo, id_calendario_0, etichetta, id_professionista, stato, id_prodotto, oggetto, data, ora) 
+            SELECT '', NOW(), '".$_SESSION['cognome_nome_utente']."',  '".$idPreventivo."', '".$idCalendario."', 'Iscrizione Esame', '".$idProfessionista."', 'Iscritto', '".$idProdotto."', oggetto, data, ora FROM calendario WHERE id='".$idCalendario."'";
+            $ok = $ok && $dblink->query($sql_iscrivi_corso_utente);
+            $lastId=$dblink->insert_id();
+            
+            $numero_iscritti_al_corso = $dblink->get_field("SELECT COUNT(*) AS conteggio FROM calendario WHERE id_calendario_0='".$idCalendario."' AND etichetta='Iscrizione Esame'");
+            
+            $sql_002 = "UPDATE calendario SET numerico_10 = '".$numero_iscritti_al_corso."' WHERE id='".$idCalendario."' AND etichetta LIKE 'Calendario Esami'";
+            $ok = $ok && $dblink->query($sql_002);
+            
+            if($ok){
+                $ok = 1;
+                $dblink->commit();
+            }else{
+                $ok = 0;
+                $dblink->rollback();
+            }
+            header("Location:".$referer."&ret=$ok");
+        break;
+        
         case 'iscriviCorsoUtente':
             $ok = true;
             $dblink->begin();
@@ -15,9 +44,10 @@ if(isset($_GET['fn'])){
             $idCalendario = $_GET['idCalendario'];
             $idProfessionista = $_GET['idProfessionista'];
             $idProdotto = $_GET['idProdotto'];
+            $idPreventivo = $_GET['idPreventivo'];
             
-            $sql_iscrivi_corso_utente = "INSERT INTO calendario (id, dataagg, scrittore, id_calendario_0, etichetta, id_professionista, stato, id_prodotto, oggetto, data, ora) 
-            SELECT '', NOW(), '".$_SESSION['cognome_nome_utente']."', '".$idCalendario."', 'Iscrizione Corso', '".$idProfessionista."', 'Iscritto', '".$idProdotto."', oggetto, data, ora FROM calendario WHERE id='".$idCalendario."'";
+            $sql_iscrivi_corso_utente = "INSERT INTO calendario (id, dataagg, scrittore, id_preventivo, id_calendario_0, etichetta, id_professionista, stato, id_prodotto, oggetto, data, ora) 
+            SELECT '', NOW(), '".$_SESSION['cognome_nome_utente']."', '".$idPreventivo."',  '".$idCalendario."', 'Iscrizione Corso', '".$idProfessionista."', 'Iscritto', '".$idProdotto."', oggetto, data, ora FROM calendario WHERE id='".$idCalendario."'";
             $ok = $ok && $dblink->query($sql_iscrivi_corso_utente);
             $lastId=$dblink->insert_id();
             
