@@ -1,14 +1,28 @@
 <?php
-include_once('../config/connDB.php');
-include_once(BASE_ROOT . 'config/confAccesso.php');
 ini_set('display_errors', '1');
+
+if(isset($_GET['mese']) && isset($_GET['anno']) && isset($_GET['tipo'])){
+    $mese = $_GET['mese'];
+    $anno = $_GET['anno'];
+    $tipo = $_GET['tipo'];
+}else{
+    $tipo = "Fattura";
+    $mese = date("m");
+    if($mese == "01"){
+        $mese = "12";
+        $anno = date('Y', strtotime('-1 years'));
+    }else{
+        $mese = date("m", strtotime('-1 month'));
+        $anno = date('Y');
+    }
+}
 
 //$sql_0001 = creaSQLesporta();
 $sql_0001 = "SELECT IF(tipo='Fattura', 'Fatt. Imm.', 'N. C.') AS 'Tipo doc.', sezionale AS 'Sz.', codice AS 'Nr.doc.', DATE_FORMAT(DATE(data_creazione), '%d/%m/%Y') AS 'Data Doc.',
             (SELECT CONCAT(ragione_sociale,' ',forma_giuridica) AS rag_soc FROM lista_aziende WHERE id = id_azienda) AS 'Ragione Sociale Anagrafica',
             ABS(imponibile) AS 'Tot. imponibile', (ABS(importo)-ABS(imponibile)) AS 'Tot. Iva', ABS(importo) AS 'Tot. Documento',
             (SELECT CONCAT(cognome,' ',nome) FROM lista_password WHERE id = id_agente) AS 'Nome Commerciale'
-            FROM lista_fatture WHERE MONTH(data_creazione) = '09' AND YEAR(data_creazione) = '2017' AND sezionale NOT LIKE '%CN%' AND stato NOT LIKE 'Accorpata' ";
+            FROM lista_fatture WHERE MONTH(data_creazione) = '$mese' AND YEAR(data_creazione) = '$anno' AND tipo LIKE '".$tipo."' AND sezionale NOT LIKE '%CN%' AND (stato LIKE 'In Attesa' OR stato LIKE 'Pagata%' OR stato LIKE 'Nota di%') ";
 $titolo = "Esportazione del ".date("d/m/Y H:i:s");
 //stampa_table_datatables_responsive($sql_0001, $titolo, 'tabella_base');
 
@@ -37,7 +51,7 @@ print("\n");
             if(!isset($row))
                 $schema_insert .= "NULL".$sep;
             elseif ($row != "")
-                $schema_insert .= "".html_entity_decode($row).$sep;
+                $schema_insert .= "".mb_convert_encoding(htmlspecialchars_decode(html_entity_decode($row)), "UTF-8", "HTML-ENTITIES").$sep;
             else
                 $schema_insert .= "".$sep;
         }

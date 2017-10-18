@@ -194,53 +194,19 @@ if (isset($_POST['intervallo_data'])) {
                                     <div class="tab-pane fade active in" id="tab_per_commesse">
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <!-- INIZIO TABELLA-->
-                                                <div class="portlet box blue">
-                                                    <div class="portlet-title">
-                                                        <div class="caption">
-                                                            <i class="fa fa-list"></i>
-                                                            <span class="caption-subject bold uppercase"><?= $titolo_intervallo; ?></span>
-                                                        </div>
-                                                        <div class="tools"> </div>
-                                                    </div>
-                                                    <div class="portlet-body">
-                                                        <table class="table table-striped table-bordered table-hover dt-responsive" width="100%" id="tab1_fatture_home">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th class="min-phone-l"><i class="fa fa-search"></i></th>
-                                                                    <th class="all">Codice</th>
-                                                                    <th class="min-phone-l">Cliente</th>
-                                                                    <th class="min-phone-l">Imponibile &euro;</th>
-                                                                    <th class="min-phone-l">Stato</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <?php
-                                                                $sql_001 = "SELECT
-                                                                CONCAT('<a class=\"btn btn-circle btn-icon-only yellow btn-outline\" href=\"" . BASE_URL . "/moduli/fatture/dettaglio.php?tbl=lista_fatture&id=',id,'\" title=\"DETTAGLIO\" alt=\"DETTAGLIO\"><i class=\"fa fa-search\"></i></a>') AS 'dettaglio',
-                                                                CONCAT('',codice,'/',sezionale,'') AS 'codice', (SELECT CONCAT('<B>',ragione_sociale,'</B>') FROM lista_aziende WHERE id = id_azienda) as azienda, imponibile, 
-                                                                (SELECT CONCAT('<span class=\"badge bold bg-',colore_sfondo,' bg-font-',colore_sfondo,'\"> ',nome,' </span>') FROM `lista_fatture_stati` WHERE `lista_fatture_stati`.nome LIKE lista_fatture.stato) AS stato
-                                                                FROM lista_fatture 
-                                                                WHERE 1 " . $where_intervallo . " ORDER BY dataagg DESC LIMIT 100";
-                                                                $rs_001 = $dblink->get_results($sql_001);
-                                                                if ($rs_001) {
-                                                                    foreach ($rs_001 as $row_001) {
-                                                                        echo '<tr>
-                                                                        <td>' . $row_001['dettaglio'] . '</td>
-                                                                        <td>' . $row_001['codice'] . '</td>
-                                                                        <td>' . $row_001['azienda'] . '</td>
-                                                                        <td>' . $row_001['imponibile'] . '</td>
-                                                                        <td>' . $row_001['stato'] . '</td>
-                                                                        </tr>';
-                                                                    }
-                                                                }
-                                                                ?>
-
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                                <!-- FINE TABELLA-->
+                                                <?php
+                                                $sql_0004 = "SELECT 
+                                                IF(stato LIKE 'In Attesa' OR stato LIKE 'Pagata%', CONCAT('<a class=\"btn btn-circle btn-icon-only blue-steel btn-outline\" href=\"".BASE_URL."/moduli/fatture/printFattureXLS.php?anno=',YEAR(data_creazione),'&mese=',MONTH(data_creazione),'&tipo=',tipo,'\" target=\"_blank\" title=\"XLS FATTURE CON COMMERCIALE\" alt=\"XLS FATTURE CON COMMERCIALE\"><i class=\"fa fa-file-excel-o\"></i></a>') ,
+                                                    CONCAT('<a class=\"btn btn-circle btn-icon-only red-intense btn-outline\" href=\"".BASE_URL."/moduli/fatture/printFattureXLS.php?anno=',YEAR(data_creazione),'&mese=',MONTH(data_creazione),'&tipo=',tipo,'\" target=\"_blank\" title=\"XLS FATTURE CON COMMERCIALE\" alt=\"XLS FATTURE CON COMMERCIALE\"><i class=\"fa fa-file-excel-o\"></i></a>')) as 'fa-file-excel-o',
+                                                YEAR(data_creazione) AS Anno, MONTH(data_creazione) AS Mese, SUM(imponibile) AS Imponibile, COUNT(stato) AS CONTEGGIO, tipo 
+                                                FROM lista_fatture WHERE sezionale NOT LIKE '%CN%' AND (stato LIKE 'In Attesa' OR stato LIKE 'Pagata%' OR stato LIKE 'Nota di%')
+                                                GROUP BY YEAR(data_creazione), MONTH(data_creazione), tipo
+                                                ORDER BY YEAR(data_creazione) DESC, MONTH(data_creazione) DESC, tipo, sezionale, stato ASC;";
+                                                
+                                                stampa_table_static_basic($sql_0004, 'tab4_fatture_home', $titolo_intervallo, '', 'fa fa-user');
+                                                ?>
+                                                
+                                                
                                             </div>
                                         </div>
                                     </div>

@@ -14,7 +14,8 @@ function Stampa_HTML_index_Corsi($tabella){
             $titolo = 'Elenco Attestati';
             $sql_0001 = "SELECT ".$campi_visualizzati." FROM ".$tabella." WHERE $where $ordine";
             //echo '<li>$sql_0001 = '.$sql_0001.'</li>';
-            stampa_table_datatables_responsive($sql_0001, $titolo, 'tabella_base');
+            stampa_table_datatables_ajax($sql_0001, "datatable_ajax", $titolo, '', '', false);
+            //stampa_table_datatables_responsive($sql_0001, $titolo, 'tabella_base');
         break;
         
         case 'calendario_esami':
@@ -25,7 +26,8 @@ function Stampa_HTML_index_Corsi($tabella){
             $titolo = 'Calendario Corsi / Esami';
             $sql_0001 = "SELECT ".$campi_visualizzati." FROM ".$tabella." WHERE $where $ordine";
             //echo '<li>$sql_0001 = '.$sql_0001.'</li>';
-            stampa_table_datatables_responsive($sql_0001, $titolo, 'tabella_base');
+            stampa_table_datatables_ajax($sql_0001, "datatable_ajax", $titolo, '', '', false);
+            //stampa_table_datatables_responsive($sql_0001, $titolo, 'tabella_base');
         break;
         
         case 'lista_corsi':
@@ -35,7 +37,8 @@ function Stampa_HTML_index_Corsi($tabella){
             $ordine = $table_listaCorsi['index']['order'];
             $titolo = 'Elenco Corsi';
             $sql_0001 = "SELECT ".$campi_visualizzati." FROM ".$tabella." WHERE $where $ordine";
-            stampa_table_datatables_responsive($sql_0001, $titolo, 'tabella_base');
+            stampa_table_datatables_ajax($sql_0001, "datatable_ajax", $titolo, '', '', false);
+            //stampa_table_datatables_responsive($sql_0001, $titolo, 'tabella_base');
         break;
     
         case 'lista_classi':
@@ -45,7 +48,8 @@ function Stampa_HTML_index_Corsi($tabella){
             $ordine = $table_listaClassi['index']['order'];
             $titolo = 'Elenco Classi';
             $sql_0001 = "SELECT ".$campi_visualizzati." FROM ".$tabella." WHERE $where $ordine";
-            stampa_table_datatables_responsive($sql_0001, $titolo, 'tabella_base');
+            stampa_table_datatables_ajax($sql_0001, "datatable_ajax", $titolo, '', '', false);
+            //stampa_table_datatables_responsive($sql_0001, $titolo, 'tabella_base');
         break;
 
     }
@@ -93,7 +97,7 @@ function Stampa_HTML_Dettaglio_Corsi($tabella,$id){
             AND id = '".$id."'
             AND etichetta LIKE 'Calendario Corsi'
             ORDER BY data DESC, ora ASC";
-            stampa_table_static_basic($sql_0001, '', 'Edizioni Disponibili', 'blue');
+            stampa_table_datatables_responsive($sql_0001, 'Edizioni Disponibili', 'tabella_base1', 'blue');
             echo '</div></div>';
             
             echo '<div class="row"><div class="col-md-12 col-sm-12">';
@@ -106,7 +110,7 @@ function Stampa_HTML_Dettaglio_Corsi($tabella,$id){
             AND id_calendario_0 = '".$id."'
             AND etichetta LIKE 'Iscrizione Corso'
             ORDER BY data DESC, ora ASC";
-            stampa_table_static_basic($sql_0001, '', 'Edizioni - Iscrizioni', 'green-steel');
+            stampa_table_datatables_responsive($sql_0001, 'Edizioni - Iscrizioni', 'tabella_base2',  'green-steel');
             echo '</div></div>';
             }else{
             echo '<div class="row"><div class="col-md-12 col-sm-12">';
@@ -117,7 +121,7 @@ function Stampa_HTML_Dettaglio_Corsi($tabella,$id){
             AND id = '".$id."'
             AND etichetta LIKE 'Calendario Esami'
             ORDER BY data DESC, ora ASC";
-            stampa_table_static_basic($sql_0001, '', 'Esami Disponibili', 'blue-steel');
+            stampa_table_datatables_responsive($sql_0001, 'Esami Disponibili', 'tabella_base3', 'blue-steel');
             echo '</div></div>';
          
             echo '<div class="row"><div class="col-md-12 col-sm-12">';
@@ -130,7 +134,7 @@ function Stampa_HTML_Dettaglio_Corsi($tabella,$id){
             AND id_calendario_0 = '".$id."'
             AND etichetta LIKE 'Iscrizione Esame'
             ORDER BY data DESC, ora ASC";
-            stampa_table_static_basic($sql_0001, '', 'Esami - Iscrizioni', 'green');
+            stampa_table_datatables_responsive($sql_0001, 'Esami - Iscrizioni', 'tabella_base4', 'green');
             echo '</div></div>';
             }
         break;

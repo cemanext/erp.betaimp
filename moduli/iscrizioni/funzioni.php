@@ -190,7 +190,7 @@ function Stampa_HTML_Dettaglio_Iscrizioni($tabella, $id) {
             CONCAT('<a class=\"btn btn-circle btn-icon-only red btn-outline\" href=\"".BASE_URL."/moduli/corsi/printAttestatoPDF.php?idIscrizione=',id,'\" title=\"STAMPA\" alt=\"STAMPA\" target=\"_blank\"><i class=\"fa fa-file-pdf-o\"></i></a>') AS 'fa-file-pdf-o'
             FROM lista_iscrizioni
             WHERE id_corso='".$id."' $whrStato ORDER BY $whrOrderBy";
-            stampa_table_static_basic($sql_0001, '', 'Iscritti '.$whrStatoTitolo, '');
+            stampa_table_datatables_responsive($sql_0001, 'Iscritti '.$whrStatoTitolo, 'tabella_base1', '');
             echo '</div></div>';
 
 

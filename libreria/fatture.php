@@ -509,7 +509,12 @@ function creaFatturaPDF($idFatt, $echo = false) {
             chmod(BASE_ROOT. "media/lista_fatture/".$anno_creazione_fattura . "/" . $mese_creazione_fattura . "/". $filename, 0777);
         }
         
+        if(file_exists(BASE_ROOT . "media/lista_fatture/".$filename)){
+            chmod(BASE_ROOT. "media/lista_fatture/". $filename, 0777);
+        }
+        
         $pdf->Output(BASE_ROOT . 'media/lista_fatture/' . $anno_creazione_fattura . "/" . $mese_creazione_fattura . "/". $filename, 'F');
+        $pdf->Output(BASE_ROOT . 'media/lista_fatture/'. $filename, 'F');
         
         if($echo===true){
             $pdf->Output($filename, 'I');

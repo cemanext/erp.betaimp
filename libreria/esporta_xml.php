@@ -56,15 +56,15 @@ foreach ($rowsFatture as $rowFattura) {
 
         $document->addChild('CustomerCode', "_XXX_REPLACE_VOID_XXX_");
         $document->addChild('CustomerWebLogin',"_XXX_REPLACE_VOID_XXX_");
-        $document->addChild('CustomerName', htmlspecialchars(html_entity_decode($datiFatturazione['ragione_sociale']." ".$datiFatturazione['forma_giuridica'])));
-        $document->addChild('CustomerAddress', htmlspecialchars(html_entity_decode($datiFatturazione['indirizzo'])));
+        $document->addChild('CustomerName', mb_convert_encoding(htmlspecialchars(html_entity_decode($datiFatturazione['ragione_sociale']." ".$datiFatturazione['forma_giuridica'])), "UTF-8", "HTML-ENTITIES"));
+        $document->addChild('CustomerAddress', mb_convert_encoding(htmlspecialchars(html_entity_decode($datiFatturazione['indirizzo'])), "UTF-8", "HTML-ENTITIES"));
         $document->addChild('CustomerPostcode', $datiFatturazione['cap']);
-        $document->addChild('CustomerCity', htmlspecialchars(html_entity_decode($datiFatturazione['citta'])));
-        $document->addChild('CustomerProvince', htmlspecialchars(html_entity_decode($datiFatturazione['provincia'])));
-        $document->addChild('CustomerCountry', htmlspecialchars(html_entity_decode($datiFatturazione['nazione'])));
+        $document->addChild('CustomerCity', mb_convert_encoding(htmlspecialchars(html_entity_decode($datiFatturazione['citta'])), "UTF-8", "HTML-ENTITIES"));
+        $document->addChild('CustomerProvince', mb_convert_encoding(htmlspecialchars(html_entity_decode($datiFatturazione['provincia'])), "UTF-8", "HTML-ENTITIES"));
+        $document->addChild('CustomerCountry', mb_convert_encoding(htmlspecialchars(html_entity_decode($datiFatturazione['nazione'])), "UTF-8", "HTML-ENTITIES"));
         $document->addChild('CustomerFiscalCode', $datiFatturazione['partita_iva']);
         $document->addChild('CustomerCellPhone', $datiFatturazione['cellulare']);
-        $document->addChild('CustomerEmail', htmlspecialchars(html_entity_decode($datiFatturazione['email'])));
+        $document->addChild('CustomerEmail', mb_convert_encoding(htmlspecialchars(html_entity_decode($datiFatturazione['email'])), "UTF-8", "HTML-ENTITIES"));
         $document->addChild('DocumentType', "I");
         $document->addChild('Date', $rowFattura['data_creazione']);
         $document->addChild('Number', $rowFattura['codice']);
