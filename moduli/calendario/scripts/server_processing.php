@@ -31,13 +31,16 @@ if($_GET['whrStato']!="0e902aba617fb11d469e1b90f57fd79a" && $_GET['whrStato']!="
         if($data_in == $data_out){
             $where_data_calendario = " AND DATE(data) = '" . $data_in . "'";
             $where_data_calendario_iscritto = " AND DATE(data_iscrizione) = '" . $data_in . "'";
+            $where_data_calendario_fattura = " AND DATE(data_creazione) = '" . $data_in . "'";
         }else{
             $where_data_calendario = " AND data BETWEEN  '" . $data_in . "' AND  '" . $data_out . "'";
             $where_data_calendario_iscritto = " AND data_iscrizione BETWEEN  '" . $data_in . "' AND  '" . $data_out . "'";
+            $where_data_calendario_fattura = " AND data_creazione BETWEEN  '" . $data_in . "' AND  '" . $data_out . "'";
         }
     } else {
         $where_data_calendario = " AND YEAR(data)=YEAR(CURDATE()) AND MONTH(data)=MONTH(CURDATE())";
         $where_data_calendario_iscritto = " AND YEAR(data_iscrizione)=YEAR(CURDATE()) AND MONTH(data_iscrizione)=MONTH(CURDATE())";
+        $where_data_calendario_fattura = " AND YEAR(data_creazione)=YEAR(CURDATE()) AND MONTH(data_creazione)=MONTH(CURDATE())";
     }
 }
 
@@ -214,6 +217,39 @@ switch($whrStato){
         }
         //$ordine = $table_calendario['index']['order'];
         $ordine = " ORDER BY datainsert DESC, orainsert ASC";
+    break;
+    
+    case MD5('Note di Credito'):
+        $tabella = "calendario INNER JOIN lista_fatture ON calendario.id = lista_fatture.id_calendario";
+            //oggetto AS 'Oggetto', mittente AS 'Mittente', dataagg AS 'Data', campo_5 AS 'E-Mail', campo_4 AS 'Telefono', stato,
+            $campi_visualizzati = "CONCAT('<a class=\"btn btn-circle btn-icon-only green btn-outline\" href=\"".BASE_URL."/moduli/anagrafiche/dettaglio_tab.php?tbl=calendario&id=',calendario.id,'\" title=\"SCHEDA\" alt=\"SCHEDA\"><i class=\"fa fa-book\"></i></a>') AS 'fa-book',
+                            (SELECT CONCAT(lista_password.nome,' ',lista_password.cognome) FROM lista_password WHERE lista_password.id=calendario.id_agente) AS 'Commerciale', 
+                            calendario.stato, IF(calendario.id_azienda>0,CONCAT('<i class=\"fa fa-user btn btn-icon-only green-jungle btn-outline\" style=\"display: inline; padding: 3px; line-height: 0.5;\"></i>'),CONCAT('<i class=\"fa fa-user-times btn btn-icon-only red-flamingo btn-outline\" style=\"display: inline; padding: 3px; line-height: 0.5;\"></i>')) AS 'fa-user', 
+                            calendario.mittente,
+                            IF(calendario.id_professionista>0,(SELECT CONCAT(lista_professionisti.cognome,' ',lista_professionisti.nome) FROM lista_professionisti WHERE lista_professionisti.id=calendario.id_professionista ),'') AS Professionista,
+                            (SELECT lista_prodotti.nome FROM lista_prodotti WHERE lista_prodotti.id=calendario.id_prodotto) AS 'Corso', 
+                            lista_fatture.data_creazione AS 'Data Note di Credito', 
+                            lista_fatture.codice_ricerca AS 'Cod. Fattura',
+                            lista_fatture.imponibile AS Importo, 
+                            (SELECT nome FROM lista_tipo_marketing WHERE id = id_tipo_marketing) AS Marketing";
+        //$where = $table_calendario['index']['where'];
+        $where = " (lista_fatture.stato LIKE 'Nota di Credito%' AND lista_fatture.tipo='Nota di Credito') $where_data_calendario_fattura";
+        if(!empty($arrayCampoRicerca)){
+            foreach ($arrayCampoRicerca as $campoRicerca) {
+                if($campoRicerca=="iscritto") $campoRicerca = "venduto";
+                $campoRicerca = $dblink->filter($campoRicerca);
+                $where.= " AND (calendario.oggetto LIKE '%".$campoRicerca."%' OR calendario.mittente LIKE '%".$campoRicerca."%'";
+                $where.= " OR data_iscrizione LIKE '%".$campoRicerca."%' OR calendario.campo_5 LIKE '%".$campoRicerca."%'";
+                $where.= " OR calendario.nome LIKE '%".$campoRicerca."%' OR calendario.cognome LIKE '%".$campoRicerca."%'";
+                $where.= " OR calendario.email LIKE '%".$campoRicerca."%' OR calendario.campo_9 LIKE '%".$campoRicerca."%'";
+                $where.= " OR calendario.messaggio LIKE '%".$campoRicerca."%' OR lista_fatture.cognome_nome_agente LIKE '%".$campoRicerca."%'";
+                $where.= " OR calendario.tipo_marketing LIKE '%".$campoRicerca."%' OR calendario.telefono LIKE '%".$campoRicerca."%'";
+                $where.= " OR calendario.cellulare LIKE '%".$campoRicerca."%' OR calendario.professione LIKE '%".$campoRicerca."%'";
+                $where.= " OR calendario.campo_4 LIKE '%".$campoRicerca."%' OR calendario.stato LIKE '%".$campoRicerca."%')";
+            }
+        }
+        //$ordine = $table_calendario['index']['order'];
+        $ordine = " ORDER BY lista_fatture.data_creazione DESC";
     break;
 
     case MD5('Chiusa In Attesa di Controllo'):

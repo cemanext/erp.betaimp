@@ -135,6 +135,27 @@ function Stampa_HTML_index_Calendario(){
                         $colore = "yellow-soft";
                         $sql_0001 = "SELECT ".$campi_visualizzati." FROM ".$tabella." WHERE $where $ordine $limite";
                     break;
+                    
+                    case MD5('Note di Credito'):
+                    $campi_visualizzati = "CONCAT('<a class=\"btn btn-circle btn-icon-only green btn-outline\" href=\"".BASE_URL."/moduli/anagrafiche/dettaglio_tab.php?tbl=calendario&id=',id,'\" title=\"SCHEDA\" alt=\"SCHEDA\"><i class=\"fa fa-book\"></i></a>') AS 'fa-book',
+                                            (SELECT CONCAT(lista_password.nome,' ',lista_password.cognome) FROM lista_password WHERE lista_password.id=calendario.id_agente) AS 'Commerciale', 
+                                            stato, 'fa-user', mittente AS 'Mittente',
+                                            'Professionista', 
+                                            (SELECT lista_prodotti.nome FROM lista_prodotti WHERE lista_prodotti.id=calendario.id_prodotto) AS 'Prodotto', 
+                                            data AS 'Data Nota di Credito', 
+                                            '' AS 'Cod. Fattura',
+                                            'Importo', 
+                                            (SELECT nome FROM lista_tipo_marketing WHERE id = id_tipo_marketing) AS Marketing";
+                        //$where = $table_calendario['index']['where'];
+                        $where = " MD5(stato)='".$_GET['whrStato']."'";
+                        //$ordine = $table_calendario['index']['order'];
+                        $ordine = " ORDER BY datainsert DESC, orainsert ASC";
+                        $limite = "LIMIT 1";
+                        $titolo = 'Elenco Richieste con Note di Credito';
+                        $stile = "datatable_ajax";
+                        $colore = "red-intense";
+                    $sql_0001 = "SELECT ".$campi_visualizzati." FROM ".$tabella." WHERE $where $ordine $limite";
+                    break;
                 
                     default:
                         if($_SESSION['livello_utente']=="commerciale"){
