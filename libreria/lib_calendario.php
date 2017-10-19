@@ -38,7 +38,7 @@ function stampa_calendario_1($sql_2, $defaultView, $stile, $colore) {
                         {
                             left: 'prev,next today',
                             center: 'title',
-                            right: 'month,basicWeek'
+                            right: 'month,agendaWeek,listMonth'
                         },
                 //defaultDate: '2016-10-12',
                 defaultView: '<?=$defaultView?>', // listDay, basicWeek, agendaWeek change default view with available options from http://arshaw.com/fullcalendar/docs/views/Available_Views/

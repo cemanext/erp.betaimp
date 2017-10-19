@@ -40,7 +40,7 @@ if (isset($_GET['tbl'])) {
         <!-- BEGIN PAGE LEVEL PLUGINS -->
         <link href="<?= BASE_URL ?>/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
         <link href="<?=BASE_URL?>/assets/global/plugins/morris/morris.css" rel="stylesheet" type="text/css" />
-        <link href="<?=BASE_URL?>/assets/global/plugins/fullcalendar/fullcalendar.min.css" rel="stylesheet" type="text/css" />
+        <link href="<?=BASE_URL?>/assets/global/plugins/fullcalendar-3.6.1/fullcalendar.min.css" rel="stylesheet" type="text/css" />
         <link href="<?=BASE_URL?>/assets/global/plugins/jqvmap/jqvmap/jqvmap.css" rel="stylesheet" type="text/css" />
         <!-- END PAGE LEVEL PLUGINS -->
         <!-- BEGIN THEME GLOBAL STYLES -->
@@ -175,8 +175,8 @@ if (isset($_GET['tbl'])) {
         <script src="<?=BASE_URL?>/assets/global/plugins/amcharts/ammap/ammap.js" type="text/javascript"></script>
         <script src="<?=BASE_URL?>/assets/global/plugins/amcharts/ammap/maps/js/worldLow.js" type="text/javascript"></script>
         <script src="<?=BASE_URL?>/assets/global/plugins/amcharts/amstockcharts/amstock.js" type="text/javascript"></script>
-        <script src="<?=BASE_URL?>/assets/global/plugins/fullcalendar/fullcalendar.min.js" type="text/javascript"></script>
-        <script src="<?=BASE_URL?>/assets/global/plugins/fullcalendar/locale/it.js" type="text/javascript"></script>
+        <script src="<?=BASE_URL?>/assets/global/plugins/fullcalendar-3.6.1/fullcalendar.min.js" type="text/javascript"></script>
+        <script src="<?=BASE_URL?>/assets/global/plugins/fullcalendar-3.6.1/locale/it.js" type="text/javascript"></script>
         <script src="<?=BASE_URL?>/assets/global/plugins/horizontal-timeline/horozontal-timeline.min.js" type="text/javascript"></script>
         <script src="<?=BASE_URL?>/assets/global/plugins/flot/jquery.flot.min.js" type="text/javascript"></script>
         <script src="<?=BASE_URL?>/assets/global/plugins/flot/jquery.flot.resize.min.js" type="text/javascript"></script>
