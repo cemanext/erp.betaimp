@@ -165,7 +165,7 @@ function Stampa_HTML_Dettaglio_Anagrafica($tabella, $id) {
                     . "INNER JOIN " . MOODLE_DB_NAME . ".`mdl_user_info_data`"
                     . "ON mdl_user.id = mdl_user_info_data.userid "
                     . "WHERE mdl_user.`id` = " . $rowUtente['Id Moodle'] . " AND mdl_user_info_data.fieldid='1'";
-            //stampa_table_static_basic($sql_0032, '', 'Stato Utente attuale su Moodle', 'green-jungle', 'fa fa-user');
+            stampa_table_static_basic($sql_0032, '', 'Stato Utente attuale su Moodle', 'green-jungle', 'fa fa-user');
             echo '</div></div>';
             echo '<div class="row"><div class="col-md-12 col-sm-12">';
             $sql_0031 = "SELECT mdl_user.`id` AS 'Id Moodle', mdl_user.`username`, mdl_user.`email`, "
@@ -177,7 +177,7 @@ function Stampa_HTML_Dettaglio_Anagrafica($tabella, $id) {
                     . "INNER JOIN " . str_replace("_dev", "", MOODLE_DB_NAME) . "_dev_test.`mdl_user_info_data`"
                     . "ON mdl_user.id = mdl_user_info_data.userid "
                     . "WHERE mdl_user.`id` = " . $rowUtente['Id Moodle'] . " AND mdl_user_info_data.fieldid=1";
-            //stampa_table_static_basic($sql_0031, '', 'Stato Utente Su Leolearning al 31/07/2017', 'red-flamingo', 'fa fa-user');
+            stampa_table_static_basic($sql_0031, '', 'Stato Utente Su Leolearning al 31/07/2017', 'red-flamingo', 'fa fa-user');
             echo '</div></div>';
 
             echo '<div class="row"><div class="col-md-12 col-sm-12">';
