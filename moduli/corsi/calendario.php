@@ -87,7 +87,50 @@ if (isset($_GET['tbl'])) {
                     ?>
                     <!-- END PAGE TITLE -->
                     <!-- END PAGE HEADER-->
-                    <?php Stampa_HTML_index_Corsi($tabella); ?>
+                    <?php //Stampa_HTML_index_Corsi($tabella); ?>
+
+
+<!-- START ROW 5 - 1 COLUMN-->
+                    <div class="row">
+                        <div class="col-md-12">
+                          <div class="portlet light portlet-fit bordered calendar">
+                              <div class="portlet-title">
+                                  <!--<div class="caption">
+                                      <i class=" icon-layers font-green"></i>
+                                      <span class="caption-subject font-green sbold uppercase">Calendario</span>
+                                  </div>-->
+                              </div>
+                              <div class="portlet-body">
+                                  <div class="row">
+                                    <!-- BEGIN DRAGGABLE EVENTS PORTLET
+                                      <div class="col-md-3 col-sm-12">
+
+                                          <h3 class="event-form-title margin-bottom-20">Draggable Events</h3>
+                                          <div id="external-events">
+                                              <form class="inline-form">
+                                                  <input type="text" value="" class="form-control" placeholder="Event Title..." id="event_title" />
+                                                  <br/>
+                                                  <a href="javascript:;" id="event_add" class="btn green"> Add Event </a>
+                                              </form>
+                                              <hr/>
+                                              <div id="event_box" class="margin-bottom-10"></div>
+                                              <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline" for="drop-remove"> remove after drop
+                                                  <input type="checkbox" class="group-checkable" id="drop-remove" />
+                                                  <span></span>
+                                              </label>
+                                              <hr class="visible-xs" /> </div>
+                                      </div>-->
+                                      <!-- END DRAGGABLE EVENTS PORTLET-->
+                                      <div class="col-md-12 col-sm-12">
+                                          <div id="calendar" class="has-toolbar"> </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                        </div>
+                    </div>
+                    <!-- END ROW 3-->
+
                     <div class="form-actions left">
                         <a href="modifica.php?tbl=<?=$tabella?>&id=0" class="btn btn-circle btn-lg green-jungle"><i class="fa fa-plus"></i> Aggiungi Nuovo</a>
                     </div>
@@ -154,11 +197,11 @@ if (isset($_GET['tbl'])) {
         <script src="<?= BASE_URL ?>/assets/global/scripts/app.min.js" type="text/javascript"></script>
         <!-- END THEME GLOBAL SCRIPTS -->
         <?php
-                          $sql_007 = "SELECT ragione_sociale AS 'oggetto', DATE(data_creazione) AS 'data_inizio', '10:00:00' AS 'ora_inizio', DATE(dataagg) AS 'data_fine', '12:00:00' AS 'ora_fine', CONCAT('/moduli/anagrafiche/dettaglio.php?tbl=lista_aziende&id=',id,'') AS 'link', 'red' AS 'colore_sfondo'
-                          FROM lista_aziende LIMIT 100";
+                          $sql_007 = "SELECT oggetto AS 'oggetto', DATE(data_creazione) AS 'data_inizio', '10:00:00' AS 'ora_inizio', DATE(dataagg) AS 'data_fine', '12:00:00' AS 'ora_fine', CONCAT('dettaglio.php?tbl=calendario_esami&id=',id,'&idProdotto=',id_prodotto,'',IF(etichetta LIKE 'Calendario Esami','&esame=1','&esame=0'),') AS 'link', 'red' AS 'colore_sfondo'
+                          FROM calendario_esami LIMIT 100";
 
-$sql_007 = "SELECT oggetto AS 'oggetto', DATE(datainsert) AS 'data_inizio', orainsert AS 'ora_inizio', DATE(datainsert) AS 'data_fine', (orainsert+1) AS 'ora_fine', CONCAT('/moduli/base/dettaglio.php?tbl=calendario&id=',id,'') AS 'link', 'green' AS 'colore_sfondo'
-                          FROM calendario LIMIT 100";
+$sql_007 = "SELECT oggetto AS 'oggetto', DATE(datainsert) AS 'data_inizio', orainsert AS 'ora_inizio', DATE(datainsert) AS 'data_fine', (orainsert+1) AS 'ora_fine', CONCAT('dettaglio.php?tbl=calendario_esami&id=',id,'') AS 'link', 'green' AS 'colore_sfondo'
+                          FROM calendario_esami LIMIT 100";
                           $defaultView = 'month';
                           $stile = '';
                           $colore = 'green';
