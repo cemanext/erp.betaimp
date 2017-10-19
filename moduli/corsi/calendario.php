@@ -197,10 +197,9 @@ if (isset($_GET['tbl'])) {
         <script src="<?= BASE_URL ?>/assets/global/scripts/app.min.js" type="text/javascript"></script>
         <!-- END THEME GLOBAL SCRIPTS -->
         <?php
-                          $sql_007 = "SELECT oggetto AS 'oggetto', DATE(data_creazione) AS 'data_inizio', '10:00:00' AS 'ora_inizio', DATE(dataagg) AS 'data_fine', '12:00:00' AS 'ora_fine', CONCAT('dettaglio.php?tbl=calendario_esami&id=',id,'&idProdotto=',id_prodotto,'',IF(etichetta LIKE 'Calendario Esami','&esame=1','&esame=0'),') AS 'link', 'red' AS 'colore_sfondo'
-                          FROM calendario_esami LIMIT 100";
+                        
 
-$sql_007 = "SELECT oggetto AS 'oggetto', DATE(datainsert) AS 'data_inizio', orainsert AS 'ora_inizio', DATE(datainsert) AS 'data_fine', (orainsert+1) AS 'ora_fine', CONCAT('dettaglio.php?tbl=calendario_esami&id=',id,'') AS 'link', 'green' AS 'colore_sfondo'
+$sql_007 = "SELECT oggetto AS 'oggetto', DATE(data) AS 'data_inizio', ora AS 'ora_inizio', CONCAT('dettaglio.php?tbl=calendario_esami&id=',id,'') AS 'link', 'green' AS 'colore_sfondo'
                           FROM calendario_esami LIMIT 100";
                           $defaultView = 'month';
                           $stile = '';
