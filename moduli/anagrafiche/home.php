@@ -1,6 +1,7 @@
 <?php
 include_once('../../config/connDB.php');
 include_once(BASE_ROOT.'config/confAccesso.php');
+require_once(BASE_ROOT . 'config/confPermessi.php');
 
 if(isset($_POST['intervallo_data'])) {
     $intervallo_data = $_POST['intervallo_data'];

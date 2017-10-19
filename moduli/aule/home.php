@@ -1,6 +1,7 @@
 <?php
 include_once('../../config/connDB.php');
 include_once(BASE_ROOT.'config/confAccesso.php');
+require_once(BASE_ROOT.'config/confPermessi.php');
 ?>
 <!DOCTYPE html>
 <!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->

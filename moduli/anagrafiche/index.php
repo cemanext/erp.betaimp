@@ -1,7 +1,7 @@
 <?php
 include_once('../../config/connDB.php');
 include_once(BASE_ROOT . 'config/confAccesso.php');
-
+require_once(BASE_ROOT . 'config/confPermessi.php');
 include_once(BASE_ROOT . 'moduli/anagrafiche/funzioni.php');
 
 if(isset($_GET['idMenu'])){
@@ -10,7 +10,7 @@ if(isset($_GET['idMenu'])){
     $idMenu = "";
 }
 
-/* 	fine post ricerca sinistra	 */
+/*  fine post ricerca sinistra	 */
 
 if (isset($_GET['tbl'])) {
     $tabella = $_GET['tbl'];
@@ -69,10 +69,6 @@ if (isset($_GET['tbl'])) {
             }
         </style>
     </head>
-    <?php
-    // Per velocizzare la pagina
-    flush();
-    ?>
 
     <!-- END HEAD -->
     <body class="page-header-fixed page-sidebar-closed-hide-logo page-content-white page-sidebar-fixed">
@@ -149,7 +145,7 @@ if (isset($_GET['tbl'])) {
         <!-- END THEME GLOBAL SCRIPTS -->
         <!-- BEGIN PAGE LEVEL SCRIPTS -->
         <!--<script src="<?= BASE_URL ?>/assets/pages/scripts/table-datatables-responsive.js" type="text/javascript"></script>-->
-<!--<script src="<?= BASE_URL ?>/assets/apps/scripts/todo-2.min.js" type="text/javascript"></script>-->
+        <!--<script src="<?= BASE_URL ?>/assets/apps/scripts/todo-2.min.js" type="text/javascript"></script>-->
         <script src="<?= BASE_URL ?>/assets/pages/scripts/components-select2.min.js" type="text/javascript"></script>
         <script src="<?= BASE_URL ?>/assets/apps/scripts/index.js" type="text/javascript"></script>
         <!-- END PAGE LEVEL SCRIPTS -->
@@ -162,11 +158,4 @@ if (isset($_GET['tbl'])) {
         <script src="<?= BASE_URL ?>/moduli/anagrafiche/scripts/funzioni.js" type="text/javascript"></script>
         <!-- END THEME LAYOUT SCRIPTS -->
     </body>
-    <?php
-    /*
-      echo '<div style="text-align:right; padding:30px; background-color:#FFF; color: red;">';
-      echo '$variabili_data_1 = '.$variabili_data_1;
-      echo '</div>';
-     */
-    ?>
 </html>

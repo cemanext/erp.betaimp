@@ -1,7 +1,7 @@
 <?php
 include_once('../../config/connDB.php');
 include_once(BASE_ROOT . 'config/confAccesso.php');
-
+require_once(BASE_ROOT.'config/confPermessi.php');
 include_once(BASE_ROOT . 'moduli/carrello/funzioni.php');
 
 if(isset($_GET['idMenu'])){

@@ -1,7 +1,7 @@
 <?php
 include_once('../../config/connDB.php');
 include_once(BASE_ROOT . 'config/confAccesso.php');
-
+require_once(BASE_ROOT.'config/confPermessi.php');
 include_once(BASE_ROOT . 'moduli/ticket/funzioni.php');
 
 if(isset($_GET['idMenu'])){
@@ -43,7 +43,6 @@ switch ($tabella) {
         $idCalendario_daPassare = $row_00004['id'];
         $id_professionista_presente = $row_00004['id_professionista'];
         $id_azienda_presente = $row_00004['id_azienda'];
-        //print_r($row_00004);
 
         if($row_00004['id_professionista']>0){
             $sql_00001 = "SELECT * FROM lista_professionisti WHERE id=" . $row_00004['id_professionista'];

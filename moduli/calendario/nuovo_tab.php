@@ -2,7 +2,7 @@
 session_start();
 include_once('../../config/connDB.php');
 include_once(BASE_ROOT . 'config/confAccesso.php');
-
+require_once(BASE_ROOT.'config/confPermessi.php');
 include_once(BASE_ROOT . 'moduli/anagrafiche/funzioni.php');
 
 /* 	fine post ricerca sinistra	 */

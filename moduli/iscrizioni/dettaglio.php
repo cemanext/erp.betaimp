@@ -1,8 +1,8 @@
 <?php
 include_once('../../config/connDB.php');
 include_once(BASE_ROOT . 'config/confAccesso.php');
+require_once(BASE_ROOT.'config/confPermessi.php');
 include_once(BASE_ROOT . 'classi/webservice/client.php');
-
 include_once(BASE_ROOT . 'moduli/iscrizioni/funzioni.php');
 
 if(isset($_GET['idMenu'])){
