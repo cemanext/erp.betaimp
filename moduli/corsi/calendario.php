@@ -200,7 +200,7 @@ if (isset($_GET['tbl'])) {
                         
 
 $sql_007 = "SELECT oggetto AS 'oggetto', DATE(data) AS 'data_inizio', ora AS 'ora_inizio', CONCAT('dettaglio.php?tbl=calendario_esami&id=',id,'') AS 'link', 'green' AS 'colore_sfondo'
-                          FROM calendario_esami LIMIT 100";
+                          FROM calendario WHERE etichetta LIKE 'Calendario Esami' LIMIT 100";
                           $defaultView = 'month';
                           $stile = '';
                           $colore = 'green';
