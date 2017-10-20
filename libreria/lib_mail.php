@@ -8,13 +8,24 @@ require BASE_ROOT.'classi/phpmailer/src/Exception.php';
 require BASE_ROOT.'classi/phpmailer/src/PHPMailer.php';
 require BASE_ROOT.'classi/phpmailer/src/SMTP.php';
 
+
+define("SERVER_HOST_MAIL", "authsmtp.betaformazione.com");
+define("SECURE_SMTP_MAIL", "");
+define("PORT_MAIL", "25");
+define("PASS_MAIL", "p8arEtha@");
+define("USER_MAIL", "smtp@betaformazione.com");
+
+/*
+define("SERVER_HOST_MAIL", "tls://smtp.office365.com");
+define("SECURE_SMTP_MAIL", "tls");
+define("PORT_MAIL", "587");
 if(strlen($_SESSION['passwd_email_utente'])>2 && strpos($_SESSION['email_utente'],"@betaformazione.com")>0){
     define("PASS_MAIL", $_SESSION['passwd_email_utente']);
     define("USER_MAIL", $_SESSION['email_utente']);
 }else{
     define("USER_MAIL", "erp@betaformazione.com");
     define("PASS_MAIL", 'Moda5221');
-}
+}*/
 
 //inviare email fattura
 function inviaEmailPreventivo($mitt, $dest, $dest_cc, $dest_bcc, $ogg, $mess, $allegato_1, $allegato_2, $PasswdEmailUtente) {
@@ -25,14 +36,14 @@ function inviaEmailPreventivo($mitt, $dest, $dest_cc, $dest_bcc, $ogg, $mess, $a
         //require BASE_ROOT . "classi/phpmailer/class.phpmailer.php";
         $messaggio = new PHPmailer();
         $messaggio->IsHTML(true);
-        //$messaggio->IsSMTP();
+        $messaggio->IsSMTP();
         # I added SetLanguage like this
         $messaggio->SetLanguage('it', BASE_ROOT . 'classi/phpmailer/language/');
         //  $messaggio->IsSMTP(); // telling the class to use SMTP			//$messaggio->IsSMTP();
         $messaggio->SMTPAuth = true;                  // enable SMTP authentication
-        $messaggio->Host = "tls://smtp.office365.com"; // sets the SMTP server
-        $messaggio->SMTPSecure = 'tls';
-        $messaggio->Port = 587;
+        $messaggio->Host = SERVER_HOST_MAIL; // sets the SMTP server
+        $messaggio->SMTPSecure = SECURE_SMTP_MAIL;
+        $messaggio->Port = PORT_MAIL;
         // set the SMTP port for the GMAIL server
         $messaggio->Username = USER_MAIL; // SMTP account username
         $messaggio->Password = PASS_MAIL;        // SMTP account password
@@ -144,14 +155,14 @@ function inviaEmailFattura($mitt, $dest, $dest_cc, $dest_bcc, $ogg, $mess, $alle
         //require BASE_ROOT . "classi/phpmailer/class.phpmailer.php";
         $messaggio = new PHPmailer();
         $messaggio->IsHTML(true);
-        //$messaggio->IsSMTP();
+        $messaggio->IsSMTP();
         # I added SetLanguage like this
         $messaggio->SetLanguage('it', BASE_ROOT . 'classi/phpmailer/language/');
         //  $messaggio->IsSMTP(); // telling the class to use SMTP			//$messaggio->IsSMTP();
         $messaggio->SMTPAuth = true;                  // enable SMTP authentication
-        $messaggio->Host = "tls://smtp.office365.com"; // sets the SMTP server
-        $messaggio->SMTPSecure = 'tls';
-        $messaggio->Port = 587;
+        $messaggio->Host = SERVER_HOST_MAIL; // sets the SMTP server
+        $messaggio->SMTPSecure = SECURE_SMTP_MAIL;
+        $messaggio->Port = PORT_MAIL;
         // set the SMTP port for the GMAIL server
         $messaggio->Username = USER_MAIL; // SMTP account username
         $messaggio->Password = PASS_MAIL;        // SMTP account password
@@ -262,14 +273,14 @@ function inviaEmail($mitt, $dest, $dest_cc, $dest_bcc, $ogg, $mess, $allegato_1,
         //require "phpmailer/class.phpmailer.php";
         $messaggio = new PHPmailer();
         $messaggio->IsHTML(true);
-        //$messaggio->IsSMTP();
+        $messaggio->IsSMTP();
         # I added SetLanguage like this
         $messaggio->SetLanguage('it', BASE_ROOT . 'classi/phpmailer/language/');
 //  $messaggio->IsSMTP(); // telling the class to use SMTP			//$messaggio->IsSMTP();
         $messaggio->SMTPAuth = true;                  // enable SMTP authentication
-        $messaggio->Host = "tls://smtp.office365.com"; // sets the SMTP server
-        $messaggio->SMTPSecure = 'tls';
-        $messaggio->Port = 587;
+        $messaggio->Host = SERVER_HOST_MAIL; // sets the SMTP server
+        $messaggio->SMTPSecure = SECURE_SMTP_MAIL;
+        $messaggio->Port = PORT_MAIL;
         // set the SMTP port for the GMAIL server
         $messaggio->Username = USER_MAIL; // SMTP account username
         $messaggio->Password = PASS_MAIL;        // SMTP account password
@@ -377,11 +388,11 @@ function inviaEmail_Base($mittente, $destinatario, $oggetto_da_inviare, $messagg
     $messaggio->IsHTML(true);
 
     $messaggio->SetLanguage('it', BASE_ROOT . 'classi/phpmailer/language/');
-//  $messaggio->IsSMTP(); // telling the class to use SMTP			//$messaggio->IsSMTP();
+    $messaggio->IsSMTP(); // telling the class to use SMTP			//$messaggio->IsSMTP();
     $messaggio->SMTPAuth = true;                  // enable SMTP authentication
-    $messaggio->Host = "tls://smtp.office365.com"; // sets the SMTP server
-    $messaggio->SMTPSecure = 'tls';
-    $messaggio->Port = 587;
+    $messaggio->Host = SERVER_HOST_MAIL; // sets the SMTP server
+    $messaggio->SMTPSecure = SECURE_SMTP_MAIL;
+    $messaggio->Port = PORT_MAIL;
     // set the SMTP port for the GMAIL server
     $messaggio->Username = USER_MAIL; // SMTP account username
     $messaggio->Password = PASS_MAIL;        // SMTP account password
@@ -468,14 +479,14 @@ function inviaEmailFatturaDaId($idFattura,$updateFattura) {
         $messaggio = new PHPmailer();
         $messaggio->IsHTML(true);
         //$messaggio->SMTPDebug  = 2;
-        //$messaggio->IsSMTP();
+        $messaggio->IsSMTP();
         # I added SetLanguage like this
         $messaggio->SetLanguage('it', BASE_ROOT . 'classi/phpmailer/language/');
         //  $messaggio->IsSMTP(); // telling the class to use SMTP			//$messaggio->IsSMTP();
         $messaggio->SMTPAuth = true;                  // enable SMTP authentication
-        $messaggio->Host = "tls://smtp.office365.com"; // sets the SMTP server
-        $messaggio->SMTPSecure = 'tls';
-        $messaggio->Port = 587;
+        $messaggio->Host = SERVER_HOST_MAIL; // sets the SMTP server
+        $messaggio->SMTPSecure = SECURE_SMTP_MAIL;
+        $messaggio->Port = PORT_MAIL;
         // set the SMTP port for the GMAIL server
         $messaggio->Username = USER_MAIL; // SMTP account username
         $messaggio->Password = PASS_MAIL;        // SMTP account password
@@ -662,14 +673,14 @@ $nomeClasse = $dblink->get_row("SELECT nome FROM lista_classi WHERE id = '".$id_
         $messaggio = new PHPmailer();
         $messaggio->IsHTML(true);
         //$messaggio->SMTPDebug  = 2;
-        //$messaggio->IsSMTP();
+        $messaggio->IsSMTP();
         # I added SetLanguage like this
         $messaggio->SetLanguage('it', BASE_ROOT . 'classi/phpmailer/language/');
         //  $messaggio->IsSMTP(); // telling the class to use SMTP			//$messaggio->IsSMTP();
         $messaggio->SMTPAuth = true;                  // enable SMTP authentication
-        $messaggio->Host = "tls://smtp.office365.com"; // sets the SMTP server
-        $messaggio->SMTPSecure = 'tls';
-        $messaggio->Port = 587;
+        $messaggio->Host = SERVER_HOST_MAIL; // sets the SMTP server
+        $messaggio->SMTPSecure = SECURE_SMTP_MAIL;
+        $messaggio->Port = PORT_MAIL;
         // set the SMTP port for the GMAIL server
         $messaggio->Username = USER_MAIL; // SMTP account username
         $messaggio->Password = PASS_MAIL;        // SMTP account password
@@ -778,11 +789,11 @@ function inviaEmailTemplate_Base($idProfessionista, $nome_tamplate, $idFatturaDe
     $messaggio->IsHTML(true);
 
     $messaggio->SetLanguage('it', BASE_ROOT . 'classi/phpmailer/language/');
-//  $messaggio->IsSMTP(); // telling the class to use SMTP			//$messaggio->IsSMTP();
+    $messaggio->IsSMTP(); // telling the class to use SMTP			//$messaggio->IsSMTP();
     $messaggio->SMTPAuth = true;                  // enable SMTP authentication
-    $messaggio->Host = "tls://smtp.office365.com"; // sets the SMTP server
-    $messaggio->SMTPSecure = 'tls';
-    $messaggio->Port = 587;
+    $messaggio->Host = SERVER_HOST_MAIL; // sets the SMTP server
+    $messaggio->SMTPSecure = SECURE_SMTP_MAIL;
+    $messaggio->Port = PORT_MAIL;
     // set the SMTP port for the GMAIL server
     $messaggio->Username = USER_MAIL; // SMTP account username
     $messaggio->Password = PASS_MAIL;        // SMTP account password
@@ -823,7 +834,7 @@ function inviaEmailTemplate_Base($idProfessionista, $nome_tamplate, $idFatturaDe
 
     if ($idFatturaDettaglio > 0) {
         $sql_nome_corso = "SELECT * FROM lista_fatture_dettaglio WHERE id = '" . $idFatturaDettaglio . "'";
-        $rs_nome_corso = $dblink->get_fields($sql_nome_corso);
+        $rs_nome_corso = $dblink->get_results($sql_nome_corso);
         $nome_del_corso = "";
         foreach ($rs_nome_corso as $row_nome_corso) {
             $nome_del_corso.= $row_nome_corso['nome_prodotto'] . ' [' . $row_nome_corso['codice_prodotto'] . ']<br>';
@@ -922,11 +933,11 @@ function inviaEmailTemplate_Richiesta($idCalendario, $nome_tamplate) {
 
     # I added SetLanguage like this
     $messaggio->SetLanguage('it', BASE_ROOT . 'classi/phpmailer/language/');
-//  $messaggio->IsSMTP(); // telling the class to use SMTP			//$messaggio->IsSMTP();
+    $messaggio->IsSMTP(); // telling the class to use SMTP			//$messaggio->IsSMTP();
     $messaggio->SMTPAuth = true;                  // enable SMTP authentication
-    $messaggio->Host = "tls://smtp.office365.com"; // sets the SMTP server
-    $messaggio->SMTPSecure = 'tls';
-    $messaggio->Port = 587;
+    $messaggio->Host = SERVER_HOST_MAIL; // sets the SMTP server
+    $messaggio->SMTPSecure = SECURE_SMTP_MAIL;
+    $messaggio->Port = PORT_MAIL;
     // set the SMTP port for the GMAIL server
     $messaggio->Username = USER_MAIL; // SMTP account username
     $messaggio->Password = PASS_MAIL;        // SMTP account password
@@ -1041,11 +1052,11 @@ function inviaEmailTemplate_Password($idListaPassword, $nome_tamplate) {
 
     # I added SetLanguage like this
     $messaggio->SetLanguage('it', BASE_ROOT . 'classi/phpmailer/language/');
-//  $messaggio->IsSMTP(); // telling the class to use SMTP			//$messaggio->IsSMTP();
+    $messaggio->IsSMTP(); // telling the class to use SMTP			//$messaggio->IsSMTP();
     $messaggio->SMTPAuth = true;                  // enable SMTP authentication
-    $messaggio->Host = "tls://smtp.office365.com"; // sets the SMTP server
-//    $messaggio->SMTPSecure = 'tls';
-    $messaggio->Port = 587;
+    $messaggio->Host = SERVER_HOST_MAIL; // sets the SMTP server
+    $messaggio->SMTPSecure = SECURE_SMTP_MAIL;
+    $messaggio->Port = PORT_MAIL;
     // set the SMTP port for the GMAIL server
     $messaggio->Username = USER_MAIL; // SMTP account username
     $messaggio->Password = PASS_MAIL;        // SMTP account password
@@ -1169,11 +1180,11 @@ function inviaEmailTemplate_Ticket($idTicket, $nome_tamplate) {
 
     # I added SetLanguage like this
     $messaggio->SetLanguage('it', BASE_ROOT . 'classi/phpmailer/language/');
-//  $messaggio->IsSMTP(); // telling the class to use SMTP			//$messaggio->IsSMTP();
+    $messaggio->IsSMTP(); // telling the class to use SMTP			//$messaggio->IsSMTP();
     $messaggio->SMTPAuth = true;                  // enable SMTP authentication
-    $messaggio->Host = "tls://smtp.office365.com"; // sets the SMTP server
-    $messaggio->SMTPSecure = 'tls';
-    $messaggio->Port = 587;
+    $messaggio->Host = SERVER_HOST_MAIL; // sets the SMTP server
+    $messaggio->SMTPSecure = SECURE_SMTP_MAIL;
+    $messaggio->Port = PORT_MAIL;
     // set the SMTP port for the GMAIL server
     $messaggio->Username = USER_MAIL; // SMTP account username
     $messaggio->Password = PASS_MAIL;        // SMTP account password

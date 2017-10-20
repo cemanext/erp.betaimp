@@ -15,28 +15,23 @@ if(isset($_GET['fn'])){
            }
            $valore_del_cookie = $betaformazione_utente_carrello;
            $sql_0001 = "SELECT id FROM lista_ordini WHERE campo_20='".$valore_del_cookie."' AND stato='In Corso'";
-           $rs_0001 = mysql_query($sql_0001);
-           $conteggio_0001 = mysql_num_rows($rs_0001);
+           $conteggio_0001 = $dblink->num_rows($sql_0001);
            if($conteggio_0001<=0){
                 //echo '<LI>$conteggio_0001 = '.$conteggio_0001.'</LI>';
                 //echo '<LI>$valore_del_cookie = '.$valore_del_cookie.'</LI>';
                 $sql_0002 = "INSERT INTO lista_ordini (id, dataagg, data_creazione, sezionale, campo_20, stato, id_campagna) VALUES ('', NOW(), NOW(), '01', '".$valore_del_cookie."', 'In Corso','".$idCampagna."')";
-                $rs_0002 = mysql_query($sql_0002);
-                $idOrdine = mysql_insert_id($rs_0002);
+                $dblink->query($sql_0002);
+                $idOrdine = $dblink->lastid();
            }else{
                 //echo '<LI>$conteggio_0001 = '.$conteggio_0001.'</LI>';
                 //echo '<LI>$valore_del_cookie = '.$valore_del_cookie.'</LI>';   
-                while ($row_0001 = mysql_fetch_array($rs_0001, MYSQL_BOTH)){
-                    $idOrdine = $row_0001['id'];
-                }
+                $idOrdine = $dblink->get_field($sql_0001);
+                
            }
            
            
            $sql_0001 = "SELECT id FROM lista_ordini WHERE campo_20='".$valore_del_cookie."' AND stato='In Corso'";
-           $rs_0001 = mysql_query($sql_0001);
-           while ($row_0001 = mysql_fetch_array($rs_0001, MYSQL_BOTH)){
-                $idOrdine = $row_0001['id'];
-            }
+           $idOrdine = $dblink->get_field($sql_0001);
             
            $sql_0004 = "INSERT INTO lista_ordini_dettaglio (id, id_ordine,dataagg, id_prodotto, quantita, stato) VALUES ('', '".$idOrdine."', NOW(), '".$idProdotto."',1, 'In Corso')";
            $rs_0004 = $dblink->query($sql_0004);
@@ -82,7 +77,7 @@ if(isset($_GET['fn'])){
                 if($row_00002['id']>0){
                     $sql_0005 = "UPDATE lista_ordini SET id_professionista = '".$row_00002['id']."'
                     WHERE campo_20='".$valore_del_cookie."' AND (stato='In Corso' OR stato='In Attesa')";
-                    $rs_0005 = mysql_query($sql_0005);
+                    $rs_0005 = $dblink->query($sql_0005);
                 }
                 
                 $idProff = $row_00002['id'];

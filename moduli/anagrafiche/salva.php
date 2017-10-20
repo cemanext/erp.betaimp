@@ -964,7 +964,7 @@ if(isset($_GET['fn'])){
                 //echo $dblink->get_query();
                 //die;
                 
-                $ok = $dblink->update("lista_password", array("id_classe" => $tuttiCampi['lista_professionisti']['id_classe'],"email" => $tuttiCampi['lista_professionisti']['email'], "nome" => $tuttiCampi['lista_professionisti']['nome'], "cognome" => $tuttiCampi['lista_professionisti']['cognome']), array("id_professionista" => $idProfessionista, 'livello' => 'cliente'));
+                $ok = $dblink->update("lista_password", array("id_classe" => $tuttiCampi['lista_professionisti']['id_classe'],"email" => $tuttiCampi['lista_professionisti']['email'], "nome" => $tuttiCampi['lista_professionisti']['nome'], "cognome" => $tuttiCampi['lista_professionisti']['cognome'], "id_classe"=>$tuttiCampi['lista_professionisti']['id_classe']), array("id_professionista" => $idProfessionista, 'livello' => 'cliente'));
                 $ok = $dblink->update(MOODLE_DB_NAME.".mdl_user", array("email" => $tuttiCampi['lista_professionisti']['email'], "firstname" => $tuttiCampi['lista_professionisti']['nome'], "lastname" => $tuttiCampi['lista_professionisti']['cognome']), array("idnumber" => $idProfessionista));
                 
             }else{
@@ -1114,9 +1114,9 @@ if(isset($_GET['fn'])){
             $referer = recupera_referer($_POST['txt_referer']);
             
             if($idProfessionista > 0){
-                list($emailAggiornata, $nomeAggiornato, $cognomeAggiornato) = $dblink->get_row("SELECT email, nome, cognome FROM lista_professionisti WHERE id = '$idProfessionista'");
+                list($emailAggiornata, $nomeAggiornato, $cognomeAggiornato, $idClasseAggiornato) = $dblink->get_row("SELECT email, nome, cognome, id_classe FROM lista_professionisti WHERE id = '$idProfessionista'");
 
-                $ok = $ok && $dblink->update("lista_password", array("email" => $emailAggiornata, "nome" => $nomeAggiornato, "cognome" => $cognomeAggiornato), array("id_professionista" => $idProfessionista, 'livello' => 'cliente'));
+                $ok = $ok && $dblink->update("lista_password", array("email" => $emailAggiornata, "nome" => $nomeAggiornato, "cognome" => $cognomeAggiornato, "id_classe"=>$idClasseAggiornato), array("id_professionista" => $idProfessionista, 'livello' => 'cliente'));
                 $ok = $ok && $dblink->update(MOODLE_DB_NAME.".mdl_user", array("email" => $emailAggiornata, "firstname" => $nomeAggiornato, "lastname" => $cognomeAggiornato), array("idnumber" => $idProfessionista));
             }
             
