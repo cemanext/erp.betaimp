@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-var BASE_URL_HOST = "http://"+window.location.hostname+"";
+var BASE_URL_HOST = "http://"+window.location.hostname;
 
 function scriviDentroListaPreventiviDettaglio(){
 
@@ -102,6 +102,20 @@ var TableDatatablesResponsive = function () {
       var table = $('#tab1_preventivi_home');
 
       var oTable = table.dataTable({
+          // Internationalisation. For more info refer to http://datatables.net/manual/i18n
+          /*"language": {
+              "aria": {
+                  "sortAscending": ": activate to sort column ascending",
+                  "sortDescending": ": activate to sort column descending"
+              },
+              "emptyTable": "No data available in table",
+              "info": "Showing _START_ to _END_ of _TOTAL_ entries",
+              "infoEmpty": "No entries found",
+              "infoFiltered": "(filtered1 from _MAX_ total entries)",
+              "lengthMenu": "_MENU_ entries",
+              "search": "Search:",
+              "zeroRecords": "No matching records found"
+          },*/
 
           // Or you can use remote translation file
           "language": {
@@ -126,8 +140,8 @@ var TableDatatablesResponsive = function () {
           ],
 
           "lengthMenu": [
-              [10, 25, 30, 50],
-              [10, 25, 30, 50] // change per page values here
+              [10, 25, 30, 50, -1],
+              [10, 25, 30, 50, "Tutti"] // change per page values here
           ],
           // set the initial value
           "pageLength": 25,
@@ -170,6 +184,7 @@ var TableDatatablesAjaxCarrello = function () {
 
         var oTable = table.dataTable({
             
+            //"bStateSave": true, 
             stateSave: true,
 
             "processing": true,
@@ -193,13 +208,13 @@ var TableDatatablesAjaxCarrello = function () {
             responsive: false,
 
             "ajax": {
-                "url": BASE_URL_HOST+"/moduli/carrello/scripts/server_processing.php?tbl="+$.urlParam('tbl')+"&whr_state="+$.urlParam('whr_state'), // ajax source
+                "url": BASE_URL_HOST+"/moduli/carrello/scripts/server_processing.php?tbl="+$.urlParam('tbl'), // ajax source
             },
 
             "ordering": true,
             "order": [
-                [4, 'desc'],
-                [5, 'asc']
+                [2, 'desc'],
+                [1, 'desc']
             ],
 
             "lengthMenu": [
@@ -211,7 +226,7 @@ var TableDatatablesAjaxCarrello = function () {
             
             "columnDefs": [
                 {"className": "dt-center", "targets": "_all"},
-                {"orderable": false, "targets": [ 0, 1, 2],}
+                {"orderable": false, "targets": [ 0],}
             ],
 
             "dom": "<'row' <'col-md-12'B>><'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r><'table-scrollable't><'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>", // horizobtal scrollable datatable
@@ -238,7 +253,7 @@ var TableDatatablesAjaxCarrello = function () {
 
 $( document ).ready(function() {
     
-    BASE_URL_HOST = "http://"+window.location.hostname+"";
+    BASE_URL_HOST = "http://"+window.location.hostname
     
     $("#cancellaRicarcaTabella").on( "click", function(event) {
         event.preventDefault(); 

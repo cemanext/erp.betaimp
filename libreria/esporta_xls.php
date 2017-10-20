@@ -1,5 +1,4 @@
 <?php
-ini_set('display_errors', '1');
 
 if(isset($_GET['mese']) && isset($_GET['anno']) && isset($_GET['tipo'])){
     $mese = $_GET['mese'];

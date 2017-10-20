@@ -1,7 +1,6 @@
 <?php
 ini_set('max_execution_time', 600); //10 minuti
 ini_set('memory_limit', '2048M'); // 2 Giga
-ini_set('display_errors', 1);
 ob_start();
 session_start();
 include_once($_SERVER['DOCUMENT_ROOT'].'/config/connDB.php');

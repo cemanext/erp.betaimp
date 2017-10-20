@@ -1,5 +1,6 @@
 <?php
 header('Content-Type: text/plain');
+session_start();
 include_once('../../../config/connDB.php');
 include_once(BASE_ROOT.'config/confAccesso.php');
 
@@ -27,12 +28,12 @@ switch($tabella){
         if(!empty($arrayCampoRicerca)){
             foreach ($arrayCampoRicerca as $campoRicerca) {
                 $where.= " AND (`campo_20` LIKE '%".$campoRicerca."%' OR `data_creazione` LIKE '%".$campoRicerca."%'";
-                //$where.= " OR `ragione_sociale_azienda` LIKE '%".$campoRicerca."%' OR `nome_campagna` LIKE '%".$campoRicerca."%'";
+                $where.= " OR `id_professionista` IN (SELECT id FROM lista_professionisti WHERE CONCAT(cognome,' ',nome) LIKE '%".$campoRicerca."%')";
+                $where.= " OR `id_azienda` IN (SELECT id FROM lista_aziende WHERE CONCAT(ragione_sociale,' ',forma_giuridica) LIKE '%".$campoRicerca."%')";
                 $where.= " OR `data_iscrizione` LIKE '%".$campoRicerca."%'";
                 //$where.= " OR `cognome_nome_agente` LIKE '%".$campoRicerca."%' OR `data_scadenza` LIKE '%".$campoRicerca."%'";
                 $where.= " OR `imponibile` LIKE '%".$campoRicerca."%' OR `stato` LIKE '%".$campoRicerca."%' )";
             }
-            
         }
         $ordine = $table_listaOrdini['index']['order'];
     break;

@@ -1,7 +1,6 @@
 <?php
 include_once('../config/connDB.php');
 include_once(BASE_ROOT . 'config/confAccesso.php');
-ini_set('display_errors', '1');
 
 //$sql_0001 = creaSQLesporta();
 $sql_0001 = "SELECT IF(tipo='Fattura', 'Fatt. Imm.', 'N. C.') AS 'Tipo doc.', sezionale AS 'Sz.', codice AS 'Nr.doc.', DATE_FORMAT(DATE(data_creazione), '%d/%m/%Y') AS 'Data Doc.',
