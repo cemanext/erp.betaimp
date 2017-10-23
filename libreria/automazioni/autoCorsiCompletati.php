@@ -28,8 +28,7 @@ $sql_004 = "SELECT lista_iscrizioni.id, lista_iscrizioni.id_professionista, list
         lista_corsi.id_corso_moodle, lista_iscrizioni.id_corso, lista_iscrizioni.id_classe 
         FROM lista_iscrizioni  INNER JOIN lista_corsi
         ON lista_corsi.id=lista_iscrizioni.id_corso
-        WHERE 1
-        AND lista_iscrizioni.stato = 'In Corso'";
+        WHERE lista_iscrizioni.stato = 'In Corso' OR (avanzamento_completamento >= '80' AND lista_iscrizioni.stato NOT LIKE '%Configurazione%' AND lista_iscrizioni.stato NOT LIKE '%Completato%') ";
 $rowsIscrizioni = $dblink->get_results($sql_004);
 
 foreach ($rowsIscrizioni as $rowIscrizione) {
@@ -71,9 +70,9 @@ foreach ($rowsIscrizioni as $rowIscrizione) {
             if(!empty($rowConfig)){
                 $updateIscrizione['id_fattura'] = $rowConfig['id_fattura'];
                 $updateIscrizione['id_fattura_dettaglio'] = $rowConfig['id_fattura_dettaglio'];
+                
+                $ok = $dblink->update("lista_iscrizioni", $updateIscrizione, array("id"=>$rowIscrizione['id']));
             }
-
-            $ok = $dblink->update("lista_iscrizioni", $updateIscrizione, array("id"=>$rowIscrizione['id']));
             
             //CORSO COMPLETATO
              if($ok){

@@ -9,10 +9,17 @@ function creaUtenteTotale($idProfessionista) {
                 WHERE codice NOT LIKE 'BF'";
     $dblink->query($sql_0006);
     
-    $passwordUser = generaPassword(9);
-    $sql_00001 = "INSERT INTO `lista_password` (`id`, `dataagg`, `scrittore`, `id_professionista`, `id_classe`, `livello`, `nome`, `cognome`, `username`, `passwd`, `cellulare`, `email`, `stato`, `data_creazione`, `data_scadenza`)
-            SELECT DISTINCT '', NOW(), '" . addslashes($_SESSION['cognome_nome_utente']) . "', `id`, `id_classe`, 'cliente', `nome`, `cognome`, LCASE(codice), '" . $passwordUser . "', `cellulare`, `email`, 'In Attesa di Moodle', CURDATE(), DATE_ADD(CURDATE(), INTERVAL " . DURATA_ABBONAMENTO . " DAY) FROM lista_professionisti WHERE id=" . $idProfessionista;
-    $ok = $dblink->query($sql_00001);
+    $esisteInListaPassword = $dblink->num_rows("SELECT id FROM lista_password WHERE id_professionista = '" . $idProfessionista . "' AND livello='cliente' ");
+    
+    if($esisteInListaPassword >= 1){
+        resetPasswordUtenteMoodle($idProfessionista);
+        $ok = true;
+    }else{
+        $passwordUser = generaPassword(9);
+        $sql_00001 = "INSERT INTO `lista_password` (`id`, `dataagg`, `scrittore`, `id_professionista`, `id_classe`, `livello`, `nome`, `cognome`, `username`, `passwd`, `cellulare`, `email`, `stato`, `data_creazione`, `data_scadenza`)
+                SELECT DISTINCT '', NOW(), '" . addslashes($_SESSION['cognome_nome_utente']) . "', `id`, `id_classe`, 'cliente', `nome`, `cognome`, LCASE(codice), '" . $passwordUser . "', `cellulare`, `email`, 'In Attesa di Moodle', CURDATE(), DATE_ADD(CURDATE(), INTERVAL " . DURATA_ABBONAMENTO . " DAY) FROM lista_professionisti WHERE id=" . $idProfessionista;
+        $ok = $dblink->query($sql_00001);
+    }
     if ($ok) {
         $row_0001 = $dblink->get_row("SELECT username, email, nome, cognome, passwd FROM lista_password WHERE id_professionista = '" . $idProfessionista . "' ", true);
         //SERVONO PARAMETRI

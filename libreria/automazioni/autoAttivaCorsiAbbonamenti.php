@@ -5,6 +5,19 @@ include_once(BASE_ROOT . 'classi/webservice/client.php');
 
 $moodle = new moodleWebService();
 
+if (DISPLAY_DEBUG) {
+    echo '<hr>'.date("H:i:s");
+    echo '<li>DB_HOST = '.DB_HOST.'</li>';
+    echo '<li>DB_USER = '.DB_USER.'</li>';
+    echo '<li>DB_PASS = '.DB_PASS.'</li>';
+    echo '<li>DB_NAME = '.DB_NAME.'</li>';
+    echo '<li>DB_NAME = '.MOODLE_DB_NAME.'</li>';
+    echo '<li>DB_NAME = '.DURATA_CORSO_INGEGNERI.'</li>';
+    echo '<li>DB_NAME = '.DURATA_ABBONAMENTO.'</li>';
+    echo '<li>DB_NAME = '.DURATA_CORSO.'</li>';
+    echo '<hr>';
+}
+
 $sql_0001 = "CREATE TEMPORARY TABLE corsi(SELECT DISTINCT lista_fatture_dettaglio.id_professionista AS idProfessionista,
         lista_fatture_dettaglio.id_fattura AS 'idFattura',
         lista_fatture_dettaglio.id AS 'idFatturaDettaglio',
@@ -59,7 +72,7 @@ $sql_00000000 = "SELECT DISTINCT
 
 $sql_00000000 = "SELECT DISTINCT *,
         IF(LCASE(Prodotto) LIKE 'abbonamento%','ABBONAMENTO','SINGOLO CORSO') AS 'Tipo'
-        FROM attivazioniIscrizioni WHERE 1 ORDER BY idFattura DESC LIMIT 10";
+        FROM attivazioniIscrizioni WHERE 1 ORDER BY idFattura ASC LIMIT 10";
 if (DISPLAY_DEBUG) stampa_table_datatables_responsive($sql_00000000, $titolo, 'tabella_base');
 
 $rs_00000000 = $dblink->get_results($sql_00000000);
@@ -100,4 +113,5 @@ foreach ($rs_00000000 AS $row_00000000) {
     sleep(5);
 }
 if (DISPLAY_DEBUG) echo '</ol>';
+if (DISPLAY_DEBUG) echo date("H:i:s");
 ?>

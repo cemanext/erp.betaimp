@@ -37,10 +37,12 @@ class logerp {
                 /*if (file_exists(_PS_ROOT_DIR_.'/error500.html') && $level!="AVVISO")
                     echo file_get_contents(_PS_ROOT_DIR_.'/error500.html');*/
             }
-        }else if(( defined( 'LOG_DEBUG_ALL' ) && !LOG_DEBUG_ALL && (strtoupper($level)=="KO" || strtoupper($level)=="ERRORE"))){
+        }else if((strtoupper($level)=="KO" || strtoupper($level)=="ERRORE")){
             $formatted_message = '*'.$level.'* '."\t".date('d-m-Y - H:i:s')."\tFILE: ".($_SERVER["REQUEST_URI"])."\t"."MESSAGGIO: ".$message."\r\n";
 
             $this->setFilenameError = $this->dir.'log/'.date('Ymd').'_errori_erp.log';
+            
+            file_put_contents($this->setFilenameError, $formatted_message, FILE_APPEND);
         }
     }
     
