@@ -8,15 +8,15 @@ $moodle = new moodleWebService();
 if (DISPLAY_DEBUG) {
     echo date("H:i:s");
 
-    echo '<h1>autoCorsiIniziatiManuale</h1>';
+    echo '<h1>autoCorsiIniziati</h1>';
     echo '<li>DB_HOST = ' . DB_HOST . '</li>';
     echo '<li>DB_USER = ' . DB_USER . '</li>';
     echo '<li>DB_PASS = ' . DB_PASS . '</li>';
     echo '<li>DB_NAME = ' . DB_NAME . '</li>';
-    echo '<li>DB_NAME = ' . MOODLE_DB_NAME . '</li>';
-    echo '<li>DB_NAME = ' . DURATA_CORSO_INGEGNERI . '</li>';
-    echo '<li>DB_NAME = ' . DURATA_ABBONAMENTO . '</li>';
-    echo '<li>DB_NAME = ' . DURATA_CORSO . '</li>';
+    echo '<li>MOODLE_DB_NAME = ' . MOODLE_DB_NAME . '</li>';
+    echo '<li>DURATA_CORSO_INGEGNERI = ' . DURATA_CORSO_INGEGNERI . '</li>';
+    echo '<li>DURATA_ABBONAMENTO = ' . DURATA_ABBONAMENTO . '</li>';
+    echo '<li>DURATA_CORSO = ' . DURATA_CORSO . '</li>';
     echo '<hr>';
 }
 /*
@@ -36,7 +36,7 @@ $rs_utente_entrato = $dblink->get_results("SELECT id FROM " . MOODLE_DB_NAME . "
 foreach ($rs_utente_entrato as $row_utente_entrato) {
     $id_utente_entrato = $row_utente_entrato['id'];
 
-    if(DISPLAY_DEBUG) echo '<h1>$id_utente_entrato = ' . $id_utente_entrato . '</h1>';
+    if(DISPLAY_DEBUG){ echo '<h1>$id_utente_entrato = ' . $id_utente_entrato . '</h1>';}
 
     $sql_iscritti = "SELECT id_utente_moodle, id_corso_moodle, id_modulo, instance 
     FROM lista_iscrizioni INNER JOIN lista_corsi_dettaglio ON lista_iscrizioni.id_corso = lista_corsi_dettaglio.id_corso 
@@ -67,9 +67,9 @@ foreach ($rs_utente_entrato as $row_utente_entrato) {
         //AND `userid`='35567'  
         $rs_00001 = $dblink->get_results($sql_00001);
         //print_r($row);
-        if (DISPLAY_DEBUG) StampaSQL($sql_00001, '', '');
+        if (DISPLAY_DEBUG){ StampaSQL($sql_00001, '', ''); }
         $conto_00001 = count($rs_00001);
-        if (DISPLAY_DEBUG) echo '<li>$conto_00001 = ' . $conto_00001 . '</li>';
+        if (DISPLAY_DEBUG){ echo '<li>$conto_00001 = ' . $conto_00001 . '</li>';}
         $ok = false;
         foreach ($rs_00001 as $row_0) {
 
@@ -80,6 +80,13 @@ foreach ($rs_utente_entrato as $row_utente_entrato) {
                 echo '<br>data_ora_inizio_corso = ' . $data_ora_inizio_corso = $row_0['data_ora_inizio'];
                 echo '<br>id_instance_moodle = ' . $id_instance_moodle = $row_0['scormid'];
                 echo '<br>id_corso_moodle = ' . $id_corso_moodle = $row_0['id_corso_moodle'];
+            }else{
+                $id_utente_moodle = $row_0['track_id'];
+                $id_utente_moodle = $row_0['id_utente_moodle'];
+                $data_inizio_corso = $row_0['data_inizio'];
+                $data_ora_inizio_corso = $row_0['data_ora_inizio'];
+                $id_instance_moodle = $row_0['scormid'];
+                $id_corso_moodle = $row_0['id_corso_moodle'];
             }
 
             //RECUPERO NOSTRO ID DEL CORSO
@@ -87,13 +94,13 @@ foreach ($rs_utente_entrato as $row_utente_entrato) {
             $sql_00002_1 = "SELECT id,id_corso FROM lista_corsi_dettaglio WHERE id_corso_moodle =" . $id_corso_moodle . " AND  instance =" . $id_instance_moodle . " AND id_modulo !=''";
             $row_00002_1 = $dblink->get_row($sql_00002_1, true);
             $id_corso_nostro = $row_00002_1['id_corso'];
-            if (DISPLAY_DEBUG) echo '<li>$id_corso_nostro = ' . $id_corso_nostro . ' ---> $sql_00002_1  ' . $sql_00002_1 . '</li>';
+            if (DISPLAY_DEBUG){ echo '<li>$id_corso_nostro = ' . $id_corso_nostro . ' ---> $sql_00002_1  ' . $sql_00002_1 . '</li>'; }
 
             $sql_00002 = "SELECT id,nome_prodotto FROM lista_corsi WHERE id =" . $id_corso_nostro;
             $row_00002 = $dblink->get_row($sql_00002, true);
             $id_corso_nostro = $row_00002['id'];
             $nome_corso_nostro = $row_00002['nome_prodotto'];
-            if (DISPLAY_DEBUG) echo '<li>$id_corso_nostro = ' . $id_corso_nostro . ' --> ' . $nome_corso_nostro . '</li>';
+            if (DISPLAY_DEBUG){ echo '<li>$id_corso_nostro = ' . $id_corso_nostro . ' --> ' . $nome_corso_nostro . '</li>'; }
 
             //RECUPERO NOSTRO ID DEL PROFESSIONISTA
             $sql_00003 = "SELECT id, cognome, nome FROM lista_professionisti WHERE id_moodle_user =" . $id_utente_moodle;
@@ -101,10 +108,10 @@ foreach ($rs_utente_entrato as $row_utente_entrato) {
             $id_professionista_nostro = $row_00003['id'];
             $cognome_professionista_nostro = $row_00003['cognome'];
             $nome_professionista_nostro = $row_00003['nome'];
-            if (DISPLAY_DEBUG) echo '<li>$id_professionista_nostro = ' . $id_professionista_nostro . ' --> ' . $cognome_professionista_nostro . ' ' . $nome_professionista_nostro . '</li>';
+            if (DISPLAY_DEBUG){ echo '<li>$id_professionista_nostro = ' . $id_professionista_nostro . ' --> ' . $cognome_professionista_nostro . ' ' . $nome_professionista_nostro . '</li>'; }
 
             $percentuale_corso_utente = recupero_percentuale_avanzamento_corso_utente($id_utente_moodle, $id_corso_moodle, true);
-            if (DISPLAY_DEBUG) echo '<li>$percentuale_corso_utente = ' . $percentuale_corso_utente . '</li>';
+            if (DISPLAY_DEBUG){ echo '<li>$percentuale_corso_utente = ' . $percentuale_corso_utente . '</li>'; }
             if ($id_professionista_nostro > 0) {
                 /*
                   $sql_00004 = "SELECT * FROM lista_iscrizioni
@@ -119,10 +126,10 @@ foreach ($rs_utente_entrato as $row_utente_entrato) {
                             AND DATE(data_inizio) <='" . $data_inizio_corso . "'
                             AND DATE(data_fine) >='" . $data_inizio_corso . "'
                             AND stato = 'In Attesa'";
-                if (DISPLAY_DEBUG) echo $sql_00004;
+                if (DISPLAY_DEBUG){ echo $sql_00004; }
                 $rs_00004 = $dblink->get_results($sql_00004);
                 if (!empty($rs_00004)) {
-                    if (DISPLAY_DEBUG) StampaSQL($sql_00004, '', '');
+                    if (DISPLAY_DEBUG){ StampaSQL($sql_00004, '', ''); }
                     foreach ($rs_00004 as $row_00004) {
                         
                         $id_iscrizione = $row_00004['id'];
@@ -184,10 +191,10 @@ foreach ($rs_utente_entrato as $row_utente_entrato) {
                             AND DATE(data_inizio) <='" . $data_inizio_corso . "'
                             AND DATE(data_fine) >='" . $data_inizio_corso . "'
                             AND stato = 'In Attesa'";
-                if (DISPLAY_DEBUG) echo $sql_000044;
+                if (DISPLAY_DEBUG){ echo $sql_000044; }
                 $rs_000044 = $dblink->get_results($sql_000044);
                 if (!empty($rs_000044)) {
-                    if (DISPLAY_DEBUG) StampaSQL($sql_000044, '', '');
+                    if (DISPLAY_DEBUG){ StampaSQL($sql_000044, '', ''); }
                     foreach ($rs_000044 as $row_000044) {
                         
                         $id_iscrizione = $row_000044['id'];
@@ -237,10 +244,10 @@ foreach ($rs_utente_entrato as $row_utente_entrato) {
                 }
             }
             
-            if (DISPLAY_DEBUG) echo '<hr>';
+            if (DISPLAY_DEBUG){ echo '<hr>'; }
         }
     }
 }
 
-if (DISPLAY_DEBUG) echo date("H:i:s");
+if(DISPLAY_DEBUG){ echo date("H:i:s"); }
 ?>

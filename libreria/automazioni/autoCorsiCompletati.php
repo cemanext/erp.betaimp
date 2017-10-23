@@ -9,10 +9,10 @@ if (DISPLAY_DEBUG) {
     echo '<li>DB_USER = '.DB_USER.'</li>';
     echo '<li>DB_PASS = '.DB_PASS.'</li>';
     echo '<li>DB_NAME = '.DB_NAME.'</li>';
-    echo '<li>DB_NAME = '.MOODLE_DB_NAME.'</li>';
-    echo '<li>DB_NAME = '.DURATA_CORSO_INGEGNERI.'</li>';
-    echo '<li>DB_NAME = '.DURATA_ABBONAMENTO.'</li>';
-    echo '<li>DB_NAME = '.DURATA_CORSO.'</li>';
+    echo '<li>MOODLE_DB_NAME = '.MOODLE_DB_NAME.'</li>';
+    echo '<li>DURATA_CORSO_INGEGNERI = '.DURATA_CORSO_INGEGNERI.'</li>';
+    echo '<li>DURATA_ABBONAMENTO = '.DURATA_ABBONAMENTO.'</li>';
+    echo '<li>DURATA_CORSO = '.DURATA_CORSO.'</li>';
     echo '<hr>';
 }
 /*
@@ -77,10 +77,10 @@ foreach ($rowsIscrizioni as $rowIscrizione) {
             
             //CORSO COMPLETATO
              if($ok){
-                if (DISPLAY_DEBUG) echo '<li style="color: GREEN;"> OK !</li>';
+                if (DISPLAY_DEBUG) echo '<li style="color: GREEN;"> OK ! -> ID ISCRIZIONE : '.$rowIscrizione['id'].'</li>';
                 $log->log_all_errors('autoCorsiCompletati.php -> corso  completato correttamente [id_corso_moodle = '.$rowIscrizione['id_corso_moodle'].']','OK');
             }else{
-                if (DISPLAY_DEBUG) echo '<li style="color: RED;"> KO !</li>';
+                if (DISPLAY_DEBUG) echo '<li style="color: RED;"> KO ! -> ID ISCRIZIONE : '.$rowIscrizione['id'].'</li>';
                 $log->log_all_errors('autoCorsiCompletati.php -> corso NON completato [id_corso_moodle = '.$rowIscrizione['id_corso_moodle'].']','ERRORE');
             }
         }
