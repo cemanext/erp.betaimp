@@ -109,7 +109,7 @@ if (isset($_GET['tbl'])) {
                     <!-- END PAGE HEADER-->
                     <?php Stampa_HTML_index_Base($tabella); ?>
                     <div class="form-actions left">
-                        <a href="modifica.php?tbl=<?=$tabella?>&id=0'" class="btn btn-circle btn-lg green-jungle"><i class="fa fa-plus"></i> Aggiungi Nuovo</a>
+                        <a href="modifica.php?tbl=<?=$tabella?>&id=0" class="btn btn-circle btn-lg green-jungle"><i class="fa fa-plus"></i> Aggiungi Nuovo</a>
                     <?php if($tabella=="lista_prodotti" && filter_input(INPUT_GET, 'whr_gru')=="2"){ ?>
                         <a href="<?=BASE_URL?>/libreria/automazioni/sinc_moodle.php?fn=<?=$tabella?>" class="btn btn-circle btn-lg blue" style="margin-left: 20px;"><i class="fa fa-exchange"></i> Sincronizza Corsi con Moodle</a>
                     <?php }elseif($tabella=="lista_prodotti" && filter_input(INPUT_GET, 'whr_gru')=="1"){ ?>

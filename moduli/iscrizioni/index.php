@@ -171,7 +171,7 @@ if(isset($tabella) && $tabella=="lista_iscrizioni_partecipanti_completati"){
                     <!-- END PAGE HEADER-->
                     <?php Stampa_HTML_index_Iscrizioni($tabella); ?>
                     <div class="form-actions left">
-                        <a href="modifica.php?tbl=$tabella&id=0'" class="btn btn-circle btn-lg green-jungle"><i class="fa fa-plus"></i> Aggiungi Nuovo</a>
+                        <a href="modifica.php?tbl=$tabella&id=0" class="btn btn-circle btn-lg green-jungle"><i class="fa fa-plus"></i> Aggiungi Nuovo</a>
                     </div>
                 </div>
                 <!-- END CONTENT BODY -->

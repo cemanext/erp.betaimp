@@ -112,7 +112,7 @@ if (isset($_GET['tbl'])) {
                     <?php Stampa_HTML_index_Tickets($tabella);
                     if ($livelloAmministratore) {?>
                         <div class="form-actions left">
-                            <a href="modifica.php?tbl=<?=$tabella?>&id=0'" class="btn btn-circle btn-lg green-jungle"><i class="fa fa-plus"></i> Aggiungi Nuovo</a>
+                            <a href="modifica.php?tbl=<?=$tabella?>&id=0" class="btn btn-circle btn-lg green-jungle"><i class="fa fa-plus"></i> Aggiungi Nuovo</a>
                         </div>
                     <?php }?>
 
