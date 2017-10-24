@@ -8,7 +8,9 @@ $sql_00001 = "SELECT id,nome FROM lista_campagne WHERE stato LIKE 'In Corso' OR 
 $rs_00001 = $dblink->get_results($sql_00001);
 if(!empty($rs_00001)){
     $ok = true;
-    if(DISPLAY_DEBUG) StampaSQL($sql_00001,'','');
+    if(DISPLAY_DEBUG){
+        StampaSQL($sql_00001,'','');
+    }
     
     $conto_00001 = count($rs_00001);
     if(DISPLAY_DEBUG) echo '<li>$conto_00001 = '.$conto_00001.'</li>';
@@ -20,60 +22,93 @@ if(!empty($rs_00001)){
         //conto le visite alla pagina
         $sql_00002 = "SELECT COUNT(id) as conteggio_accessi FROM lista_accessi WHERE id_campagna=".$idCampagna." AND id_campagna!=0";
         $row_00002 = $dblink->get_row($sql_00002, true);
-        if(DISPLAY_DEBUG) echo '<li>conteggio_accessi = '.$conteggio_accessi = $row_00002["conteggio_accessi"].'</li>';
+        $conteggio_accessi = $row_00002["conteggio_accessi"];
+        if(DISPLAY_DEBUG){
+            echo '<li>conteggio_accessi = '.$conteggio_accessi.'</li>';
+        }
        
         //conto le richieste arrivate
         $sql_00003 = "SELECT COUNT(id) as conteggio_richieste FROM calendario WHERE id_campagna=".$idCampagna." AND id_campagna!=0 AND etichetta LIKE 'Nuova Richiesta'";
         $row_00003 = $dblink->get_row($sql_00003, true);
-        if(DISPLAY_DEBUG) echo '<li>conteggio_richieste = '.$conteggio_richieste = $row_00003["conteggio_richieste"].'</li>';
+        $conteggio_richieste = $row_00003["conteggio_richieste"];
+        if(DISPLAY_DEBUG){
+            echo '<li>conteggio_richieste = '.$conteggio_richieste.'</li>';
+        }
         
         if($conteggio_richieste<=0){
             $sql_000033 = "SELECT COUNT(id) as conteggio_richieste FROM lista_ordini WHERE id_campagna=".$idCampagna." AND id_campagna!=0";
             $row_000033 = $dblink->get_row($sql_000033, true);
-            if(DISPLAY_DEBUG) echo '<li>conteggio_richieste = '.$conteggio_richieste = $row_000033["conteggio_richieste"].'</li>';
+            $conteggio_richieste = $row_000033["conteggio_richieste"];
+            if(DISPLAY_DEBUG){
+                echo '<li>conteggio_richieste = '.$conteggio_richieste.'</li>';
+            }
         }
         
         //conto i preventivi chiusi
         //$sql_00004 = "SELECT COUNT(id) as conteggio_chiusi FROM lista_preventivi WHERE id_campagna=".$idCampagna." AND id_campagna!=0 AND (stato LIKE 'Chiuso' OR stato LIKE 'Venduto') AND id_calendario IN (SELECT id FROM calendario WHERE etichetta='Nuova Richiesta')";
         $sql_00004 = "SELECT COUNT(id) as conteggio_chiusi FROM lista_preventivi WHERE id_campagna=".$idCampagna." AND id_campagna!=0 AND (stato LIKE 'Chiuso' OR stato LIKE 'Venduto')";
         $row_00004 = $dblink->get_row($sql_00004, true);
-        if(DISPLAY_DEBUG) echo '<li>conteggio_chiusi = '.$conteggio_chiusi = $row_00004["conteggio_chiusi"].'</li>';
+        $conteggio_chiusi = $row_00004["conteggio_chiusi"];
+        if(DISPLAY_DEBUG){
+            echo '<li>conteggio_chiusi = '.$conteggio_chiusi.'</li>';
+        }
         
         //conto i preventivi in attesa
         $sql_00005 = "SELECT COUNT(id) as conteggio_preventivi_in_attesa FROM lista_preventivi WHERE id_campagna=".$idCampagna." AND id_campagna!=0 AND stato LIKE 'In Attesa'";
         $row_00005 = $dblink->get_row($sql_00005, true);
-        if(DISPLAY_DEBUG) echo '<li>conteggio_preventivi_in_attesa = '.$conteggio_preventivi_in_attesa = $row_00005["conteggio_preventivi_in_attesa"].'</li>';
+        $conteggio_preventivi_in_attesa = $row_00005["conteggio_preventivi_in_attesa"];
+        if(DISPLAY_DEBUG){
+            echo '<li>conteggio_preventivi_in_attesa = '.$conteggio_preventivi_in_attesa.'</li>';
+        }
         
         //conto i preventivi negativi
         $sql_00006 = "SELECT COUNT(id) as conteggio_preventivi_negativi FROM lista_preventivi WHERE id_campagna=".$idCampagna." AND id_campagna!=0 AND stato LIKE 'Negativo'";
         $row_00006 = $dblink->get_row($sql_00006, true);
-        if(DISPLAY_DEBUG) echo '<li>conteggio_preventivi_negativi = '.$conteggio_preventivi_negativi = $row_00006["conteggio_preventivi_negativi"].'</li>';
+        $conteggio_preventivi_negativi = $row_00006["conteggio_preventivi_negativi"];
+        if(DISPLAY_DEBUG){
+            echo '<li>conteggio_preventivi_negativi = '.$conteggio_preventivi_negativi.'</li>';
+        }
         
          //conto i fatture pagate
         $sql_00007 = "SELECT COUNT(id) as conteggio_pagate FROM lista_fatture WHERE id_campagna=".$idCampagna." AND id_campagna!=0 AND stato LIKE 'Pagata'";
         $row_00007 = $dblink->get_row($sql_00007, true);
-        if(DISPLAY_DEBUG) echo '<li>conteggio_pagate = '.$conteggio_pagate = $row_00007["conteggio_pagate"].'</li>';
+        $conteggio_pagate = $row_00007["conteggio_pagate"];
+        if(DISPLAY_DEBUG){
+            echo '<li>conteggio_pagate = '.$conteggio_pagate.'</li>';
+        }
         
         //conto i fatture emesse
         $sql_00008 = "SELECT COUNT(id) as conteggio_emesse FROM lista_fatture WHERE id_campagna=".$idCampagna." AND id_campagna!=0 AND stato NOT LIKE 'In Attesa di Emissione'";
         $row_00008 = $dblink->get_row($sql_00008, true);
-        if(DISPLAY_DEBUG) echo '<li>conteggio_emesse = '.$conteggio_emesse = $row_00008["conteggio_emesse"].'</li>';
+        $conteggio_pagate = $row_00007["conteggio_pagate"];
+        if(DISPLAY_DEBUG){
+            echo '<li>conteggio_emesse = '.$conteggio_emesse.'</li>';
+        }
         
         //conto i fatture incassato
         $sql_00009 = "SELECT SUM(imponibile) as incassato FROM lista_fatture WHERE id_campagna=".$idCampagna." AND id_campagna!=0 AND stato  LIKE 'Pagata'";
         $row_00009 = $dblink->get_row($sql_00009, true);
-        if(DISPLAY_DEBUG) echo '<li>incassato = '.$incassato = $row_00009["incassato"].'</li>';
+        $incassato = $row_00009["incassato"];
+        if(DISPLAY_DEBUG){
+            echo '<li>incassato = '.$incassato.'</li>';
+        }
         
         //conto i fatture da_incassare
         $sql_00010 = "SELECT SUM(imponibile) as da_incassare FROM lista_fatture WHERE id_campagna=".$idCampagna." AND id_campagna!=0 AND stato  LIKE 'In Attesa'";
         $row_00010 = $dblink->get_row($sql_00010, true);
-        if(DISPLAY_DEBUG) echo '<li>da_incassare = '.$da_incassare = $row_00010["da_incassare"].'</li>';
+        $da_incassare = $row_00010["da_incassare"];
+        if(DISPLAY_DEBUG){
+            echo '<li>da_incassare = '.$da_incassare.'</li>';
+        }  
         
         //conto i fatture da_incassare
         //$sql_00011 = "SELECT SUM(imponibile) as da_confermare FROM lista_preventivi WHERE id_campagna=".$idCampagna." AND id_campagna!=0 AND stato  LIKE 'Venduto' AND id_calendario IN (SELECT id FROM calendario WHERE etichetta='Nuova Richiesta')";
         $sql_00011 = "SELECT SUM(imponibile) as da_confermare FROM lista_preventivi WHERE id_campagna=".$idCampagna." AND id_campagna!=0 AND stato  LIKE 'Venduto'";
         $row_00011 = $dblink->get_row($sql_00011, true);
-        if(DISPLAY_DEBUG) echo '<li>da_confermare = '.$da_confermare = $row_00011["da_confermare"].'</li>';
+        $da_confermare = $row_00011["da_confermare"];
+        if(DISPLAY_DEBUG){
+            echo '<li>da_confermare = '.$da_confermare.'</li>';
+        }
         
         
         
