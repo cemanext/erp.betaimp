@@ -19,7 +19,7 @@ if(isset($_GET['mese']) && isset($_GET['anno']) && isset($_GET['tipo'])){
 //$sql_0001 = creaSQLesporta();
 $sql_0001 = "SELECT IF(tipo='Fattura', 'Fatt. Imm.', 'N. C.') AS 'Tipo doc.', sezionale AS 'Sz.', codice AS 'Nr.doc.', DATE_FORMAT(DATE(data_creazione), '%d/%m/%Y') AS 'Data Doc.',
             (SELECT CONCAT(ragione_sociale,' ',forma_giuridica) AS rag_soc FROM lista_aziende WHERE id = id_azienda) AS 'Ragione Sociale Anagrafica',
-            ABS(imponibile) AS 'Tot. imponibile', (ABS(importo)-ABS(imponibile)) AS 'Tot. Iva', ABS(importo) AS 'Tot. Documento',
+            REPLACE(ABS(imponibile), '.', ',') AS 'Tot. imponibile', REPLACE((ABS(importo)-ABS(imponibile)), '.', ',') AS 'Tot. Iva', REPLACE(ABS(importo), '.', ',') AS 'Tot. Documento',
             (SELECT CONCAT(cognome,' ',nome) FROM lista_password WHERE id = id_agente) AS 'Nome Commerciale'
             FROM lista_fatture WHERE MONTH(data_creazione) = '$mese' AND YEAR(data_creazione) = '$anno' AND tipo LIKE '".$tipo."' AND sezionale NOT LIKE '%CN%' AND (stato LIKE 'In Attesa' OR stato LIKE 'Pagata%' OR stato LIKE 'Nota di%') ";
 $titolo = "Esportazione del ".date("d/m/Y H:i:s");

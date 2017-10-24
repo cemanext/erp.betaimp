@@ -12,7 +12,8 @@ if (isset($_POST['intervallo_data'])) {
     $setDataCalIn = $data_in;
     $setDataCalOut = $data_out;
     
-    $where_intervallo = " AND tipo LIKE 'Fattura' AND lista_fatture.dataagg BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
+    $where_intervallo = " AND tipo LIKE 'Fattura' AND lista_fatture.data_creazione BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
+    $where_intervallo_nota = " AND tipo LIKE 'Nota%' AND lista_fatture.data_creazione BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
     
     if("01-".date("m-Y")." al ".date("t-m-Y") == $intervallo_data){
         $titolo_intervallo = " del mese in corso";
@@ -31,7 +32,8 @@ if (isset($_POST['intervallo_data'])) {
     }
     
 } else {
-    $where_intervallo = " AND tipo LIKE 'Fattura' AND YEAR(lista_fatture.dataagg)=YEAR(CURDATE()) AND MONTH(lista_fatture.dataagg)=MONTH(CURDATE())";
+    $where_intervallo = " AND tipo LIKE 'Fattura' AND YEAR(lista_fatture.data_creazione)=YEAR(CURDATE()) AND MONTH(lista_fatture.data_creazione)=MONTH(CURDATE())";
+    $where_intervallo_nota = " AND tipo LIKE 'Nota%' AND YEAR(lista_fatture.data_creazione)=YEAR(CURDATE()) AND MONTH(lista_fatture.data_creazione)=MONTH(CURDATE())";
     $titolo_intervallo = " del mese in corso";
     
     $intervallo_data = "01-".date("m-Y")." al ".date("t-m-Y");
@@ -159,7 +161,7 @@ if (isset($_POST['intervallo_data'])) {
                         
                         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                             <?php
-                            $sql_007 = "SELECT SUM(imponibile) AS conteggio FROM lista_fatture WHERE stato LIKE 'Nota di Credi%' AND sezionale NOT LIKE '%CN%' " . $where_intervallo;
+                            $sql_007 = "SELECT SUM(imponibile) AS conteggio FROM lista_fatture WHERE stato LIKE 'Nota di Credi%' AND sezionale NOT LIKE '%CN%' " . $where_intervallo_nota;
                             $titolo = 'Totale Note di Credito<br>' . $titolo_intervallo;
                             $icona = 'fa fa-area-chart';
                             $colore = 'red-intense';
@@ -169,7 +171,7 @@ if (isset($_POST['intervallo_data'])) {
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                             <?php
-                            $sql_007 = "SELECT SUM(imponibile) AS conteggio FROM lista_fatture WHERE stato NOT LIKE 'In Attesa di Emiss%' AND stato NOT LIKE 'Annullata' AND stato NOT LIKE 'Nota di Credit%' AND stato NOT LIKE 'Accorpata' AND sezionale NOT LIKE '%CN%' " . $where_intervallo;
+                            $sql_007 = "SELECT SUM(imponibile) AS conteggio FROM lista_fatture WHERE stato NOT LIKE 'In Attesa di Emiss%' AND stato NOT LIKE 'Annullata' AND stato NOT LIKE 'Accorpata' AND sezionale NOT LIKE '%CN%' " . $where_intervallo;
                             $titolo = 'Totale Fatturato<br>' . $titolo_intervallo;
                             $icona = 'fa fa-area-chart';
                             $colore = 'blue-steel';
@@ -239,7 +241,7 @@ if (isset($_POST['intervallo_data'])) {
                     $sql_0001 = "SELECT 
                     IF(stato LIKE 'In Attesa' OR stato LIKE 'Pagata%', CONCAT('<a class=\"btn btn-circle btn-icon-only blue-steel btn-outline\" href=\"".BASE_URL."/moduli/fatture/printFattureXML.php?anno=',YEAR(data_creazione),'&mese=',MONTH(data_creazione),'&sezionale=',sezionale,'&stato=',stato,'\" target=\"_blank\" title=\"XML COMMERCIALISTA\" alt=\"XML COMMERCIALISTA\"><i class=\"fa fa-file-code-o\"></i></a>') ,'') as 'fa-file-code-o',
                     YEAR(data_creazione) AS Anno, MONTH(data_creazione) AS Mese, SUM(imponibile) AS Imponibile, COUNT(stato) AS CONTEGGIO, tipo, sezionale, stato 
-                    FROM lista_fatture WHERE sezionale NOT LIKE '%CN%'
+                    FROM lista_fatture WHERE sezionale NOT LIKE '%CN%' AND data_creazione != '0000-00-00'
                     GROUP BY YEAR(data_creazione), MONTH(data_creazione), tipo, sezionale, stato 
                     ORDER BY YEAR(data_creazione) DESC, MONTH(data_creazione) DESC, tipo, sezionale, stato ASC;";
                     stampa_table_static_basic($sql_0001, 'tab2_fatture_home', 'Andamento Fatture', '', 'fa fa-user');
@@ -301,7 +303,7 @@ if (isset($_POST['intervallo_data'])) {
         $sql_0006 = "SELECT LEFT(dataagg,7) as anno_mese,
           SUM(IF(stato LIKE 'Pagata',imponibile,0)) AS Pagata,
           SUM(IF(stato LIKE 'In Attesa',imponibile,0)) AS in_attesa,
-          SUM(IF(stato LIKE 'Nota di Credi%',imponibile,0)) AS Stornata
+          ABS(SUM(IF(stato LIKE 'Nota di Credi%',imponibile,0))) AS Stornata
           FROM lista_fatture
           WHERE 1 " . $where_intervallo . "
           GROUP BY LEFT(dataagg,7)";

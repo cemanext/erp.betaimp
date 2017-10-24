@@ -154,9 +154,11 @@ if(isset($_GET['fn'])){
             if(is_array($key)){
                 $where = "";
                 foreach ($key as $value) {
+                    $value = $dblink->filter($value);
                     $where.= "AND (codice_fiscale LIKE '%{$value}%' OR nome LIKE '%{$value}%' OR cognome LIKE '%{$value}%' OR telefono LIKE '%{$value}%' OR cellulare LIKE '%{$value}%' OR email LIKE '%{$value}%')";
                 }
             }else{
+                $key = $dblink->filter($key);
                 $where = "AND (codice_fiscale LIKE '%{$key}%' OR nome LIKE '%{$key}%' OR cognome LIKE '%{$key}%' OR telefono LIKE '%{$key}%' OR cellulare LIKE '%{$key}%' OR email LIKE '%{$key}%')";
             }
             $result = $dblink->get_results($sql_01.$where);

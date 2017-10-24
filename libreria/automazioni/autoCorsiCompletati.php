@@ -70,9 +70,9 @@ foreach ($rowsIscrizioni as $rowIscrizione) {
             if(!empty($rowConfig)){
                 $updateIscrizione['id_fattura'] = $rowConfig['id_fattura'];
                 $updateIscrizione['id_fattura_dettaglio'] = $rowConfig['id_fattura_dettaglio'];
-                
-                $ok = $dblink->update("lista_iscrizioni", $updateIscrizione, array("id"=>$rowIscrizione['id']));
             }
+            
+            $ok = $dblink->update("lista_iscrizioni", $updateIscrizione, array("id"=>$rowIscrizione['id']));
             
             //CORSO COMPLETATO
              if($ok){

@@ -2834,7 +2834,18 @@ $table_listaIscrizioniPartecipanti = array(
                         "default" => "",
                         "attivo" => false
                 ),
-                array(  "campo" => "nome_classe",
+                array(  "campo" => "id_classe",
+                    "tipo" => "select2",
+                    "etichetta" => "Nome Classe",
+                    "readonly" => false,
+                    "like" => false,
+                    "uguale" => true,
+                    "maggiore" => false,
+                    "default" => "",
+                    "attivo" => false,
+                    "sql" => "SELECT id as valore, nome AS nome FROM lista_classi WHERE 1 ORDER BY nome ASC"
+                ),
+                /*array(  "campo" => "nome_classe",
                         "tipo" => "input",
                         "etichetta" => "Classe",
                         "readonly" => false,
@@ -2843,7 +2854,7 @@ $table_listaIscrizioniPartecipanti = array(
                         "maggiore" => false,
                         "default" => "",
                         "attivo" => false
-                ),
+                ),*/
                 array(  "campo" => "data_inizio_iscrizione",
                         "tipo" => "data",
                         "etichetta" => "Data Attivazione",
@@ -2894,6 +2905,80 @@ $table_listaIscrizioniPartecipanti = array(
                         "default" => "",
                         "attivo" => false
                 ),
+                
+                
+                
+                array(  "campo" => "Stato",
+                        "tipo" => "select_static",
+                        "etichetta" => "Stato",
+                        "readonly" => false,
+                        "like" => false,
+                        "uguale" => true,
+                        "maggiore" => false,
+                        "default" => "",
+                        "attivo" => true,
+                        "sql" => array("Completato" => "Completato", "In Corso"=>"In Corso", "In Attesa"=>"In Attesa", "Configurazione"=>"Configurazione", "Scaduto e Disattivato"=>"Scaduto e Disattivato", "Configurazione Scaduta e Disattivata"=>"Configurazione Scaduta e Disattivata")
+                    ),
+                    array("campo" => "email_professionista",
+                        "tipo" => "inner_select",
+                        "etichetta" => "Email Professionista",
+                        "readonly" => true,
+                        "like" => true,
+                        "uguale" => false,
+                        "maggiore" => false,
+                        "default" => "(SELECT email AS email_professionista FROM lista_professionisti WHERE lista_professionisti.id=lista_iscrizioni.id_professionista)",
+                        "attivo" => true
+                    ),
+                    array("campo" => "cellulare_professionista",
+                        "tipo" => "inner_select",
+                        "etichetta" => "Cellulare Professionista",
+                        "readonly" => true,
+                        "like" => true,
+                        "uguale" => false,
+                        "maggiore" => false,
+                        "default" => "(SELECT IF(LENGTH(cellulare) > 3, cellulare, telefono) AS cellulare_professionista FROM lista_professionisti WHERE lista_professionisti.id=lista_iscrizioni.id_professionista)",
+                        "attivo" => true
+                    ),
+                    array("campo" => "provincia_professionista",
+                        "tipo" => "inner_select",
+                        "etichetta" => "Provincia di Nascita",
+                        "readonly" => true,
+                        "like" => true,
+                        "uguale" => false,
+                        "maggiore" => false,
+                        "default" => "(SELECT provincia_di_nascita AS provincia_professionista FROM lista_professionisti WHERE lista_professionisti.id=lista_iscrizioni.id_professionista)",
+                        "attivo" => true
+                    ),
+                    array("campo" => "professione",
+                        "tipo" => "inner_select",
+                        "etichetta" => "professione",
+                        "readonly" => true,
+                        "like" => true,
+                        "uguale" => false,
+                        "maggiore" => false,
+                        "default" => "(SELECT professione AS professione_professionista FROM lista_professionisti WHERE lista_professionisti.id=lista_iscrizioni.id_professionista)",
+                        "attivo" => true
+                    ),
+                    array("campo" => "provincia_albo",
+                        "tipo" => "inner_select",
+                        "etichetta" => "Provincia Albo",
+                        "readonly" => true,
+                        "like" => true,
+                        "uguale" => false,
+                        "maggiore" => false,
+                        "default" => "(SELECT provincia_albo AS provincia_albo_professionista FROM lista_professionisti WHERE lista_professionisti.id=lista_iscrizioni.id_professionista)",
+                        "attivo" => true
+                    ),
+                    array("campo" => "numero_albo",
+                        "tipo" => "inner_select",
+                        "etichetta" => "Numero Albo",
+                        "readonly" => true,
+                        "like" => true,
+                        "uguale" => false,
+                        "maggiore" => false,
+                        "default" => "(SELECT numero_albo AS numero_albo_professionista FROM lista_professionisti WHERE lista_professionisti.id=lista_iscrizioni.id_professionista)",
+                        "attivo" => true
+                    )
             )
         );
 /*

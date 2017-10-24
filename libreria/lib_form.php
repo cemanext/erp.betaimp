@@ -1251,6 +1251,7 @@ function get_campi_tabella($dati, $ret = array()){
             }
         }elseif($pos_3 !== false){
             switch ($nome_tabella) {
+                case "lista_iscrizioni":
                 case "lista_preventivi":
                     $campi_visualizzati .= $value." AS '".$arrayETK[str_replace('inner_select_','etk_',$key)]."', ";
                     
