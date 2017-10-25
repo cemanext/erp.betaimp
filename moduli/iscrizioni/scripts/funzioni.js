@@ -114,8 +114,8 @@ var TableDatatablesAjaxIscrizioni = function () {
             ],
 
             "lengthMenu": [
-                [10, 25, 30, 50],
-                [10, 25, 30, 50] // change per page values here
+                [10, 25, 30, 50, -1],
+                [10, 25, 30, 50, "Tutti"] // change per page values here
             ],
             // set the initial value
             "pageLength": 30,
@@ -170,8 +170,8 @@ var TabelleIscrizioni = function () {
           ],
 
           "lengthMenu": [
-              [10, 25, 30, 50],
-              [10, 25, 30, 50] // change per page values here
+              [10, 25, 30, 50, -1],
+              [10, 25, 30, 50, "Tutti"] // change per page values here
           ],
           // set the initial value
           "pageLength": 30,
