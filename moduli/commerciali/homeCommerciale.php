@@ -376,6 +376,23 @@ if (isset($_POST['intervallo_data'])) {
                         </div>
                     </div>
                     
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <?php
+                    $sql_0004 = "SELECT 
+                                                IF(stato LIKE 'In Attesa' OR stato LIKE 'Pagata%', CONCAT('<a class=\"btn btn-circle btn-icon-only blue-steel btn-outline\" href=\"".BASE_URL."/moduli/fatture/printFattureXLS.php?anno=',YEAR(data_creazione),'&mese=',MONTH(data_creazione),'&tipo=',tipo,'&idCommerciale=',id_agente,'\" target=\"_blank\" title=\"XLS FATTURE CON COMMERCIALE\" alt=\"XLS FATTURE CON COMMERCIALE\"><i class=\"fa fa-file-excel-o\"></i></a>') ,
+                                                    CONCAT('<a class=\"btn btn-circle btn-icon-only red-intense btn-outline\" href=\"".BASE_URL."/moduli/fatture/printFattureXLS.php?anno=',YEAR(data_creazione),'&mese=',MONTH(data_creazione),'&tipo=',tipo,'&idCommerciale=',id_agente,'\" target=\"_blank\" title=\"XLS FATTURE CON COMMERCIALE\" alt=\"XLS FATTURE CON COMMERCIALE\"><i class=\"fa fa-file-excel-o\"></i></a>')) as 'fa-file-excel-o',
+                                                YEAR(data_creazione) AS Anno, MONTH(data_creazione) AS Mese, SUM(imponibile) AS Imponibile, COUNT(stato) AS CONTEGGIO, tipo 
+                                                FROM lista_fatture 
+                                                WHERE sezionale NOT LIKE '%CN%' AND (stato LIKE 'In Attesa' OR stato LIKE 'Pagata%' OR stato LIKE 'Nota di%')
+                                                AND id_agente = '".$_SESSION['id_utente']."'
+                                                GROUP BY YEAR(data_creazione), MONTH(data_creazione), tipo
+                                                ORDER BY YEAR(data_creazione) DESC, MONTH(data_creazione) DESC, tipo, sezionale, stato ASC;";
+                                                
+                                                stampa_table_static_basic($sql_0004, 'tab4_fatture_home', 'Esporta Fatture XLS', '', 'fa fa-user');
+                                                ?>
+                    </div>
+                    </div>
                     <!--<div class="row">
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                             <?php
