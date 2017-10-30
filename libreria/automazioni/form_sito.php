@@ -5,12 +5,13 @@ if(isset($_GET['id']) && !empty($_GET['id'])){
     $idCampagna = $_GET['id'];
 }else{
     $_GET['id']=2;
+    $idCampagna = 2;
 }
 
 if(isset($_GET['url']) && !empty($_GET['url'])){
     $urlReferer = $_GET['url'];
 }else{
-    $urlReferer = $_SERVE['referer'];
+    $urlReferer = $_SERVER['HTTP_REFERER'];
 }
 
 ?>

@@ -8,9 +8,12 @@ if(isset($_GET['fn'])){
     switch ($_GET['fn']) {
         
         case "importRichieste":
-        default:
             
             $filename=time().'_'.$_FILES['importRichieste']['name'];
+            
+            if(!is_dir(BASE_ROOT . "media/import_richieste")){
+                mkdir(BASE_ROOT . "media/import_richieste", 0777);
+            }
 
             $path= BASE_ROOT.'media/import_richieste/'.$filename;
 
@@ -70,7 +73,7 @@ if(isset($_GET['fn'])){
                                 $dataInsert = false;
                             }*/
                             
-                            if(strlen($row[0]) > 0 && strlen($row[1]) > 0 && strlen($row[2]) > 0 && strlen($row[3]) > 0 && strlen($row[5]) > 0 && strlen($row[6]) > 0 && strlen($row[10]) > 0 && strlen($row[11]) > 0){
+                            if(strlen($row[0]) > 0 && strlen($row[1]) > 0 && strlen($row[2]) > 0 && strlen($row[3]) > 0 && strlen($row[10]) > 0 && strlen($row[11]) > 0){
                                 $insert = array(
                                   "dataagg" => date("Y-m-d H:i:s"),
                                   "scrittore" => $dblink->filter($_SESSION['cognome_nome_utente']),
@@ -234,7 +237,7 @@ if(isset($_GET['fn'])){
                         "ora" => "10:00:00",
                         "etichetta" => 'Nuova Richiesta',
                         "oggetto" => $dblink->filter($riga['nome_campagna']),
-                        "messaggio" => "Nome: ".$dblink->filter($riga['nome'])."\\nCognome: ".$dblink->filter($riga['cognome'])."\\nTelefono: ".$dblink->filter($riga['telefono'])."\\nE-Mail: ".$dblink->filter($riga['email'])."\\n\\nTipo Campagna: ".$dblink->filter($riga['tipo_marketing'])."\\nNome Campagna: ".$dblink->filter($riga['nome_campagna'])."\\n\\nMESSAGGIO\\n".$dblink->filter($riga['messaggio']),
+                        "messaggio" => "Nome: ".$dblink->filter($riga['nome'])."\\nCognome: ".$dblink->filter($riga['cognome'])."\\nTelefono: ".$dblink->filter($riga['telefono'])."\\nE-Mail: ".$dblink->filter($riga['email'])."\\n\\nTipo Marketing: ".$dblink->filter($riga['tipo_marketing'])."\\nNome Campagna: ".$dblink->filter($riga['nome_campagna'])."\\n\\nMESSAGGIO\\n".$dblink->filter($riga['messaggio']),
                         "mittente" => $dblink->filter($riga['cognome'])." ".$dblink->filter($riga['nome']),
                         "destinatario" => "",
                         "priorita" => "Alta",
@@ -303,6 +306,10 @@ if(isset($_GET['fn'])){
             
             $filename=time().'_'.$_FILES['importAttivazioni']['name'];
 
+            if(!is_dir(BASE_ROOT . "media/import")){
+                mkdir(BASE_ROOT . "media/import", 0777);
+            }
+            
             $path= BASE_ROOT.'media/import/'.$filename;
 
             if(move_uploaded_file($_FILES['importAttivazioni']['tmp_name'],$path)) {

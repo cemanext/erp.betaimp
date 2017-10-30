@@ -67,8 +67,8 @@ function Stampa_HTML_index_Import($tabella){
                                 <td>COGNOME *</td>
                                 <td>NOME *</td>
                                 <td>PROFESSIONE</td>
-                                <td>TELEFONO *</td>
-                                <td>EMAIL *</td>
+                                <td>TELEFONO</td>
+                                <td>EMAIL</td>
                                 <td>CITTA</td>
                                 <td>PRODOTTO</td>
                                 <td>CORTE</td>

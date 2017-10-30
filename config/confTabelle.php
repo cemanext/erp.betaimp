@@ -176,6 +176,12 @@ $table_listaProfessionisti = array(
                         "etichetta" => "Codice",
                         "readonly" => true
                     ),
+                array(  "campo" => "titolo",
+                        "tipo" => "select-cancella",
+                        "etichetta" => "Titolo",
+                        "readonly" => false,
+                        "sql" => "SELECT nome AS valore, nome AS nome FROM `lista_titoli` WHERE `stato` LIKE 'Attivo' ORDER BY `nome` ASC"
+                    ),
                 array(  "campo" => "nome",
                         "tipo" => "input",
                         "etichetta" => "Nome",
@@ -1090,7 +1096,7 @@ $table_calendario = array(
                         "default" => "",
                         "attivo" => false
                     ),
-                array(  "campo" => "orainsert",
+                /*array(  "campo" => "orainsert",
                         "tipo" => "ora",
                         "etichetta" => "Ora Inserimento",
                         "readonly" => true,
@@ -1099,7 +1105,7 @@ $table_calendario = array(
                         "maggiore" => true,
                         "default" => "",
                         "attivo" => false
-                    ),
+                    ),*/
                 array(  "campo" => "data",
                         "tipo" => "confronto_data",
                         "etichetta" => "Data Richiamo",
@@ -1110,7 +1116,7 @@ $table_calendario = array(
                         "default" => "",
                         "attivo" => false
                     ),
-                array(  "campo" => "ora",
+                /*array(  "campo" => "ora",
                         "tipo" => "ora",
                         "etichetta" => "Ora Richiamo",
                         "readonly" => true,
@@ -1119,7 +1125,7 @@ $table_calendario = array(
                         "maggiore" => true,
                         "default" => "",
                         "attivo" => false
-                    ),
+                    ),*/
                 array(  "campo" => "etichetta",
                         "tipo" => "input",
                         "etichetta" => "Etichetta",
@@ -1641,7 +1647,7 @@ $table_listaPreventivi = array(
                         "tipo" => "select2",
                         "etichetta" => "Sezionale",
                         "readonly" => false,
-                        "sql" => "SELECT nome AS valore, nome AS nome FROM lista_preventivi_sezionali WHERE LENGTH(nome)>1 AND (stato='Attivo' OR stato LIKE 'Predefinito') ORDER BY nome ASC"
+                        "sql" => "SELECT nome AS valore, nome AS nome FROM lista_fatture_sezionali WHERE LENGTH(nome)>1 AND (stato='Attivo' OR stato LIKE 'Predefinito') ORDER BY nome ASC"
                     ),
                     /*array(  "campo" => "id_azienda",
                         "tipo" => "select2",
@@ -2359,6 +2365,17 @@ $table_listaCampagne = array(
                         "etichetta" => "Url",
                         "readonly" => false
                     ),
+                    array(  "campo" => "campo_5",
+                        "tipo" => "input",
+                        "etichetta" => "Codice Adwords",
+                        "readonly" => false
+                    ),
+                    array(  "campo" => "id_sezionale",
+                        "tipo" => "select-cancella",
+                        "etichetta" => "Sezionale",
+                        "readonly" => false,
+                        "sql" => "SELECT id AS valore, nome AS nome FROM `lista_fatture_sezionali` WHERE `stato` LIKE 'Attivo' ORDER BY `nome` ASC"
+                    ),
                     array(  "campo" => "stato",
                         "tipo" => "bs-select",
                         "etichetta" => "Stato",
@@ -2856,22 +2873,22 @@ $table_listaIscrizioniPartecipanti = array(
                         "attivo" => false
                 ),*/
                 array(  "campo" => "data_inizio_iscrizione",
-                        "tipo" => "data",
+                        "tipo" => "confronto_data",
                         "etichetta" => "Data Attivazione",
                         "readonly" => false,
                         "like" => false,
-                        "uguale" => true,
-                        "maggiore" => true,
+                        "uguale" => false,
+                        "maggiore" => false,
                         "default" => "",
                         "attivo" => false
                     ),
                 array(  "campo" => "data_fine_iscrizione",
-                        "tipo" => "data",
+                        "tipo" => "confronto_data",
                         "etichetta" => "Data Scadenza",
                         "readonly" => false,
                         "like" => false,
-                        "uguale" => true,
-                        "maggiore" => true,
+                        "uguale" => false,
+                        "maggiore" => false,
                         "default" => "",
                         "attivo" => false
                     ),
@@ -3613,7 +3630,7 @@ $table_listaOrdini = array(
                         "tipo" => "select2",
                         "etichetta" => "Sezionale",
                         "readonly" => false,
-                        "sql" => "SELECT nome AS valore, nome AS nome FROM lista_preventivi_sezionali WHERE LENGTH(nome)>1 AND (stato='Attivo' OR stato LIKE 'Predefinito') ORDER BY nome ASC"
+                        "sql" => "SELECT nome AS valore, nome AS nome FROM lista_fatture_sezionali WHERE LENGTH(nome)>1 AND (stato='Attivo' OR stato LIKE 'Predefinito') ORDER BY nome ASC"
                     ),
                     array(  "campo" => "id_azienda",
                         "tipo" => "select2",

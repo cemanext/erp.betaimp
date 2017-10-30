@@ -11,7 +11,7 @@ if(isset($_GET['fn'])){
            if(isset($_GET['idCampagna']) && !empty($_GET['idCampagna'])){
                 $idCampagna = $_GET['idCampagna'];
            }else{
-                $idCampagna = 0;
+                $idCampagna = 169;
            }
            $valore_del_cookie = $betaformazione_utente_carrello;
            $sql_0001 = "SELECT id FROM lista_ordini WHERE campo_20='".$valore_del_cookie."' AND stato='In Corso'";
@@ -47,7 +47,7 @@ if(isset($_GET['fn'])){
                 WHERE lista_ordini_dettaglio.id_prodotto = lista_prodotti.id AND lista_ordini_dettaglio.prezzo_prodotto <= 0";
                 $rs_0005 = $dblink->query($sql_0005);
                 //echo "<br>";
-                if($idCampagna > 0){
+                if($idCampagna > 0 && $idCampagna != 169){
                     $resPromo = $dblink->get_row("SELECT * FROM lista_campagne WHERE id='".$idCampagna."'",true);
                     echo $sql_0006 = "UPDATE `lista_ordini_dettaglio` SET 
                                 lista_ordini_dettaglio.prezzo_prodotto = '".$resPromo['prezzo_sconto']."',

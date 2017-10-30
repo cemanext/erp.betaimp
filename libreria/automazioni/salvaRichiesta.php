@@ -65,14 +65,25 @@ if(isset($_POST)){
             include_once(BASE_ROOT.'libreria/automazioni/autoCampagneStatistiche.php');
             include_once(BASE_ROOT.'libreria/automazioni/autoNuovaRichiestaControllo.php');
 
-
-            header("Location:".ERP_DOMAIN_NAME."/libreria/automazioni/form_sito.php?ret=1");
+            if(isset($_POST['nuovo_form_beta']) && $_POST['nuovo_form_beta'] == "1"){
+                header("Location:".WP_DOMAIN_NAME."/grazie-per-averci-contattato/?idCampagna=".$_POST['id_campagna']);
+            }else{
+                header("Location:".ERP_DOMAIN_NAME."/libreria/automazioni/form_sito.php?ret=1");
+            }
         }else{
             $log->log_all_errors("salvaRichiesta dal Sito -> Si è verificato un errore nella query non è stata inserita la richiesta: ".var_export($_POST,true), "ERRORE");
-            header("Location:".ERP_DOMAIN_NAME."/libreria/automazioni/form_sito.php?ret=0");
+            if(isset($_POST['nuovo_form_beta']) && $_POST['nuovo_form_beta'] == "1"){
+                header("Location:".$_POST['referer']);
+            }else{
+                header("Location:".ERP_DOMAIN_NAME."/libreria/automazioni/form_sito.php?ret=0");
+            }
         }
     }else{
-        header("Location:".ERP_DOMAIN_NAME."/libreria/automazioni/form_sito.php?ret=2");
+        if(isset($_POST['nuovo_form_beta']) && $_POST['nuovo_form_beta'] == "1"){
+            header("Location:".$_POST['referer']);
+        }else{
+            header("Location:".ERP_DOMAIN_NAME."/libreria/automazioni/form_sito.php?ret=2");
+        }
     }
 }
 

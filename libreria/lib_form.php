@@ -616,6 +616,24 @@ function stampa_bootstrap_form_horizontal($tabella,$id,$titolo,$action="".BASE_U
                         echo '</div>';
                 }
             break;
+            
+            case "select-cancella":
+                if(in_array($campo, $arrayCampiNonEditabili)){
+                    echo "<label class=\"col-md-$colNum control-label\">".$arrayReturn['campi_etichette'][$key]."</label>
+                            <div class=\"col-md-$inputColNum\">";
+                                print_input($campo,$row[$key],$arrayReturn['campi_etichette'][$key],true);
+                        echo "</div>";
+                }else{
+                    echo '<label class="col-md-'.$colNum.' control-label">'.$arrayReturn['campi_etichette'][$key].'</label>
+                        <div class="col-md-'.$inputColNum.'">';
+                        if(!empty($arrayReturn['ajax'])){
+                            print_select2($arrayReturn['campi_select'][$campo],$campo,$row[$key],$arrayReturn['ajax'][$campo],true,"select2-allow-clear");
+                        }else{
+                            print_select2($arrayReturn['campi_select'][$campo],$campo,$row[$key], "",true,"select2-allow-clear");
+                        }
+                        echo '</div>';
+                }
+            break;
 
             case "bs-select":
                 if(in_array($campo, $arrayCampiNonEditabili)){

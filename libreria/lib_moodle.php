@@ -64,8 +64,10 @@ function resetPasswordUtenteMoodle($idProfessionista, $forzaReset = false){
     $dblink->query($sql_0006);
     
     if($forzaReset){
+        $statoUtente = "Attivo";
         $sql_cerca_in_lista_password = "SELECT DISTINCT * FROM lista_password WHERE id_professionista = '".$idProfessionista."' AND livello='cliente'";
     }else{
+        $statoUtente = "Attivo - Inviare Password";
         $sql_cerca_in_lista_password = "SELECT DISTINCT * FROM lista_password WHERE id_professionista = '".$idProfessionista."' AND livello='cliente' "
             . "AND (DATE(data_creazione)<DATE_SUB(CURDATE(), INTERVAL ".DURATA_PASSWORD_UTENTE." DAY) OR (passwd IS NULL OR LENGTH(passwd)<=0))";
     //echo "<br>";
@@ -124,12 +126,14 @@ function resetPasswordUtenteMoodle($idProfessionista, $forzaReset = false){
 
         $idUtenteMoodle = $moodle->creaUtenteMoodle($username, $email, $firstname, $lastname, $password, $idnumber);
 
+        
+        
         if($idUtenteMoodle>0){
             $sql_aggiorna_password = "UPDATE lista_password 
             SET id_moodle_user = '".$idUtenteMoodle."' , 
             dataagg = NOW(),
             data_creazione = NOW(),
-            stato = 'Attivo - Inviare Password'
+            stato = '".$statoUtente."'
             WHERE id_professionista = '".$idProfessionista."'";
             $ok = $dblink->query($sql_aggiorna_password);
             $log->log_all_errors('lib_moodle.php -> Password utente resettata correttamente [idProfessionista = '.$idProfessionista.']','OK');
