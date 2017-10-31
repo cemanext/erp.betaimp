@@ -39,7 +39,7 @@ if ($_SESSION['livello_utente'] == 'amministratore') {
     $where_lista_aule = "";
     $where_lista_corsi_configurazioni = "";
     $where_lista_provvigioni = "";
-    $where_lista_consuntivo_vendite = " AND sezionale NOT LIKE 'CN%' ";
+    $where_lista_consuntivo_vendite = " AND sezionale NOT LIKE 'CN%' AND sezionale NOT LIKE 'FREE' ";
 } elseif ($_SESSION['livello_utente'] == 'betaadmin') {
     $where_scrittore = '';
     $where_lista_esercizi = '';
@@ -51,7 +51,7 @@ if ($_SESSION['livello_utente'] == 'amministratore') {
     $where_lista_richieste_stati = " AND lista_richieste_stati.livello LIKE 'betaadmin'";
     $where_lista_password = " AND (livello!='cliente' AND livello!='amministratore') ";
     $where_lista_preventivi = " AND sezionale NOT LIKE 'CN%' AND id_agente!='7' ";
-    $where_lista_consuntivo_vendite = " AND sezionale NOT LIKE 'CN%' AND id_agente!='7' ";
+    $where_lista_consuntivo_vendite = " AND sezionale NOT LIKE 'CN%' AND sezionale NOT LIKE 'FREE' AND id_agente!='7' ";
     $where_lista_aziende = "";
     $where_lista_professionisti = "";
     $where_lista_professioni = "";
@@ -91,7 +91,7 @@ if ($_SESSION['livello_utente'] == 'amministratore') {
     $where_lista_richieste_stati = " AND lista_richieste_stati.livello LIKE 'betaadmin'";
     $where_lista_password = " AND (livello!='cliente' AND livello!='amministratore') ";
     $where_lista_preventivi = " AND sezionale NOT LIKE 'CN%' AND id_agente!='7' ";
-    $where_lista_consuntivo_vendite = " AND sezionale NOT LIKE 'CN%' AND id_agente!='7' ";
+    $where_lista_consuntivo_vendite = " AND sezionale NOT LIKE 'CN%' AND sezionale NOT LIKE 'FREE' AND id_agente!='7' ";
     $where_lista_aziende = "";
     $where_lista_professionisti = "";
     $where_lista_professioni = "";
@@ -131,7 +131,7 @@ if ($_SESSION['livello_utente'] == 'amministratore') {
     $where_lista_richieste_stati = " AND lista_richieste_stati.livello LIKE 'betaadmin'";
     $where_lista_password = " AND (livello!='cliente' AND livello!='amministratore') ";
     $where_lista_preventivi = " AND sezionale NOT LIKE 'CN%' AND id_agente!='7' ";
-    $where_lista_consuntivo_vendite = " AND sezionale NOT LIKE 'CN%' AND id_agente!='7' ";
+    $where_lista_consuntivo_vendite = " AND sezionale NOT LIKE 'CN%' AND sezionale NOT LIKE 'FREE' AND id_agente!='7' ";
     $where_lista_aziende = "";
     $where_lista_professionisti = "";
     $where_lista_professioni = "";
@@ -164,7 +164,7 @@ if ($_SESSION['livello_utente'] == 'amministratore') {
     $where_scrittore = " AND md5(scrittore)='" . MD5($_SESSION['cognome_nome_utente']) . "'";
     $where_lista_esercizi = '';
     $where_lista_preventivi = " AND sezionale NOT LIKE 'CN%' AND (lista_preventivi.id_agente='" . $_SESSION['id_utente'] . "' OR md5(lista_preventivi.cognome_nome_agente)='" . MD5($_SESSION['cognome_nome_utente']) . "')";
-    $where_lista_consuntivo_vendite = " AND sezionale NOT LIKE 'CN%' AND (lista_preventivi.id_agente='" . $_SESSION['id_utente'] . "' OR md5(lista_preventivi.cognome_nome_agente)='" . MD5($_SESSION['cognome_nome_utente']) . "')";
+    $where_lista_consuntivo_vendite = " AND sezionale NOT LIKE 'CN%' AND sezionale NOT LIKE 'FREE' AND (lista_preventivi.id_agente='" . $_SESSION['id_utente'] . "' OR md5(lista_preventivi.cognome_nome_agente)='" . MD5($_SESSION['cognome_nome_utente']) . "')";
     $where_lista_listini = " AND (gruppo_agente='" . $_SESSION['gruppo_utente'] . "')";
     $where_lista_commesse_dettaglio = " AND  lista_commesse_dettaglio.id_operatore = " . $_SESSION['id_contatto_utente'] . "";
     $where_lista_fatture = " AND sezionale NOT LIKE 'CN%' AND lista_fatture.id_agente='" . $_SESSION['id_utente'] . "'";
@@ -204,7 +204,7 @@ if ($_SESSION['livello_utente'] == 'amministratore') {
     $where_scrittore = " AND md5(scrittore)='" . MD5($_SESSION['cognome_nome_utente']) . "'";
     $where_lista_esercizi = '';
     $where_lista_preventivi = " AND sezionale NOT LIKE 'CN%' AND (lista_preventivi.id_agente='" . $_SESSION['id_utente'] . "' OR md5(lista_preventivi.cognome_nome_agente)='" . MD5($_SESSION['cognome_nome_utente']) . "')";
-    $where_lista_consuntivo_vendite = " AND sezionale NOT LIKE 'CN%' AND (lista_preventivi.id_agente='" . $_SESSION['id_utente'] . "' OR md5(lista_preventivi.cognome_nome_agente)='" . MD5($_SESSION['cognome_nome_utente']) . "')";
+    $where_lista_consuntivo_vendite = " AND sezionale NOT LIKE 'CN%' AND sezionale NOT LIKE 'FREE' AND (lista_preventivi.id_agente='" . $_SESSION['id_utente'] . "' OR md5(lista_preventivi.cognome_nome_agente)='" . MD5($_SESSION['cognome_nome_utente']) . "')";
     $where_lista_listini = " AND (gruppo_agente='" . $_SESSION['gruppo_utente'] . "')";
     $where_lista_commesse_dettaglio = " AND  lista_commesse_dettaglio.id_operatore = " . $_SESSION['id_contatto_utente'] . "";
     $where_lista_fatture = " AND sezionale NOT LIKE 'CN%' AND lista_fatture.id_agente='" . $_SESSION['id_utente'] . "'";

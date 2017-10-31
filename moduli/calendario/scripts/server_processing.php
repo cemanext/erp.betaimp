@@ -250,6 +250,37 @@ switch($whrStato){
         //$ordine = $table_calendario['index']['order'];
         $ordine = " ORDER BY lista_fatture.data_creazione DESC";
     break;
+    
+    case MD5('Iscritto FREE'):
+        $tabella = "calendario INNER JOIN lista_preventivi ON calendario.id = lista_preventivi.id_calendario";
+            //oggetto AS 'Oggetto', mittente AS 'Mittente', dataagg AS 'Data', campo_5 AS 'E-Mail', campo_4 AS 'Telefono', stato,
+            $campi_visualizzati = "CONCAT('<a class=\"btn btn-circle btn-icon-only green btn-outline\" href=\"".BASE_URL."/moduli/anagrafiche/dettaglio_tab.php?tbl=calendario&id=',calendario.id,'\" title=\"SCHEDA\" alt=\"SCHEDA\"><i class=\"fa fa-book\"></i></a>') AS 'fa-book',
+                            (SELECT CONCAT(lista_password.nome,' ',lista_password.cognome) FROM lista_password WHERE lista_password.id=calendario.id_agente) AS 'Commerciale', 
+                            calendario.stato, IF(calendario.id_azienda>0,CONCAT('<i class=\"fa fa-user btn btn-icon-only green-jungle btn-outline\" style=\"display: inline; padding: 3px; line-height: 0.5;\"></i>'),CONCAT('<i class=\"fa fa-user-times btn btn-icon-only red-flamingo btn-outline\" style=\"display: inline; padding: 3px; line-height: 0.5;\"></i>')) AS 'fa-user', 
+                            calendario.mittente,
+                            IF(calendario.id_professionista>0,(SELECT CONCAT(lista_professionisti.cognome,' ',lista_professionisti.nome) FROM lista_professionisti WHERE lista_professionisti.id=calendario.id_professionista ),'') AS Professionista,
+                            (SELECT lista_prodotti.nome FROM lista_prodotti WHERE lista_prodotti.id=calendario.id_prodotto) AS 'Corso', 
+                            lista_preventivi.data_iscrizione,
+                            (SELECT nome FROM lista_tipo_marketing WHERE id = id_tipo_marketing) AS Marketing";
+        //$where = $table_calendario['index']['where'];
+        $where = " lista_preventivi.sezionale LIKE 'FREE' $where_data_calendario_iscritto";
+        if(!empty($arrayCampoRicerca)){
+            foreach ($arrayCampoRicerca as $campoRicerca) {
+                if($campoRicerca=="iscritto") $campoRicerca = "venduto";
+                $campoRicerca = $dblink->filter($campoRicerca);
+                $where.= " AND (calendario.oggetto LIKE '%".$campoRicerca."%' OR calendario.mittente LIKE '%".$campoRicerca."%'";
+                $where.= " OR data_iscrizione LIKE '%".$campoRicerca."%' OR calendario.campo_5 LIKE '%".$campoRicerca."%'";
+                $where.= " OR calendario.nome LIKE '%".$campoRicerca."%' OR calendario.cognome LIKE '%".$campoRicerca."%'";
+                $where.= " OR calendario.email LIKE '%".$campoRicerca."%' OR calendario.campo_9 LIKE '%".$campoRicerca."%'";
+                $where.= " OR calendario.messaggio LIKE '%".$campoRicerca."%' OR lista_preventivi.cognome_nome_agente LIKE '%".$campoRicerca."%'";
+                $where.= " OR calendario.tipo_marketing LIKE '%".$campoRicerca."%' OR calendario.telefono LIKE '%".$campoRicerca."%'";
+                $where.= " OR calendario.cellulare LIKE '%".$campoRicerca."%' OR calendario.professione LIKE '%".$campoRicerca."%'";
+                $where.= " OR calendario.campo_4 LIKE '%".$campoRicerca."%' OR calendario.stato LIKE '%".$campoRicerca."%')";
+            }
+        }
+        //$ordine = $table_calendario['index']['order'];
+        $ordine = " ORDER BY lista_preventivi.data_iscrizione DESC";
+    break;
 
     case MD5('Chiusa In Attesa di Controllo'):
         //oggetto AS 'Oggetto', mittente AS 'Mittente', dataagg AS 'Data', campo_5 AS 'E-Mail', campo_4 AS 'Telefono', stato,

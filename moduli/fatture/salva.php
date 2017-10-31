@@ -756,13 +756,45 @@ if (isset($_GET['fn'])) {
         break;
 
         case "salvaFattura":
+            $ok = true;
+            $dblink->begin();
+            $idFattura = $_POST['txt_id'];
+            list($idSezionaleOld, $sezionaleOld) = $dblink->get_row("SELECT id_sezionale, sezionale FROM lista_fatture WHERE id = '$idFattura'");
+            
             $ok = salvaGenerale();
             
-            $idFattura = $_POST['txt_id'];
-            
             if($idFattura > 0){
+                
+                list($sezionaleNuovo) = $dblink->get_row("SELECT nome FROM lista_fatture_sezionali WHERE id = '".$_POST['id_sezionale']."'");
+                
+                $sql_0100 = "UPDATE lista_fatture SET sezionale = '$sezionaleNuovo' WHERE id = '$idFattura' AND stato LIKE 'In Attesa di Emissione'";
+                $ok = $ok && $dblink->query($sql_0100);
+                
+                $sql_0101 = "UPDATE lista_fatture SET id_sezionale = '$idSezionaleOld', sezionale = '$sezionaleOld' WHERE id = '$idFattura' AND stato NOT LIKE 'In Attesa di Emissione'";
+                $ok = $ok && $dblink->query($sql_0101);
+                
+                list($idPreventivo, $idSezionale, $sezionale) = $dblink->get_row("SELECT id_preventivo, id_sezionale, sezionale FROM lista_fatture WHERE id = '$idFattura'");
+                
+                $sql_0102 = "UPDATE lista_fatture_dettaglio SET id_sezionale = '$idSezionale', sezionale = '$sezionale' WHERE id_fattura = '$idFattura' ";
+                $ok = $ok && $dblink->query($sql_0102);
+                
                 $sql_0103 = "UPDATE lista_fatture SET codice_ricerca = CONCAT(codice,'/',sezionale) WHERE id = '$idFattura'";
                 $ok = $ok && $dblink->query($sql_0103);
+                
+                list($idSezPrev, $sezPrev) = $dblink->get_row("SELECT id_sezionale, sezionale FROM lista_preventivi WHERE id = '".$idPreventivo."'");
+                
+                if($idSezPrev != $idSezionale){
+                    $codPrevNum = nuovoCodicePreventivo($idPreventivo, $sezionale);
+                    $codPrev = "codice = '$codPrevNum',";
+                }else{
+                    $codPrev = "";
+                }
+                
+                $sql_0104 = "UPDATE lista_preventivi SET $codPrev id_sezionale = '$idSezionale', sezionale = '$sezionale' WHERE id = '$idPreventivo'";
+                $ok = $ok && $dblink->query($sql_0104);
+                
+                $sql_0105 = "UPDATE lista_preventivi_dettaglio SET id_sezionale = '$idSezionale', sezionale = '$sezionale' WHERE id_preventivo = '$idPreventivo'";
+                $ok = $ok && $dblink->query($sql_0105);
             }
             
             if(isset($_POST['txt_referer']) && !empty($_POST['txt_referer'])){
@@ -770,8 +802,10 @@ if (isset($_GET['fn'])) {
             }
             
             if ($ok) {
+                $dblink->commit();
                 header("Location:" . $referer . "&res=1");
             } else {
+                $dblink->rollback();
                 header("Location:" . $referer . "&res=0");
             }
         break;

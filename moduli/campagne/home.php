@@ -5,13 +5,37 @@ require_once(BASE_ROOT.'config/confPermessi.php');
 
 //RECUPERO LA VARIABILE POST DAL FORM defaultrange
 
-if(isset($_POST['id_agente']) && $_POST['id_agente']>0){
-    $whereCommerciale = "AND id_agente='".$_POST['id_agente'] ."'";
+if(isset($_POST['id_agente']) && count($_POST['id_agente'])>0){
+    $whereCommerciale = "AND (";
+    $whereCommercialeAll = "AND (";
+    $whereCommercialeCal = "AND (";
+    $whereCommercialeCalAll = "AND (";
+    $whereCommercialeFatt = "AND (";
+    $whereCommercialeFattAll = "AND (";
+    
+    foreach ($_POST['id_agente'] as $idAgente) {
+        $whereCommerciale.= "id_agente='".$idAgente."' OR ";
+        $whereCommercialeAll.= "lp.id_agente='".$idAgente."' OR ";
+        $whereCommercialeCal.= "id_agente='".$idAgente."' OR ";
+        $whereCommercialeCalAll.= "ca.id_agente='".$idAgente."' OR ";
+        $whereCommercialeFatt.= "lista_fatture.id_agente='".$idAgente."' OR ";
+        $whereCommercialeFattAll.= "lf.id_agente='".$idAgente."' OR ";
+    }
+    
+    $whereCommerciale = substr($whereCommerciale, 0, -4). ")";
+    $whereCommercialeAll = substr($whereCommercialeAll, 0, -4).")";
+    $whereCommercialeCal = substr($whereCommercialeCal, 0, -4).")";
+    $whereCommercialeCalAll = substr($whereCommercialeCalAll, 0, -4).")";
+    $whereCommercialeFatt = substr($whereCommercialeFatt, 0, -4).")";
+    $whereCommercialeFattAll = substr($whereCommercialeFattAll, 0, -4).")";
+    /*$whereCommerciale = "AND id_agente='".$_POST['id_agente'] ."'";
     $whereCommercialeAll = "AND lp.id_agente='".$_POST['id_agente'] ."'";
     $whereCommercialeCal = "AND id_agente='".$_POST['id_agente'] ."'";
     $whereCommercialeCalAll = "AND ca.id_agente='".$_POST['id_agente'] ."'";
     $whereCommercialeFatt = "AND lista_fatture.id_agente='".$_POST['id_agente'] ."'";
-    $whereCommercialeFattAll = "AND lf.id_agente='".$_POST['id_agente'] ."'";
+    $whereCommercialeFattAll = "AND lf.id_agente='".$_POST['id_agente'] ."'";*/
+    
+    $id_agente_post = $_POST['id_agente'];
 }else{
     $whereCommerciale = "";
     $whereCommercialeAll = "";
@@ -19,16 +43,47 @@ if(isset($_POST['id_agente']) && $_POST['id_agente']>0){
     $whereCommercialeCalAll = "";
     $whereCommercialeFatt = "";
     $whereCommercialeFattAll = "";
+    
+    $id_agente_post = array();
 }
 
-if(isset($_POST['id_campagna']) && $_POST['id_campagna']>0){
-    $whereCampagnaId = "AND id='".$_POST['id_campagna'] ."'";
+if(isset($_POST['id_campagna']) && count($_POST['id_campagna'])>0){
+    
+    $whereCampagnaId = "AND (";
+    $whereCampagna = "AND (";
+    $whereCampagnaAll = "AND (";
+    $whereCampagnaCal = "AND (";
+    $whereCampagnaCalAll = "AND (";
+    $whereCampagnaFatt = "AND (";
+    $whereCampagnaFattAll = "AND (";
+    
+    foreach ($_POST['id_campagna'] as $idCampagna) {
+        $whereCampagnaId.= "id='".$idCampagna."' OR ";
+        $whereCampagna.= "id_campagna='".$idCampagna."' OR ";
+        $whereCampagnaAll.= "lp.id_campagna='".$idCampagna."' OR ";
+        $whereCampagnaCal.= "id_campagna='".$idCampagna."' OR ";
+        $whereCampagnaCalAll.= "ca.id_campagna='".$idCampagna."' OR ";
+        $whereCampagnaFatt.= "lista_fatture.id_campagna='".$idCampagna."' OR ";
+        $whereCampagnaFattAll.= "lf.id_campagna='".$idCampagna."' OR ";
+    }
+    
+    $whereCampagnaId = substr($whereCampagnaId, 0, -4). ")";
+    $whereCampagna = substr($whereCampagna, 0, -4). ")";
+    $whereCampagnaAll = substr($whereCampagnaAll, 0, -4).")";
+    $whereCampagnaCal = substr($whereCampagnaCal, 0, -4).")";
+    $whereCampagnaCalAll = substr($whereCampagnaCalAll, 0, -4).")";
+    $whereCampagnaFatt = substr($whereCampagnaFatt, 0, -4).")";
+    $whereCampagnaFattAll = substr($whereCampagnaFattAll, 0, -4).")";
+    
+    /*$whereCampagnaId = "AND id='".$_POST['id_campagna'] ."'";
     $whereCampagna = "AND id_campagna='".$_POST['id_campagna'] ."'";
     $whereCampagnaAll = "AND lp.id_campagna='".$_POST['id_campagna'] ."'";
     $whereCampagnaCal = "AND id_campagna='".$_POST['id_campagna'] ."'";
     $whereCampagnaCalAll = "AND cp.id_campagna='".$_POST['id_campagna'] ."'";
     $whereCampagnaFatt = "AND lista_fatture.id_campagna='".$_POST['id_campagna'] ."'";
-    $whereCampagnaFattAll = "AND lf.id_campagna='".$_POST['id_campagna'] ."'";
+    $whereCampagnaFattAll = "AND lf.id_campagna='".$_POST['id_campagna'] ."'";*/
+    
+    $id_campagna_post = $_POST['id_campagna'];
 }else{
     $whereCampagna = "";
     $whereCampagnaId = "";
@@ -37,15 +92,43 @@ if(isset($_POST['id_campagna']) && $_POST['id_campagna']>0){
     $whereCampagnaCalAll = "";
     $whereCampagnaFatt = "";
     $whereCampagnaFattAll = "";
+    
+    $id_campagna_post = array();
 }
 
-if(isset($_POST['id_tipo_marketing']) && $_POST['id_tipo_marketing']>0){
-    $whereTipoMarketing = "AND ag.id_tipo_marketing='".$_POST['id_tipo_marketing'] ."'";
+if(isset($_POST['id_tipo_marketing']) && count($_POST['id_tipo_marketing'])>0){
+    
+    $whereTipoMarketing = "AND (";
+    $whereTipoMarketingAll = "AND (";
+    $whereTipoMarketingCal = "AND (";
+    $whereTipoMarketingCalAll = "AND (";
+    $whereTipoMarketingFatt = "AND (";
+    $whereTipoMarketingFattAll = "AND (";
+    
+    foreach ($_POST['id_tipo_marketing'] as $idTipoMarketing) {
+        $whereTipoMarketing.= "ag.id_tipo_marketing='".$idTipoMarketing."' OR ";
+        $whereTipoMarketingAll.= "lp.id_tipo_marketing='".$idTipoMarketing."' OR ";
+        $whereTipoMarketingCal.= "ca.id_tipo_marketing='".$idTipoMarketing."' OR ";
+        $whereTipoMarketingCalAll.= "cp.id_tipo_marketing='".$idTipoMarketing."' OR ";
+        $whereTipoMarketingFatt.= "lista_fatture.id_tipo_marketing='".$idTipoMarketing."' OR ";
+        $whereTipoMarketingFattAll.= "lf.id_tipo_marketing='".$idTipoMarketing."' OR ";
+    }
+    
+    $whereTipoMarketing = substr($whereTipoMarketing, 0, -4). ")";
+    $whereTipoMarketingAll = substr($whereTipoMarketingAll, 0, -4).")";
+    $whereTipoMarketingCal = substr($whereTipoMarketingCal, 0, -4).")";
+    $whereTipoMarketingCalAll = substr($whereTipoMarketingCalAll, 0, -4).")";
+    $whereTipoMarketingFatt = substr($whereTipoMarketingFatt, 0, -4).")";
+    $whereTipoMarketingFattAll = substr($whereTipoMarketingFattAll, 0, -4).")";
+    
+    /*$whereTipoMarketing = "AND ag.id_tipo_marketing='".$_POST['id_tipo_marketing'] ."'";
     $whereTipoMarketingAll = "AND lp.id_tipo_marketing='".$_POST['id_tipo_marketing'] ."'";
     $whereTipoMarketingCal = "AND ca.id_tipo_marketing='".$_POST['id_tipo_marketing'] ."'";
     $whereTipoMarketingCalAll = "AND cp.id_tipo_marketing='".$_POST['id_tipo_marketing'] ."'";
     $whereTipoMarketingFatt = "AND lista_fatture.id_tipo_marketing='".$_POST['id_tipo_marketing'] ."'";
-    $whereTipoMarketingFattAll = "AND lf.id_tipo_marketing='".$_POST['id_tipo_marketing'] ."'";
+    $whereTipoMarketingFattAll = "AND lf.id_tipo_marketing='".$_POST['id_tipo_marketing'] ."'";*/
+    
+    $id_tipo_marketing_post = $_POST['id_tipo_marketing'];
 }else{
     $whereTipoMarketing = "";
     $whereTipoMarketingAll = "";
@@ -53,17 +136,43 @@ if(isset($_POST['id_tipo_marketing']) && $_POST['id_tipo_marketing']>0){
     $whereTipoMarketingCalAll = "";
     $whereTipoMarketingFatt = "";
     $whereTipoMarketingFattAll = "";
+    
+    $id_tipo_marketing_post = array();
 }
 
- if(isset($_POST['id_prodotto']) && $_POST['id_prodotto']>0){
+ if(isset($_POST['id_prodotto']) && count($_POST['id_prodotto'])>0){
     
-    $whereProdotto = "AND id IN (SELECT lpd.id_preventivo FROM lista_preventivi_dettaglio AS lpd WHERE lpd.id_prodotto='".$_POST['id_prodotto'] ."' GROUP BY lpd.id_preventivo)";
+    $whereProdotto = "AND (";
+    $whereProdottoAll = "AND (";
+    $whereProdottoCal = "AND (";
+    $whereProdottoCalAll = "AND (";
+    $whereProdottoFatt = "AND (";
+    $whereProdottoFattAll = "AND (";
+    
+    foreach ($_POST['id_prodotto'] as $idProdotto) {
+        $whereProdotto.= "id IN (SELECT lpd.id_preventivo FROM lista_preventivi_dettaglio AS lpd WHERE lpd.id_prodotto='".$idProdotto."' GROUP BY lpd.id_preventivo) OR ";
+        $whereProdottoAll.= "lp.id IN (SELECT lpd.id_preventivo FROM lista_preventivi_dettaglio AS lpd WHERE lpd.id_prodotto='".$idProdotto."' GROUP BY lpd.id_preventivo) OR ";
+        $whereProdottoCal.= "id_prodotto='".$idProdotto."' OR ";
+        $whereProdottoCalAll.= "ca.id_prodotto='".$idProdotto."' OR ";
+        $whereProdottoFatt.= "lista_fatture.id IN (SELECT lfd.id_fattura FROM lista_fatture_dettaglio AS lfd WHERE lfd.id_prodotto='".$idProdotto."' GROUP BY lfd.id_fattura) OR ";
+        $whereProdottoFattAll.= "lf.id IN (SELECT lfd.id_fattura FROM lista_fatture_dettaglio AS lfd WHERE lfd.id_prodotto='".$idProdotto."' GROUP BY lfd.id_fattura) OR ";
+    }
+    
+    $whereProdotto = substr($whereProdotto, 0, -4). ")";
+    $whereProdottoAll = substr($whereProdottoAll, 0, -4).")";
+    $whereProdottoCal = substr($whereProdottoCal, 0, -4).")";
+    $whereProdottoCalAll = substr($whereProdottoCalAll, 0, -4).")";
+    $whereProdottoFatt = substr($whereProdottoFatt, 0, -4).")";
+    $whereProdottoFattAll = substr($whereProdottoFattAll, 0, -4).")";
+     
+    /*$whereProdotto = "AND id IN (SELECT lpd.id_preventivo FROM lista_preventivi_dettaglio AS lpd WHERE lpd.id_prodotto='".$_POST['id_prodotto'] ."' GROUP BY lpd.id_preventivo)";
     $whereProdottoAll = "AND lp.id IN (SELECT lpd.id_preventivo FROM lista_preventivi_dettaglio AS lpd WHERE lpd.id_prodotto='".$_POST['id_prodotto'] ."' GROUP BY lpd.id_preventivo)";
     $whereProdottoCal = "AND id_prodotto='".$_POST['id_prodotto'] ."'";
     $whereProdottoCalAll = "AND ca.id_prodotto='".$_POST['id_prodotto'] ."'";
     $whereProdottoFatt = "AND lista_fatture.id IN (SELECT lfd.id_fattura FROM lista_fatture_dettaglio AS lfd WHERE lfd.id_prodotto='".$_POST['id_prodotto'] ."' GROUP BY lfd.id_fattura)";
-    $whereProdottoFattAll = "AND lf.id IN (SELECT lfd.id_fattura FROM lista_fatture_dettaglio AS lfd WHERE lfd.id_prodotto='".$_POST['id_prodotto'] ."' GROUP BY lfd.id_fattura)";
+    $whereProdottoFattAll = "AND lf.id IN (SELECT lfd.id_fattura FROM lista_fatture_dettaglio AS lfd WHERE lfd.id_prodotto='".$_POST['id_prodotto'] ."' GROUP BY lfd.id_fattura)";*/
     
+    $id_prodotto_post = $_POST['id_prodotto'];
 }else{
     $whereProdotto = "";
     $whereProdottoAll = "";
@@ -71,6 +180,20 @@ if(isset($_POST['id_tipo_marketing']) && $_POST['id_tipo_marketing']>0){
     $whereProdottoCalAll = "";
     $whereProdottoFatt = "";
     $whereProdottoFattAll = "";
+    
+    $id_prodotto_post = array();
+}
+
+if(isset($_POST['escludi_FREE']) && $_POST['escludi_FREE'] == "0"){
+    $whereSezionaleFREE = "";
+    $whereSezionaleFREEall = "";
+    $whereSezionaleFREEfatt = "";
+    $whereSezionaleFREEfattAll = "";
+}else{
+    $whereSezionaleFREE = " AND sezionale NOT LIKE 'FREE'";
+    $whereSezionaleFREEall = " AND lp.sezionale NOT LIKE 'FREE'";
+    $whereSezionaleFREEfatt = " AND lista_fatture.sezionale NOT LIKE 'FREE'";
+    $whereSezionaleFREEfattAll = " AND lf.sezionale NOT LIKE 'FREE'";
 }
 
 if(isset($_POST['intervallo_data'])) {
@@ -103,32 +226,32 @@ if(isset($_POST['intervallo_data'])) {
     if($data_in == $data_out){
         $where_intervallo_tot = " $whereCommerciale $whereCampagna $whereProdotto AND datainsert =  '" . GiraDataOra($data_in) . "' ";
         $where_intervallo = " $whereCommerciale $whereCampagna $whereProdotto AND dataagg =  '" . GiraDataOra($data_in) . "' ";
-        $where_intervallo_all = " $whereCommercialeAll $whereCampagnaAll $whereProdottoAll AND lp.data_firma =  '" . GiraDataOra($data_in) . "' ";
-        $where_intervallo_negativo_all = " $whereCommercialeAll $whereCampagnaAll $whereProdottoAll AND lp.data_firma =  '" . GiraDataOra($data_in) . "' ";
-        $where_intervallo_calenario = " $whereCommercialeCal $whereCampagnaCal $whereProdottoCal AND dataagg =  '" . GiraDataOra($data_in) . "' ";
-        $where_intervallo_calendario_all = " $whereCommercialeCalAll $whereCampagnaCalAll $whereProdottoCalAll AND lp.dataagg =  '" . GiraDataOra($data_in) . "' ";
-        $where_intervallo_fatture = " $whereCommercialeFatt $whereCampagnaFatt $whereProdottoFatt AND lista_fatture.data_creazione =  '" . GiraDataOra($data_in) . "' ";
-        $where_intervallo_fatture_all = " $whereCommercialeFattAll $whereCampagnaFattAll $whereProdottoFattAll AND lf.data_creazione =  '" . GiraDataOra($data_in) . "' ";
+        $where_intervallo_all = " $whereCommercialeAll $whereCampagnaAll $whereProdottoAll $whereSezionaleFREEall AND lp.data_firma =  '" . GiraDataOra($data_in) . "' ";
+        $where_intervallo_negativo_all = " $whereCommercialeAll $whereCampagnaAll $whereProdottoAll $whereSezionaleFREEall AND lp.data_firma =  '" . GiraDataOra($data_in) . "' ";
+        //$where_intervallo_calenario = " $whereCommercialeCal $whereCampagnaCal $whereProdottoCal AND dataagg =  '" . GiraDataOra($data_in) . "' ";
+        $where_intervallo_calendario_all = " $whereCommercialeCalAll $whereCampagnaCalAll $whereProdottoCalAll $whereSezionaleFREEall AND lp.dataagg =  '" . GiraDataOra($data_in) . "' ";
+        $where_intervallo_fatture = " $whereCommercialeFatt $whereCampagnaFatt $whereProdottoFatt $whereSezionaleFREEfatt AND lista_fatture.data_creazione =  '" . GiraDataOra($data_in) . "' ";
+        $where_intervallo_fatture_all = " $whereCommercialeFattAll $whereCampagnaFattAll $whereProdottoFattAll $whereSezionaleFREEfattAll AND lf.data_creazione =  '" . GiraDataOra($data_in) . "' ";
     }else{
         $where_intervallo_tot = " $whereCommerciale $whereCampagna $whereProdotto AND datainsert BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
         $where_intervallo = " $whereCommerciale $whereCampagna $whereProdotto AND dataagg BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
-        $where_intervallo_all = " $whereCommercialeAll $whereCampagnaAll $whereProdottoAll AND lp.data_firma BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
-        $where_intervallo_negativo_all = " $whereCommercialeAll $whereCampagnaAll $whereProdottoAll AND lp.data_firma BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
-        $where_intervallo_calenario = " $whereCommercialeCal $whereCampagnaCal $whereProdottoCal AND dataagg BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
-        $where_intervallo_calendario_all = " $whereCommercialeCalAll $whereCampagnaCalAll $whereProdottoCalAll AND lp.dataagg BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
-        $where_intervallo_fatture = " $whereCommercialeFatt $whereCampagnaFatt $whereProdottoFatt AND lista_fatture.data_creazione BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
-        $where_intervallo_fatture_all = " $whereCommercialeFattAll $whereCampagnaFattAll $whereProdottoFattAll AND lf.data_creazione BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
+        $where_intervallo_all = " $whereCommercialeAll $whereCampagnaAll $whereProdottoAll $whereSezionaleFREEall AND lp.data_firma BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
+        $where_intervallo_negativo_all = " $whereCommercialeAll $whereCampagnaAll $whereProdottoAll $whereSezionaleFREEall AND lp.data_firma BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
+        //$where_intervallo_calenario = " $whereCommercialeCal $whereCampagnaCal $whereProdottoCal AND dataagg BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
+        $where_intervallo_calendario_all = " $whereCommercialeCalAll $whereCampagnaCalAll $whereProdottoCalAll $whereSezionaleFREEall AND lp.dataagg BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
+        $where_intervallo_fatture = " $whereCommercialeFatt $whereCampagnaFatt $whereProdottoFatt $whereSezionaleFREEfatt AND lista_fatture.data_creazione BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
+        $where_intervallo_fatture_all = " $whereCommercialeFattAll $whereCampagnaFattAll $whereProdottoFattAll $whereSezionaleFREEfattAll AND lf.data_creazione BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
     }
     //echo '<h1>$intervallo_data = '.$intervallo_data.'</h1>';
 } else {
     $where_intervallo_tot = " $whereCommerciale $whereCampagna $whereProdotto AND YEAR(datainsert)=YEAR(CURDATE()) AND MONTH(datainsert)=MONTH(CURDATE())";
     $where_intervallo = " $whereCommerciale $whereCampagna $whereProdotto AND YEAR(dataagg)=YEAR(CURDATE()) AND MONTH(dataagg)=MONTH(CURDATE())";
-    $where_intervallo_all = " $whereCommercialeAll $whereCampagnaAll $whereProdottoAll AND YEAR(lp.data_firma)=YEAR(CURDATE()) AND MONTH(lp.data_firma)=MONTH(CURDATE())";
-    $where_intervallo_negativo_all = " $whereCommercialeAll $whereCampagnaAll $whereProdottoAll AND YEAR(lp.data_firma)=YEAR(CURDATE()) AND MONTH(lp.data_firma)=MONTH(CURDATE())";
-    $where_intervallo_calenario = " $whereCommercialeCal $whereCampagnaCal $whereProdottoCal AND YEAR(dataagg)=YEAR(CURDATE()) AND MONTH(dataagg)=MONTH(CURDATE())";
-    $where_intervallo_calendario_all = " $whereCommercialeCalAll $whereCampagnaCalAll $whereProdottoAll AND YEAR(lp.dataagg)=YEAR(CURDATE()) AND MONTH(lp.dataagg)=MONTH(CURDATE())";
-    $where_intervallo_fatture = "  $whereCommercialeFatt $whereCampagnaFatt $whereProdottoFatt AND YEAR(lista_fatture.data_creazione)=YEAR(CURDATE()) AND MONTH(lista_fatture.data_creazione)=MONTH(CURDATE())";
-    $where_intervallo_fatture_all = " $whereCommercialeFattAll $whereCampagnaFattAll $whereProdottoFattAll AND YEAR(lf.data_creazione)=YEAR(CURDATE()) AND MONTH(lf.data_creazione)=MONTH(CURDATE())";
+    $where_intervallo_all = " $whereCommercialeAll $whereCampagnaAll $whereProdottoAll $whereSezionaleFREEall AND YEAR(lp.data_firma)=YEAR(CURDATE()) AND MONTH(lp.data_firma)=MONTH(CURDATE())";
+    $where_intervallo_negativo_all = " $whereCommercialeAll $whereCampagnaAll $whereProdottoAll $whereSezionaleFREEall AND YEAR(lp.data_firma)=YEAR(CURDATE()) AND MONTH(lp.data_firma)=MONTH(CURDATE())";
+    //$where_intervallo_calenario = " $whereCommercialeCal $whereCampagnaCal $whereProdottoCal AND YEAR(dataagg)=YEAR(CURDATE()) AND MONTH(dataagg)=MONTH(CURDATE())";
+    $where_intervallo_calendario_all = " $whereCommercialeCalAll $whereCampagnaCalAll $whereProdottoAll $whereSezionaleFREEall AND YEAR(lp.dataagg)=YEAR(CURDATE()) AND MONTH(lp.dataagg)=MONTH(CURDATE())";
+    $where_intervallo_fatture = "  $whereCommercialeFatt $whereCampagnaFatt $whereProdottoFatt $whereSezionaleFREEfatt AND YEAR(lista_fatture.data_creazione)=YEAR(CURDATE()) AND MONTH(lista_fatture.data_creazione)=MONTH(CURDATE())";
+    $where_intervallo_fatture_all = " $whereCommercialeFattAll $whereCampagnaFattAll $whereProdottoFattAll $whereSezionaleFREEfattAll AND YEAR(lf.data_creazione)=YEAR(CURDATE()) AND MONTH(lf.data_creazione)=MONTH(CURDATE())";
     
     $titolo_intervallo = " del mese in corso";
     $_POST['intervallo_data'] = "01-".date("m-Y")." al ".date("t-m-Y");
@@ -139,6 +262,7 @@ if(isset($_POST['intervallo_data'])) {
     $_POST['id_prodotto'] = "";
     $_POST['id_tipo_marketing'] = "";
     $_POST['id_agente'] = "";
+    $_POST['escludi_FREE'] = "1";
 }
 ?>
 <!DOCTYPE html>
@@ -170,6 +294,7 @@ if(isset($_POST['intervallo_data'])) {
         <link href="<?= BASE_URL ?>/assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
         <link href="<?= BASE_URL ?>/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
         <link href="<?= BASE_URL ?>/assets/global/plugins/bootstrap-toastr/toastr.min.css" rel="stylesheet" type="text/css">
+        <link href="<?= BASE_URL ?>/assets/global/plugins/bootstrap-multiselect/css/bootstrap-multiselect.css" rel="stylesheet" type="text/css" />
         <link href="<?= BASE_URL ?>/assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
         <link href="<?= BASE_URL ?>/assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
         <!-- END PAGE LEVEL PLUGINS -->
@@ -182,7 +307,13 @@ if(isset($_POST['intervallo_data'])) {
         <link href="<?= BASE_URL ?>/assets/layouts/layout/css/themes/darkblue.min.css" rel="stylesheet" type="text/css" id="style_color" />
         <link href="<?= BASE_URL ?>/assets/layouts/layout/css/custom.min.css" rel="stylesheet" type="text/css" />
         <!-- END THEME LAYOUT STYLES -->
-        <link rel="shortcut icon" href="favicon.ico" /> </head>
+        <link rel="shortcut icon" href="favicon.ico" /> 
+        <style type="text/css">
+            .multiselect-container>li {
+                padding-left: 10px;
+            }
+        </style>
+    </head>
     <!-- END HEAD -->
 
     <body class="page-header-fixed page-sidebar-closed-hide-logo page-content-white page-sidebar-fixed">
@@ -208,7 +339,7 @@ if(isset($_POST['intervallo_data'])) {
                     <!-- BEGIN PAGE BAR -->
                     <div class="row">
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <form action="?" class="form-horizontal form-bordered" method="POST" id="formIntervallo" name="formIntervallo">
+                            <form action="?idMenu=<?=$_GET['idMenu']?>" class="form-horizontal form-bordered" method="POST" id="formIntervallo" name="formIntervallo">
                                 <div class="form-body">
                                     <div class="form-group">
                                         <label class="control-label col-md-1">Intervallo </label>
@@ -224,20 +355,24 @@ if(isset($_POST['intervallo_data'])) {
                                             <center><small>Risultati <?= $titolo_intervallo; ?></small></center>
                                         </div>
                                         <div class="col-md-6">
-                                            <?=print_select2("SELECT id AS valore, nome FROM lista_campagne WHERE 1 ORDER BY nome ASC", "id_campagna", $_POST['id_campagna'], "", false, 'tooltips select_campagna-allow-clear', 'data-container="body" data-placement="top" data-original-title="SELEZIONA CAMPAGNA"') ?>
+                                            <?=print_multi_select("SELECT id AS valore, nome FROM lista_campagne WHERE 1 ORDER BY nome ASC", "id_campagna[]", $id_campagna_post, "", false, 'mt-multiselect', 'data-none-selected="Seleziona Campagna"') ?>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <div class="col-md-6">
-                                            <?=print_select2("SELECT id_prodotto AS valore, nome_prodotto AS nome FROM lista_preventivi_dettaglio WHERE id_prodotto > 0 GROUP BY id_prodotto ORDER BY nome_prodotto ASC", "id_prodotto", $_POST['id_prodotto'], "", false, 'tooltips select_prodotto-allow-clear', 'data-container="body" data-placement="top" data-original-title="SELEZIONA PRODOTTO"') ?>
+                                            <?=print_multi_select("SELECT id_prodotto AS valore, nome_prodotto AS nome FROM lista_preventivi_dettaglio WHERE id_prodotto > 0 GROUP BY id_prodotto ORDER BY nome_prodotto ASC", "id_prodotto[]", $id_prodotto_post, "", false, 'mt-multiselect', 'data-none-selected="Seleziona Prodotto"') ?>
                                         </div>
                                         <div class="col-md-6">
-                                            <?=print_select2("SELECT id as valore, CONCAT(cognome,' ', nome) as nome FROM lista_password WHERE stato='Attivo' AND livello LIKE 'commerciale' ORDER BY cognome, nome ASC", "id_agente", $_POST['id_agente'], "", false, 'tooltips select_commerciale-allow-clear', 'data-container="body" data-placement="top" data-original-title="SELEZIONA COMMERCIALE"') ?>
+                                            <?=print_multi_select("SELECT id as valore, CONCAT(cognome,' ', nome) as nome FROM lista_password WHERE stato='Attivo' AND livello LIKE 'commerciale' ORDER BY cognome, nome ASC", "id_agente[]", $id_agente_post, "", false, 'mt-multiselect', 'data-none-selected="Seleziona Commerciale"') ?>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <div class="col-md-6">
-                                            <?=print_select2("SELECT id AS valore, nome AS nome FROM lista_tipo_marketing WHERE 1 ORDER BY nome ASC", "id_tipo_marketing", $_POST['id_tipo_marketing'], "", false, 'tooltips select_tipo_marketing-allow-clear', 'data-container="body" data-placement="top" data-original-title="SELEZIONA TIPO MARKETING"') ?>
+                                            <?=print_multi_select("SELECT id AS valore, nome AS nome FROM lista_tipo_marketing WHERE 1 ORDER BY nome ASC", "id_tipo_marketing[]", $id_tipo_marketing_post, "", false, 'mt-multiselect', 'data-none-selected="Seleziona Tipo Marketing"') ?>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="control-label col-md-9">Escludi Sezionale FREE</label>
+                                            <div class="col-md-3"><?=print_select_static(array("1"=>"SI", "0" => "NO"), "escludi_FREE", $_POST['escludi_FREE']); ?></div>
                                         </div>
                                     </div>
                                 </div>
@@ -520,6 +655,7 @@ if(isset($_POST['intervallo_data'])) {
     <script src="<?= BASE_URL ?>/assets/global/plugins/typeahead/typeahead.bundle.min.js" type="text/javascript"></script>
     <script src="<?= BASE_URL ?>/assets/global/plugins/bootstrap-select/js/bootstrap-select.min.js" type="text/javascript"></script>
     <script src="<?= BASE_URL ?>/assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
+    <script src="<?= BASE_URL ?>/assets/global/plugins/bootstrap-multiselect/js/bootstrap-multiselect.js" type="text/javascript"></script>
     <script src="//www.google.com/jsapi" type="text/javascript"></script>
     <!-- END PAGE LEVEL PLUGINS -->
     <!-- BEGIN THEME GLOBAL SCRIPTS -->
@@ -570,7 +706,7 @@ if(isset($_POST['intervallo_data'])) {
                 document.formIntervallo.submit();
             }); 
             
-            $('#id_agente, #id_prodotto, #id_campagna, #id_tipo_marketing').on('change', function(ev, picker) {
+            $('#id_agente, #id_prodotto, #id_campagna, #id_tipo_marketing, #escludi_FREE').on('change', function(ev, picker) {
                 document.formIntervallo.submit();
             });
             
@@ -578,7 +714,78 @@ if(isset($_POST['intervallo_data'])) {
                 document.formIntervallo.submit();
             });
             
+            ComponentsMultiselectCampagneHome.init(); 
+            
         });
+        
+        var ComponentsMultiselectCampagneHome = function () {
+
+            return {
+                //main function to initiate the module
+                init: function () {
+                        $('.mt-multiselect').each(function(){
+                                var btn_class = $(this).attr('class');
+                                var clickable_groups = ($(this).data('clickable-groups')) ? $(this).data('clickable-groups') : false ;
+                                var collapse_groups = ($(this).data('collapse-groups')) ? $(this).data('collapse-groups') : false ;
+                                var drop_right = ($(this).data('drop-right')) ? $(this).data('drop-right') : false ;
+                                var drop_up = ($(this).data('drop-up')) ? $(this).data('drop-up') : false ;
+                                var select_all = ($(this).data('select-all')) ? $(this).data('select-all') : false ;
+                                var width = ($(this).data('width')) ? $(this).data('width') : '' ;
+                                var height = ($(this).data('height')) ? $(this).data('height') : '' ;
+                                var filter = ($(this).data('filter')) ? $(this).data('filter') : false ;
+                                var noneText = ($(this).data('none-selected')) ? $(this).data('none-selected') : 'Nessuna dato selezionato' ;
+
+                                // advanced functions
+                                var onchange_function = function(option, checked, select) {
+                                alert('Changed option ' + $(option).val() + '.');
+                            }
+                            var dropdownshow_function = function(event) {
+                                alert('Dropdown shown.');
+                            }
+                            var dropdownhide_function = function(event) {
+                                document.formIntervallo.submit();
+                            }
+
+                            // init advanced functions
+                            var onchange = ($(this).data('action-onchange') == true) ? onchange_function : '';
+                            var dropdownshow = ($(this).data('action-dropdownshow') == true) ? dropdownshow_function : '';
+                            var dropdownhide = ($(this).data('action-dropdownhide') == true) ? dropdownhide_function : '';
+
+                            // template functions
+                            // init variables
+                            var li_template;
+                            if ($(this).attr('multiple')){
+                                li_template = '<li class="mt-checkbox-list"><a href="javascript:void(0);"><label class="mt-checkbox"> <span></span></label></a></li>';
+                                } else {
+                                        li_template = '<li><a href="javascript:void(0);"><label></label></a></li>';
+                                }
+
+                            // init multiselect
+                                $(this).multiselect({
+                                        enableClickableOptGroups: clickable_groups,
+                                        enableCollapsibleOptGroups: collapse_groups,
+                                        disableIfEmpty: true,
+                                        enableFiltering: filter,
+                                        includeSelectAllOption: select_all,
+                                        dropRight: drop_right,
+                                        buttonWidth: width,
+                                        maxHeight: height,
+                                        onChange: onchange,
+                                        onDropdownShow: dropdownshow,
+                                        onDropdownHide: dropdownhide,
+                                        buttonClass: btn_class,
+                                        nonSelectedText: noneText,
+                                        //optionClass: function(element) { return "mt-checkbox"; },
+                                        //optionLabel: function(element) { console.log(element); return $(element).html() + '<span></span>'; },
+                                        /*templates: {
+                                        li: li_template,
+                                    }*/
+                                });   
+                        });
+                }
+            };
+
+        }();
     </script>
     <script src="<?= BASE_URL ?>/assets/pages/scripts/components-select2.min.js" type="text/javascript"></script>
     <script src="<?= BASE_URL ?>/assets/pages/scripts/ui-toastr.min.js" type="text/javascript"></script>

@@ -34,7 +34,7 @@ if(isset($_GET['fn'])){
                           continue;
                         } else {
                           $row = explode(";",$data[0]);
-                          if(strlen(trim($row[2]))>0 && count($row)==12){
+                          if(strlen(trim($row[2]))>0 && count($row)>=12){
                               /*echo "<pre>";
                               print_r($row);
                               echo "</pre>";
@@ -169,7 +169,7 @@ if(isset($_GET['fn'])){
                             $insert = array(
                                 "dataagg" => date("Y-m-d H:i:s"),
                                 "scrittore" => $dblink->filter($_SESSION['cognome_nome_utente']),
-                                "stato" => "RIGA SALTATA",
+                                "stato" => "RIGA SALTATA - PER COLONNE MANCANTI",
                                 "id_campagna" => $idCampagna['id'],
                                 "nome_campagna" => $dblink->filter($row[0]),
                                 "id_tipo_marketing" => $idTipoMarketing['id'],
@@ -329,7 +329,7 @@ if(isset($_GET['fn'])){
                           continue;
                         } else {
                           $row = explode(";",$data[0]);
-                          if(strlen(trim($row[2]))>0 && (count($row)==15 || count($row)==13)){
+                          if(strlen(trim($row[2]))>0 && (count($row)>=15 || count($row)>=13)){
                               /*echo "<pre>";
                               print_r($row);
                               echo "</pre>";*/

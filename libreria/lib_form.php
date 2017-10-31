@@ -841,6 +841,48 @@ function print_select2($sql,$nomeSelect,$valoreSelezionato="",$ajaxFunction = ""
 
 }
 
+function print_multi_select($sql,$nomeSelect,$valoreSelezionato="",$ajaxFunction = "", $echo = true, $classi="mt-multiselect", $extra_data=""){
+    global $dblink;
+    $select= '<select class="form-control '.$classi.'" multiple="multiple" data-label="left" data-select-all="true" data-width="100%"  data-height="300" data-filter="true" data-action-dropdownhide="true" '.$extra_data.' id="'.$nomeSelect.'" name="'.$nomeSelect.'" '.($ajaxFunction!="" ? "onchange=\"".$ajaxFunction."(this);\"" : "").'>';
+    $res = $dblink->get_results($sql);
+    $i = 0;
+    //if($valoreSelezionato==="") {
+    //$select.= '<option  id="'.$nomeSelect.$i.'" name="'.$nomeSelect.$i.'" value="">Selezionare...</option>';
+    //}else{
+    /*if(!in_array_r($valoreSelezionato, $res)){
+        $select.= '<option  id="'.$nomeSelect.$i.'" name="'.$nomeSelect.$i.'" value="'.$valoreSelezionato.'">'.$valoreSelezionato.'</option>';
+    }*/
+    //}
+    foreach ($res as $row2) {
+        $i++;
+        $a=0;
+        $varAjax = "";
+        if($ajaxFunction!=""){
+            while(++$a){
+                if(isset($row2['var_'.$a])){
+                    $varAjax.="".$row2['var_'.$a].":";
+                }else{ break; }
+            }
+        }
+        $varAjax = substr($varAjax, 0, -1);
+        if(strlen($row2['nome'])>40 && strpos($_SERVER['REQUEST_URI'], "anagrafiche/dettaglio_tab.php")>1){
+            $nomeOption = substr($row2['nome'],0,40)."...";
+        }else{
+            $nomeOption = $row2['nome'];
+        }
+        $select.= '<option '.($ajaxFunction!="" ? "data-options=\"".$varAjax."\"" : "").' id="'.$nomeSelect.$i.'" name="'.$nomeSelect.$i.'" value="'.$row2['valore'].'" '.(in_array($row2['valore'], $valoreSelezionato) ? "selected=\"selected\"" : "").' title="'.$row2['nome'].'">'.$nomeOption.'</option>';
+    }
+
+    $select.= '</select>';
+
+    if($echo){
+        echo $select;
+    }else{
+        return $select;
+    }
+
+}
+        
 function get_campi_tabella($dati, $ret = array()){
 
     $ret['campi_visualizzati'] = "";

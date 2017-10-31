@@ -26,6 +26,7 @@ if (isset($_GET['idIscrizione'])) {
     $dataCompletamento = $rowIscrizione['data_completamento'];
     
     $rowProfessionista = $dblink->get_row("SELECT * FROM lista_professionisti WHERE id = '$idProfessinista'", true);
+    $titolo_professionista = $rowProfessionista['titolo'];
     $nome = $rowProfessionista['nome'];
     $cognome = $rowProfessionista['cognome'];
     $professione = $rowProfessionista['professione'];
@@ -64,6 +65,7 @@ if (isset($_GET['idIscrizione'])) {
             
             $professione = $valoreProfessione;
 
+            $messaggio = str_replace('_XXX_TITOLO_XXX_', $titolo_professionista, $messaggio);
             $messaggio = str_replace('_XXX_PROFESSIONE_XXX_', $professione, $messaggio);
             $messaggio = str_replace('_XXX_COGNOME_XXX_', $cognome, $messaggio);
             $messaggio = str_replace('_XXX_NOME_XXX_', $nome, $messaggio);

@@ -36,15 +36,15 @@ if (isset($_POST['intervallo_data'])) {
     if($data_in == $data_out){
         $where_intervallo_cal = " $whereTmkRinnovi $whereTmkNegativi AND id_agente='".$_SESSION['id_utente'] ."' AND DATE(dataagg) = '" . GiraDataOra($data_in) . "'";
         $where_intervallo_cal_richiami = " $whereTmkRinnovi $whereTmkNegativi AND DATE(datainsert) = '" . GiraDataOra($data_in) . "'";
-        $where_intervallo = " $whereTmkRinnovi $whereTmkNegativi AND lista_preventivi.id_agente='".$_SESSION['id_utente'] ."' AND DATE(lista_preventivi.data_iscrizione) = '" . GiraDataOra($data_in) . "'";
-        $where_intervallo_all = " $whereTmkRinnoviAll $whereTmkNegativiAll AND DATE(lp.data_iscrizione)  =  '" . GiraDataOra($data_in) . "'";
-        $where_intervallo_negativo_all = " $whereTmkRinnoviAll $whereTmkNegativiAll AND DATE(lp.dataagg)  =  '" . GiraDataOra($data_in) . "'";
+        $where_intervallo = " $whereTmkRinnovi $whereTmkNegativi AND lista_preventivi.sezionale NOT LIKE 'FREE' AND lista_preventivi.id_agente='".$_SESSION['id_utente'] ."' AND DATE(lista_preventivi.data_iscrizione) = '" . GiraDataOra($data_in) . "'";
+        $where_intervallo_all = " $whereTmkRinnoviAll $whereTmkNegativiAll AND lp.sezionale NOT LIKE 'FREE' AND DATE(lp.data_iscrizione)  =  '" . GiraDataOra($data_in) . "'";
+        $where_intervallo_negativo_all = " $whereTmkRinnoviAll $whereTmkNegativiAll AND lp.sezionale NOT LIKE 'FREE' AND DATE(lp.data_iscrizione)  =  '" . GiraDataOra($data_in) . "'";
     }else{
         $where_intervallo_cal = " $whereTmkRinnovi $whereTmkNegativi AND id_agente='".$_SESSION['id_utente'] ."' AND DATE(dataagg) BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
         $where_intervallo_cal_richiami = " $whereTmkRinnovi $whereTmkNegativi AND DATE(datainsert) BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
-        $where_intervallo = " $whereTmkRinnovi $whereTmkNegativi AND lista_preventivi.id_agente='".$_SESSION['id_utente'] ."' AND lista_preventivi.data_iscrizione BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
-        $where_intervallo_all = " $whereTmkRinnoviAll $whereTmkNegativiAll AND lp.data_iscrizione BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
-        $where_intervallo_negativo_all = " $whereTmkRinnoviAll $whereTmkNegativiAll AND lp.dataagg BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
+        $where_intervallo = " $whereTmkRinnovi $whereTmkNegativi AND lista_preventivi.sezionale NOT LIKE 'FREE' AND lista_preventivi.id_agente='".$_SESSION['id_utente'] ."' AND lista_preventivi.data_iscrizione BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
+        $where_intervallo_all = " $whereTmkRinnoviAll $whereTmkNegativiAll AND lp.sezionale NOT LIKE 'FREE' AND lp.data_iscrizione BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
+        $where_intervallo_negativo_all = " $whereTmkRinnoviAll $whereTmkNegativiAll AND lp.sezionale NOT LIKE 'FREE' AND lp.data_iscrizione BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
     }
     
     if("01-".date("m-Y")." al ".date("t-m-Y") == $intervallo_data){
@@ -70,9 +70,9 @@ if (isset($_POST['intervallo_data'])) {
     
     $where_intervallo_cal = " $whereTmkRinnovi $whereTmkNegativi AND id_agente='".$_SESSION['id_utente'] ."'  AND YEAR(dataagg)=YEAR(CURDATE()) AND MONTH(dataagg)=MONTH(CURDATE()) AND DAY(dataagg)=DAY(CURDATE())";
     $where_intervallo_cal_richiami = " $whereTmkRinnovi $whereTmkNegativi AND YEAR(datainsert)=YEAR(CURDATE()) AND MONTH(datainsert)=MONTH(CURDATE()) AND DAY(datainsert)=DAY(CURDATE())";
-    $where_intervallo = " $whereTmkRinnovi $whereTmkNegativi AND lista_preventivi.id_agente='".$_SESSION['id_utente'] ."'  AND YEAR(lista_preventivi.data_iscrizione)=YEAR(CURDATE()) AND MONTH(lista_preventivi.data_iscrizione)=MONTH(CURDATE()) AND DAY(lista_preventivi.data_iscrizione)=DAY(CURDATE())";
-    $where_intervallo_all = " $whereTmkRinnoviAll $whereTmkNegativiAll AND YEAR(lp.data_iscrizione)=YEAR(CURDATE()) AND MONTH(lp.data_iscrizione)=MONTH(CURDATE()) AND DAY(lp.data_iscrizione)=DAY(CURDATE())";
-    $where_intervallo_negativo_all = " $whereTmkRinnoviAll $whereTmkNegativiAll AND YEAR(lp.dataagg)=YEAR(CURDATE()) AND MONTH(lp.dataagg)=MONTH(CURDATE()) AND DAY(lp.dataagg)=DAY(CURDATE())";
+    $where_intervallo = " $whereTmkRinnovi $whereTmkNegativi AND lista_preventivi.sezionale NOT LIKE 'FREE' AND lista_preventivi.id_agente='".$_SESSION['id_utente'] ."'  AND YEAR(lista_preventivi.data_iscrizione)=YEAR(CURDATE()) AND MONTH(lista_preventivi.data_iscrizione)=MONTH(CURDATE()) AND DAY(lista_preventivi.data_iscrizione)=DAY(CURDATE())";
+    $where_intervallo_all = " $whereTmkRinnoviAll $whereTmkNegativiAll AND lp.sezionale NOT LIKE 'FREE' AND YEAR(lp.data_iscrizione)=YEAR(CURDATE()) AND MONTH(lp.data_iscrizione)=MONTH(CURDATE()) AND DAY(lp.data_iscrizione)=DAY(CURDATE())";
+    $where_intervallo_negativo_all = " $whereTmkRinnoviAll $whereTmkNegativiAll AND lp.sezionale NOT LIKE 'FREE' AND YEAR(lp.data_iscrizione)=YEAR(CURDATE()) AND MONTH(lp.data_iscrizione)=MONTH(CURDATE()) AND DAY(lp.data_iscrizione)=DAY(CURDATE())";
     $titolo_intervallo = " di oggi";
     //$_POST['intervallo_data'] = date("Y-m")."-01|".date("Y-m-t");
     $_POST['intervallo_data'] = date("d-m-Y")." al ".date("d-m-Y");
@@ -107,13 +107,13 @@ if (isset($_POST['intervallo_data'])) {
     }
     
     if($data_in == $data_out){
-        $where_intervallo_fatture = " $whereTmkRinnovi $whereTmkNegativi AND lista_fatture.id_agente='".$_SESSION['id_utente'] ."' AND DATE(lista_fatture.data_creazione) = '" . GiraDataOra($data_in) . "'";
-        $where_intervallo_fatture_all = " $whereTmkRinnoviAll $whereTmkNegativiAll AND DATE(lf.data_creazione)  =  '" . GiraDataOra($data_in) . "'";
-        $where_intervallo_fatture_pagamento_all = " $whereTmkRinnoviAll $whereTmkNegativiAll AND DATE(lf.data_pagamento)  =  '" . GiraDataOra($data_in) . "'";
+        $where_intervallo_fatture = " $whereTmkRinnovi $whereTmkNegativi AND lista_fatture.sezionale NOT LIKE 'FREE' AND lista_fatture.id_agente='".$_SESSION['id_utente'] ."' AND DATE(lista_fatture.data_creazione) = '" . GiraDataOra($data_in) . "'";
+        $where_intervallo_fatture_all = " $whereTmkRinnoviAll $whereTmkNegativiAll AND lf.sezionale NOT LIKE 'FREE' AND DATE(lf.data_creazione)  =  '" . GiraDataOra($data_in) . "'";
+        $where_intervallo_fatture_pagamento_all = " $whereTmkRinnoviAll $whereTmkNegativiAll AND lf.sezionale NOT LIKE 'FREE' AND DATE(lf.data_pagamento)  =  '" . GiraDataOra($data_in) . "'";
     }else{
-        $where_intervallo_fatture = " $whereTmkRinnovi $whereTmkNegativi AND lista_fatture.id_agente='".$_SESSION['id_utente'] ."' AND lista_fatture.data_creazione BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
-        $where_intervallo_fatture_all = " $whereTmkRinnoviAll $whereTmkNegativiAll AND lf.data_creazione BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
-        $where_intervallo_fatture_pagamento_all = " $whereTmkRinnoviAll $whereTmkNegativiAll AND lf.data_pagamento BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
+        $where_intervallo_fatture = " $whereTmkRinnovi $whereTmkNegativi AND lista_fatture.sezionale NOT LIKE 'FREE' AND lista_fatture.id_agente='".$_SESSION['id_utente'] ."' AND lista_fatture.data_creazione BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
+        $where_intervallo_fatture_all = " $whereTmkRinnoviAll $whereTmkNegativiAll AND lf.sezionale NOT LIKE 'FREE' AND lf.data_creazione BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
+        $where_intervallo_fatture_pagamento_all = " $whereTmkRinnoviAll $whereTmkNegativiAll AND lf.sezionale NOT LIKE 'FREE' AND lf.data_pagamento BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
     }
     
     if("01-".date("m-Y")." al ".date("t-m-Y") == $intervallo_data){
