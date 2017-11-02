@@ -100,7 +100,7 @@ function Stampa_HTML_index_Iscrizioni($tabella){
     
         case 'lista_iscrizioni_configurazioni':
             $tabella = "lista_iscrizioni";
-            $campi_visualizzati = $table_listaIscrizioniConfigurazioni['index']['campi'];
+            $campi_visualizzati = $table_listaIscrizioniConfigurazioni['index']['campi'].", 'Giorni Alla Scadenza'";
             $where = $table_listaIscrizioniConfigurazioni['index']['where'];
             $ordine = $table_listaIscrizioniConfigurazioni['index']['order'];
             $titolo = 'Elenco Configurazioni Partecipanti';

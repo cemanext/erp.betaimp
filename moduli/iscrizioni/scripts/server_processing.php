@@ -35,6 +35,23 @@ if(isset($tabella) && $tabella=="lista_iscrizioni_partecipanti_completati" && $t
     }
 }
 
+if(isset($tabella) && $tabella=="lista_iscrizioni_configurazioni" && $tabella!="null"){
+    if (!empty($_SESSION['intervallo_data_iscrizioni'])) {
+        $intervallo_data = $_SESSION['intervallo_data_iscrizioni'];
+        $data_in = before(' al ', $intervallo_data);
+        $data_out = after(' al ', $intervallo_data);
+
+        if($data_in == $data_out){
+            $where_data_iscrizioni = " AND DATE(data_fine_iscrizione) = '" . GiraDataOra($data_in) . "'";
+        }else{
+            $where_data_iscrizioni = " AND data_fine_iscrizione BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
+        }
+    } else {
+        $where_data_iscrizioni = " AND YEAR(data_fine_iscrizione)=YEAR(CURDATE()) AND MONTH(data_fine_iscrizione)=MONTH(CURDATE())";
+    }
+}
+
+
 switch($tabella){
 
     case 'table_listaIscrizioniCompletati':
@@ -110,8 +127,8 @@ switch($tabella){
         
     case 'lista_iscrizioni_configurazioni':
         $tabella = "lista_iscrizioni";
-        $campi_visualizzati = $table_listaIscrizioniConfigurazioni['index']['campi'];
-        $where = $table_listaIscrizioniConfigurazioni['index']['where'];
+        $campi_visualizzati = $table_listaIscrizioniConfigurazioni['index']['campi']." , DATEDIFF(CURDATE(), data_fine_iscrizione) as 'Giorni Alla Scadenza'";
+        $where = $table_listaIscrizioniConfigurazioni['index']['where'].' '.$where_data_iscrizioni;
         if(!empty($arrayCampoRicerca)){
             foreach ($arrayCampoRicerca as $campoRicerca) {
                 $where.= " AND (nome_corso LIKE '%".$campoRicerca."%' OR nome_classe LIKE '%".$campoRicerca."%'";
@@ -229,7 +246,7 @@ $end = $end > $iTotalRecords ? $iTotalRecords : $end;
 
 $limite = ' LIMIT '.$iDisplayStart.','.$iDisplayLength;
 $sql_0001 = "SELECT ".$campi_visualizzati." FROM ".$tabella." WHERE $where $groupby $ordine $limite";
-
+//echo $sql_0001;
 $rs_0001 = $dblink->get_results($sql_0001);
 //$numRow = $dblink->num_rows($sql_0001);
 $fields = $dblink->list_fields($sql_0001);

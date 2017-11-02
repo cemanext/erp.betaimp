@@ -29,15 +29,18 @@ if($_GET['whrStato']!="0e902aba617fb11d469e1b90f57fd79a" && $_GET['whrStato']!="
 
         if($data_in == $data_out){
             $where_data_calendario = " AND DATE(data) = '" . $data_in . "'";
+            $where_data_calendario_inserimento = " AND DATE(datainsert) = '" . $data_in . "'";
             $where_data_calendario_iscritto = " AND DATE(data_iscrizione) = '" . $data_in . "'";
             $where_data_calendario_fattura = " AND DATE(data_creazione) = '" . $data_in . "'";
         }else{
             $where_data_calendario = " AND data BETWEEN  '" . $data_in . "' AND  '" . $data_out . "'";
+            $where_data_calendario_inserimento = " AND datainsert BETWEEN  '" . $data_in . "' AND  '" . $data_out . "'";
             $where_data_calendario_iscritto = " AND data_iscrizione BETWEEN  '" . $data_in . "' AND  '" . $data_out . "'";
             $where_data_calendario_fattura = " AND data_creazione BETWEEN  '" . $data_in . "' AND  '" . $data_out . "'";
         }
     } else {
         $where_data_calendario = " AND YEAR(data)=YEAR(CURDATE()) AND MONTH(data)=MONTH(CURDATE())";
+        $where_data_calendario_inserimento = " AND YEAR(datainsert)=YEAR(CURDATE()) AND MONTH(datainsert)=MONTH(CURDATE())";
         $where_data_calendario_iscritto = " AND YEAR(data_iscrizione)=YEAR(CURDATE()) AND MONTH(data_iscrizione)=MONTH(CURDATE())";
         $where_data_calendario_fattura = " AND YEAR(data_creazione)=YEAR(CURDATE()) AND MONTH(data_creazione)=MONTH(CURDATE())";
     }
@@ -280,6 +283,96 @@ switch($whrStato){
         }
         //$ordine = $table_calendario['index']['order'];
         $ordine = " ORDER BY lista_preventivi.data_iscrizione DESC";
+    break;
+    
+    case MD5('esportaBenedetto'):
+        $tabella = " lista_iscrizioni INNER JOIN lista_fatture ON lista_iscrizioni.id_fattura = lista_fatture.id
+INNER JOIN calendario ON lista_fatture.id_calendario = calendario.id";
+            //oggetto AS 'Oggetto', mittente AS 'Mittente', dataagg AS 'Data', campo_5 AS 'E-Mail', campo_4 AS 'Telefono', stato,
+            $campi_visualizzati = "CONCAT('<a class=\"btn btn-circle btn-icon-only green btn-outline\" href=\"".BASE_URL."/moduli/anagrafiche/dettaglio_tab.php?tbl=calendario&id=',calendario.id,'\" title=\"SCHEDA\" alt=\"SCHEDA\"><i class=\"fa fa-book\"></i></a>') AS 'fa-book',
+                           lista_iscrizioni.id as 'idIscrizione',
+lista_iscrizioni.id_fattura AS 'idFattura',
+calendario.id AS 'idRichiesta',
+lista_iscrizioni.id_corso AS 'idCorso',
+lista_iscrizioni.nome_corso AS 'NomeCorso', 
+calendario.datainsert AS 'DataRichiesta',
+(SELECT data_iscrizione FROM lista_preventivi WHERE lista_preventivi.id_calendario = calendario.id LIMIT 1) AS 'DataIscrizione',
+lista_iscrizioni.data_inizio AS 'DataInizio',
+lista_iscrizioni.data_completamento AS 'DataCompletamento',
+lista_iscrizioni.stato AS 'StatoIscrizione',
+calendario.stato AS 'StatoRichiesta',
+(SELECT cognome from lista_professionisti WHERE lista_professionisti.id = lista_fatture.id_professionista LIMIT 1) AS Cognome,
+(SELECT nome FROM   lista_professionisti WHERE lista_professionisti.id = lista_fatture.id_professionista LIMIT 1) AS Nome,
+(SELECT professione FROM lista_professionisti WHERE lista_professionisti.id = lista_fatture.id_professionista LIMIT 1) AS Professione,
+(SELECT telefono FROM lista_professionisti WHERE lista_professionisti.id = lista_fatture.id_professionista LIMIT 1) AS telefono,
+(SELECT cellulare FROM lista_professionisti WHERE lista_professionisti.id = lista_fatture.id_professionista LIMIT 1) AS cellulare,
+(SELECT indirizzo FROM lista_aziende WHERE lista_aziende.id = lista_fatture.id_azienda LIMIT 1) AS indirizzo,
+(SELECT cap FROM lista_aziende WHERE lista_aziende.id = lista_fatture.id_azienda LIMIT 1) AS cap,
+(SELECT citta FROM lista_aziende WHERE lista_aziende.id = lista_fatture.id_azienda LIMIT 1) AS citta,
+(SELECT provincia FROM lista_aziende WHERE lista_aziende.id = lista_fatture.id_azienda LIMIT 1) AS prov,
+(SELECT regione_province FROM lista_aziende INNER JOIN `lista_province` ON lista_aziende.provincia = `lista_province`.sigla_province WHERE lista_aziende.id = lista_fatture.id_azienda  LIMIT 1) AS regione,
+(SELECT email FROM   lista_professionisti WHERE lista_professionisti.id = lista_fatture.id_professionista LIMIT 1) AS Email,
+(SELECT CONCAT(lista_password.cognome,' ', lista_password.nome) FROM lista_password WHERE lista_password.id = calendario.id_agente LIMIT 1) AS 'Comm.le', 
+(SELECT lista_provvigioni.nome FROM lista_provvigioni WHERE lista_provvigioni.id IN (SELECT lista_fatture_dettaglio.id_provvigione FROM lista_fatture_dettaglio WHERE  lista_fatture_dettaglio.id = lista_iscrizioni.id_fattura_dettaglio) LIMIT 1) AS 'Partner'";
+        //$where = $table_calendario['index']['where'];
+        $where = " calendario.etichetta LIKE '%richiesta%' AND lista_iscrizioni.id_corso >0 AND lista_fatture.sezionale NOT LIKE 'CN%'";
+        if(!empty($arrayCampoRicerca)){
+            foreach ($arrayCampoRicerca as $campoRicerca) {
+                if($campoRicerca=="iscritto") $campoRicerca = "venduto";
+                $campoRicerca = $dblink->filter($campoRicerca);
+                $where.= " AND (calendario.oggetto LIKE '%".$campoRicerca."%' OR calendario.mittente LIKE '%".$campoRicerca."%'";
+                $where.= " OR data_iscrizione LIKE '%".$campoRicerca."%' OR calendario.campo_5 LIKE '%".$campoRicerca."%'";
+                $where.= " OR calendario.nome LIKE '%".$campoRicerca."%' OR calendario.cognome LIKE '%".$campoRicerca."%'";
+                $where.= " OR calendario.email LIKE '%".$campoRicerca."%' OR calendario.campo_9 LIKE '%".$campoRicerca."%'";
+                $where.= " OR calendario.messaggio LIKE '%".$campoRicerca."%' OR lista_preventivi.cognome_nome_agente LIKE '%".$campoRicerca."%'";
+                $where.= " OR calendario.tipo_marketing LIKE '%".$campoRicerca."%' OR calendario.telefono LIKE '%".$campoRicerca."%'";
+                $where.= " OR calendario.cellulare LIKE '%".$campoRicerca."%' OR calendario.professione LIKE '%".$campoRicerca."%'";
+                $where.= " OR calendario.campo_4 LIKE '%".$campoRicerca."%' OR calendario.stato LIKE '%".$campoRicerca."%')";
+            }
+        }
+        //$ordine = $table_calendario['index']['order'];
+        $ordine = " ORDER BY calendario.datainsert ASC";
+    break;
+    
+    case MD5('richiesteSerena'):
+        $tabella = "calendario";
+            //oggetto AS 'Oggetto', mittente AS 'Mittente', dataagg AS 'Data', campo_5 AS 'E-Mail', campo_4 AS 'Telefono', stato,
+            $campi_visualizzati = "CONCAT('<a class=\"btn btn-circle btn-icon-only green btn-outline\" href=\"".BASE_URL."/moduli/anagrafiche/dettaglio_tab.php?tbl=calendario&id=',id,'\" title=\"SCHEDA\" alt=\"SCHEDA\"><i class=\"fa fa-book\"></i></a>') AS 'fa-book',
+            id as idRichiesta,
+if(id_professionista<=0,mittente,'Cliente') As 'Mittente',
+if(id_professionista<=0,cognome, (SELECT cognome from lista_professionisti WHERE lista_professionisti.id = id_professionista)) AS cognome,
+if(id_professionista<=0,nome, (SELECT nome from lista_professionisti WHERE lista_professionisti.id = id_professionista)) AS nome,
+if(id_professionista<=0,professione, (SELECT professione from lista_professionisti WHERE lista_professionisti.id = id_professionista)) AS professione,
+if(id_professionista<=0,luogo_di_nascita, (SELECT luogo_di_nascita from lista_professionisti WHERE lista_professionisti.id = id_professionista)) AS citta,
+if(id_professionista<=0,telefono, (SELECT telefono from lista_professionisti WHERE lista_professionisti.id = id_professionista)) AS telefono,
+if(id_professionista<=0,cellulare, (SELECT cellulare from lista_professionisti WHERE lista_professionisti.id = id_professionista)) AS cellulare,
+if(id_professionista<=0,email, (SELECT email from lista_professionisti WHERE lista_professionisti.id = id_professionista)) AS email,
+(SELECT nome from lista_prodotti WHERE lista_prodotti.id = id_prodotto) AS prodotto,
+(SELECT importo from lista_preventivi WHERE lista_preventivi.id = id_preventivo) AS importo,
+(SELECT concat(cognome,' ',nome) from lista_password WHERE lista_password.id = id_agente) AS commerciale,
+(SELECT nome from lista_tipo_marketing WHERE lista_tipo_marketing.id = id_tipo_marketing) AS tipo_mkt,
+(SELECT nome from lista_campagne WHERE lista_campagne.id = id_campagna) AS campagna_mkt,
+messaggio as note,
+calendario.stato as stato,
+datainsert as data_richiesta,
+orainsert as ora_richiesta";
+        //$where = $table_calendario['index']['where'];
+        $where = " `etichetta` LIKE '%richiesta%' $where_data_calendario_inserimento";
+        if(!empty($arrayCampoRicerca)){
+            foreach ($arrayCampoRicerca as $campoRicerca) {
+                if($campoRicerca=="iscritto") $campoRicerca = "venduto";
+                $campoRicerca = $dblink->filter($campoRicerca);
+                $where.= " AND (calendario.oggetto LIKE '%".$campoRicerca."%' OR calendario.mittente LIKE '%".$campoRicerca."%'";
+                $where.= " OR data_iscrizione LIKE '%".$campoRicerca."%' OR calendario.campo_5 LIKE '%".$campoRicerca."%'";
+                $where.= " OR calendario.nome LIKE '%".$campoRicerca."%' OR calendario.cognome LIKE '%".$campoRicerca."%'";
+                $where.= " OR calendario.email LIKE '%".$campoRicerca."%' OR calendario.campo_9 LIKE '%".$campoRicerca."%'";
+                $where.= " OR calendario.tipo_marketing LIKE '%".$campoRicerca."%' OR calendario.telefono LIKE '%".$campoRicerca."%'";
+                $where.= " OR calendario.cellulare LIKE '%".$campoRicerca."%' OR calendario.professione LIKE '%".$campoRicerca."%'";
+                $where.= " OR calendario.campo_4 LIKE '%".$campoRicerca."%' OR calendario.stato LIKE '%".$campoRicerca."%')";
+            }
+        }
+        //$ordine = $table_calendario['index']['order'];
+        $ordine = " ORDER BY datainsert ASC, orainsert ASC";
     break;
 
     case MD5('Chiusa In Attesa di Controllo'):

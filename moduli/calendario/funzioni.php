@@ -175,6 +175,54 @@ function Stampa_HTML_index_Calendario(){
                         $colore = "blue";
                     $sql_0001 = "SELECT ".$campi_visualizzati." FROM ".$tabella." WHERE $where $ordine $limite";
                     break;
+                    
+                    
+                    case MD5('richiesteSerena'):
+                    $campi_visualizzati = "CONCAT('<a class=\"btn btn-circle btn-icon-only green btn-outline\" href=\"".BASE_URL."/moduli/anagrafiche/dettaglio_tab.php?tbl=calendario&id=',id,'\" title=\"SCHEDA\" alt=\"SCHEDA\"><i class=\"fa fa-book\"></i></a>') AS 'fa-book',
+                    id as idRichiesta,
+if(id_professionista<=0,mittente,'Cliente') As 'Mittente',
+if(id_professionista<=0,cognome, (SELECT cognome from lista_professionisti WHERE lista_professionisti.id = id_professionista)) AS cognome,
+if(id_professionista<=0,nome, (SELECT nome from lista_professionisti WHERE lista_professionisti.id = id_professionista)) AS nome,
+if(id_professionista<=0,professione, (SELECT professione from lista_professionisti WHERE lista_professionisti.id = id_professionista)) AS professione,
+if(id_professionista<=0,luogo_di_nascita, (SELECT luogo_di_nascita from lista_professionisti WHERE lista_professionisti.id = id_professionista)) AS citta,
+if(id_professionista<=0,telefono, (SELECT telefono from lista_professionisti WHERE lista_professionisti.id = id_professionista)) AS telefono,
+if(id_professionista<=0,cellulare, (SELECT cellulare from lista_professionisti WHERE lista_professionisti.id = id_professionista)) AS cellulare,
+if(id_professionista<=0,email, (SELECT email from lista_professionisti WHERE lista_professionisti.id = id_professionista)) AS email,
+(SELECT nome from lista_prodotti WHERE lista_prodotti.id = id_prodotto) AS prodotto,
+(SELECT importo from lista_preventivi WHERE lista_preventivi.id = id_preventivo) AS importo,
+(SELECT concat(cognome,' ',nome) from lista_password WHERE lista_password.id = id_agente) AS commerciale,
+(SELECT nome from lista_tipo_marketing WHERE lista_tipo_marketing.id = id_tipo_marketing) AS tipo_mkt,
+(SELECT nome from lista_campagne WHERE lista_campagne.id = id_campagna) AS campagna_mkt,
+messaggio as note,
+calendario.stato as stato,
+datainsert as data_richiesta,
+orainsert as ora_richiesta";
+                        //$where = $table_calendario['index']['where'];
+                        $where = " `etichetta` LIKE '%richiesta%'";
+                        //$ordine = $table_calendario['index']['order'];
+                        $ordine = " ORDER BY datainsert ASC, orainsert ASC";
+                        $limite = "LIMIT 1";
+                        $titolo = 'Esporta Richieste x SERENA';
+                        $stile = "datatable_ajax";
+                        $colore = "";
+                    $sql_0001 = "SELECT ".$campi_visualizzati." FROM ".$tabella." WHERE $where $ordine $limite";
+                    break;
+                    
+                    case MD5('esportaBenedetto'):
+                    $campi_visualizzati = "CONCAT('<a class=\"btn btn-circle btn-icon-only green btn-outline\" href=\"".BASE_URL."/moduli/anagrafiche/dettaglio_tab.php?tbl=calendario&id=',calendario.id,'\" title=\"SCHEDA\" alt=\"SCHEDA\"><i class=\"fa fa-book\"></i></a>') AS 'fa-book',
+                    'idIscrizione','idFattura','idRichiesta','idCorso','NomeCorso',  'DataRichiesta','DataIscrizione','DataInizio','DataCompletamento', 'StatoIscrizione', 'StatoRichiesta', 'Cognome',
+                    'Nome', 'Professione', 'telefono', 'cellulare', 'indirizzo', 'cap', 'citta', 'prov', 'regione', 'Email', 'Comm.le', 'Partner'";
+                        //$where = $table_calendario['index']['where'];
+                        $where = " calendario.etichetta LIKE '%richiesta%' AND lista_iscrizioni.id_corso >0 AND lista_fatture.sezionale NOT LIKE 'CN%'";
+                        //$ordine = $table_calendario['index']['order'];
+                        $ordine = " ORDER BY calendario.datainsert ASC";
+                        $limite = "LIMIT 1";
+                        $titolo = 'Esporta Totale x BENEDETTO';
+                        $stile = "datatable_ajax";
+                        $colore = "";
+                    $sql_0001 = "SELECT ".$campi_visualizzati." FROM lista_iscrizioni INNER JOIN lista_fatture ON lista_iscrizioni.id_fattura = lista_fatture.id INNER JOIN calendario ON lista_fatture.id_calendario = calendario.id WHERE $where $ordine $limite";
+                    break;
+                    
                 
                     default:
                         if($_SESSION['livello_utente']=="commerciale"){
