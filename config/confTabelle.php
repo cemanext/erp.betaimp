@@ -1178,7 +1178,7 @@ $table_calendario = array(
                         "sql" => "SELECT id as valore, CONCAT(lista_password.cognome,' ',lista_password.nome) AS nome FROM lista_password WHERE lista_password.stato='Attivo' AND lista_password.livello='commerciale' ORDER BY lista_password.cognome ASC, lista_password.nome ASC "
                     ),
                 array(  "campo" => "stato",
-                        "tipo" => "bs-select",
+                        "tipo" => "select2",
                         "etichetta" => "Stato",
                         "readonly" => false,
                         "like" => false,
@@ -1186,7 +1186,7 @@ $table_calendario = array(
                         "maggiore" => false,
                         "default" => "",
                         "attivo" => false,
-                        "sql" => "SELECT nome AS valore, nome AS nome, colore_sfondo AS colore FROM lista_richieste_stati WHERE stato='Attivo' AND livello='betaadmin' ORDER BY nome ASC"
+                        "sql" => "SELECT stato AS valore, stato AS nome FROM calendario WHERE etichetta LIKE 'Nuova Richiesta' AND stato NOT LIKE 'Fatto' GROUP BY stato ORDER BY stato ASC"
                     ),
                 array(  "campo" => "campo_1",
                         "tipo" => "input",
@@ -1238,25 +1238,27 @@ $table_calendario = array(
                         "default" => "",
                         "attivo" => false
                     ),
-                array(  "campo" => "campo_6",
-                        "tipo" => "input",
+                array(  "campo" => "id_tipo_marketing",
+                        "tipo" => "select2",
                         "etichetta" => "Tipo Marketing",
                         "readonly" => false,
-                        "like" => true,
-                        "uguale" => false,
+                        "like" => false,
+                        "uguale" => true,
                         "maggiore" => false,
                         "default" => "",
-                        "attivo" => false
+                        "attivo" => false,
+                        "sql" => "SELECT id AS valore, nome AS nome FROM lista_tipo_marketing WHERE stato='Attivo' ORDER BY nome ASC"
                     ),
-                array(  "campo" => "campo_7",
-                        "tipo" => "input",
+                array(  "campo" => "id_campagna",
+                        "tipo" => "select2",
                         "etichetta" => "Nome Campagna",
                         "readonly" => false,
-                        "like" => true,
-                        "uguale" => false,
+                        "like" => false,
+                        "uguale" => true,
                         "maggiore" => false,
                         "default" => "",
-                        "attivo" => false
+                        "attivo" => false,
+                        "sql" => "SELECT id AS valore, nome AS nome FROM lista_campagne ORDER BY nome ASC"
                     ),
                 array(  "campo" => "id_prodotto",
                         "tipo" => "select2",
