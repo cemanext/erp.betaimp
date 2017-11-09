@@ -1313,6 +1313,7 @@ function get_campi_tabella($dati, $ret = array()){
             switch ($nome_tabella) {
                 case "lista_iscrizioni":
                 case "lista_preventivi":
+                case "lista_ordini":
                     $campi_visualizzati .= $value." AS '".$arrayETK[str_replace('inner_select_','etk_',$key)]."', ";
                     
                     /*$campi_visualizzati .= "(SELECT email AS email_professionista FROM lista_professionisti WHERE lista_professionisti.id=lista_preventivi.id_professionista)  AS email_professionista, ";

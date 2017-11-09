@@ -49,6 +49,7 @@ if(isset($_POST['id_agente']) && count($_POST['id_agente'])>0){
 
 if(isset($_POST['id_campagna']) && count($_POST['id_campagna'])>0){
     
+    $whereCampagnaIdTipoMK = "AND ag.id IN (SELECT ac.id_tipo_marketing FROM lista_campagne AS ac WHERE (";
     $whereCampagnaId = "AND (";
     $whereCampagna = "AND (";
     $whereCampagnaAll = "AND (";
@@ -58,6 +59,7 @@ if(isset($_POST['id_campagna']) && count($_POST['id_campagna'])>0){
     $whereCampagnaFattAll = "AND (";
     
     foreach ($_POST['id_campagna'] as $idCampagna) {
+        $whereCampagnaIdTipoMK.= "ac.id='".$idCampagna."' OR ";
         $whereCampagnaId.= "id='".$idCampagna."' OR ";
         $whereCampagna.= "id_campagna='".$idCampagna."' OR ";
         $whereCampagnaAll.= "lp.id_campagna='".$idCampagna."' OR ";
@@ -67,6 +69,7 @@ if(isset($_POST['id_campagna']) && count($_POST['id_campagna'])>0){
         $whereCampagnaFattAll.= "lf.id_campagna='".$idCampagna."' OR ";
     }
     
+    $whereCampagnaIdTipoMK = substr($whereCampagnaIdTipoMK, 0, -4). ")";
     $whereCampagnaId = substr($whereCampagnaId, 0, -4). ")";
     $whereCampagna = substr($whereCampagna, 0, -4). ")";
     $whereCampagnaAll = substr($whereCampagnaAll, 0, -4).")";
@@ -87,6 +90,7 @@ if(isset($_POST['id_campagna']) && count($_POST['id_campagna'])>0){
 }else{
     $whereCampagna = "";
     $whereCampagnaId = "";
+    $whereCampagnaIdTipoMK = "";
     $whereCampagnaAll = "";
     $whereCampagnaCal = "";
     $whereCampagnaCalAll = "";
@@ -98,6 +102,7 @@ if(isset($_POST['id_campagna']) && count($_POST['id_campagna'])>0){
 
 if(isset($_POST['id_tipo_marketing']) && count($_POST['id_tipo_marketing'])>0){
     
+    $whereTipoMarketingId = "AND (";
     $whereTipoMarketing = "AND (";
     $whereTipoMarketingAll = "AND (";
     $whereTipoMarketingCal = "AND (";
@@ -106,14 +111,16 @@ if(isset($_POST['id_tipo_marketing']) && count($_POST['id_tipo_marketing'])>0){
     $whereTipoMarketingFattAll = "AND (";
     
     foreach ($_POST['id_tipo_marketing'] as $idTipoMarketing) {
+        $whereTipoMarketingId.= "ag.id='".$idTipoMarketing."' OR ";
         $whereTipoMarketing.= "ag.id_tipo_marketing='".$idTipoMarketing."' OR ";
         $whereTipoMarketingAll.= "lp.id_tipo_marketing='".$idTipoMarketing."' OR ";
-        $whereTipoMarketingCal.= "ca.id_tipo_marketing='".$idTipoMarketing."' OR ";
+        $whereTipoMarketingCal.= "id_tipo_marketing='".$idTipoMarketing."' OR ";
         $whereTipoMarketingCalAll.= "cp.id_tipo_marketing='".$idTipoMarketing."' OR ";
         $whereTipoMarketingFatt.= "lista_fatture.id_tipo_marketing='".$idTipoMarketing."' OR ";
         $whereTipoMarketingFattAll.= "lf.id_tipo_marketing='".$idTipoMarketing."' OR ";
     }
     
+    $whereTipoMarketingId = substr($whereTipoMarketingId, 0, -4). ")";
     $whereTipoMarketing = substr($whereTipoMarketing, 0, -4). ")";
     $whereTipoMarketingAll = substr($whereTipoMarketingAll, 0, -4).")";
     $whereTipoMarketingCal = substr($whereTipoMarketingCal, 0, -4).")";
@@ -130,6 +137,7 @@ if(isset($_POST['id_tipo_marketing']) && count($_POST['id_tipo_marketing'])>0){
     
     $id_tipo_marketing_post = $_POST['id_tipo_marketing'];
 }else{
+    $whereTipoMarketingId = "";
     $whereTipoMarketing = "";
     $whereTipoMarketingAll = "";
     $whereTipoMarketingCal = "";
@@ -224,7 +232,7 @@ if(isset($_POST['intervallo_data'])) {
     }
     
     if($data_in == $data_out){
-        $where_intervallo_tot = " $whereCommerciale $whereCampagna $whereProdotto AND datainsert =  '" . GiraDataOra($data_in) . "' ";
+        $where_intervallo_tot = " $whereCommercialeCal $whereCampagnaCal $whereProdottoCal $whereTipoMarketingCal AND datainsert =  '" . GiraDataOra($data_in) . "' ";
         $where_intervallo = " $whereCommerciale $whereCampagna $whereProdotto AND dataagg =  '" . GiraDataOra($data_in) . "' ";
         $where_intervallo_all = " $whereCommercialeAll $whereCampagnaAll $whereProdottoAll $whereSezionaleFREEall AND lp.data_firma =  '" . GiraDataOra($data_in) . "' ";
         $where_intervallo_negativo_all = " $whereCommercialeAll $whereCampagnaAll $whereProdottoAll $whereSezionaleFREEall AND lp.data_firma =  '" . GiraDataOra($data_in) . "' ";
@@ -233,7 +241,7 @@ if(isset($_POST['intervallo_data'])) {
         $where_intervallo_fatture = " $whereCommercialeFatt $whereCampagnaFatt $whereProdottoFatt $whereSezionaleFREEfatt AND lista_fatture.data_creazione =  '" . GiraDataOra($data_in) . "' ";
         $where_intervallo_fatture_all = " $whereCommercialeFattAll $whereCampagnaFattAll $whereProdottoFattAll $whereSezionaleFREEfattAll AND lf.data_creazione =  '" . GiraDataOra($data_in) . "' ";
     }else{
-        $where_intervallo_tot = " $whereCommerciale $whereCampagna $whereProdotto AND datainsert BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
+        $where_intervallo_tot = " $whereCommercialeCal $whereCampagnaCal $whereProdottoCal $whereTipoMarketingCal AND datainsert BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
         $where_intervallo = " $whereCommerciale $whereCampagna $whereProdotto AND dataagg BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
         $where_intervallo_all = " $whereCommercialeAll $whereCampagnaAll $whereProdottoAll $whereSezionaleFREEall AND lp.data_firma BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
         $where_intervallo_negativo_all = " $whereCommercialeAll $whereCampagnaAll $whereProdottoAll $whereSezionaleFREEall AND lp.data_firma BETWEEN  '" . GiraDataOra($data_in) . "' AND  '" . GiraDataOra($data_out) . "'";
@@ -244,7 +252,7 @@ if(isset($_POST['intervallo_data'])) {
     }
     //echo '<h1>$intervallo_data = '.$intervallo_data.'</h1>';
 } else {
-    $where_intervallo_tot = " $whereCommerciale $whereCampagna $whereProdotto AND YEAR(datainsert)=YEAR(CURDATE()) AND MONTH(datainsert)=MONTH(CURDATE())";
+    $where_intervallo_tot = " $whereCommercialeCal $whereCampagnaCal $whereProdottoCal $whereTipoMarketingCal AND YEAR(datainsert)=YEAR(CURDATE()) AND MONTH(datainsert)=MONTH(CURDATE())";
     $where_intervallo = " $whereCommerciale $whereCampagna $whereProdotto AND YEAR(dataagg)=YEAR(CURDATE()) AND MONTH(dataagg)=MONTH(CURDATE())";
     $where_intervallo_all = " $whereCommercialeAll $whereCampagnaAll $whereProdottoAll $whereSezionaleFREEall AND YEAR(lp.data_firma)=YEAR(CURDATE()) AND MONTH(lp.data_firma)=MONTH(CURDATE())";
     $where_intervallo_negativo_all = " $whereCommercialeAll $whereCampagnaAll $whereProdottoAll $whereSezionaleFREEall AND YEAR(lp.data_firma)=YEAR(CURDATE()) AND MONTH(lp.data_firma)=MONTH(CURDATE())";
@@ -389,7 +397,7 @@ if(isset($_POST['intervallo_data'])) {
                     <div class="row" style="display: none;">
                         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                             <?php
-                            $sql_001 = "SELECT COUNT(*) AS conteggio FROM calendario WHERE (stato LIKE 'Mai Contattato' OR stato LIKE 'Richiamare') $whereCommercialeCal $whereProdottoCal $whereCampagnaCal";
+                            $sql_001 = "SELECT COUNT(*) AS conteggio FROM calendario WHERE (stato LIKE 'Mai Contattato' OR stato LIKE 'Richiamare') $whereCommercialeCal $whereCampagnaCal $whereProdottoCal $whereTipoMarketingCal";
                             $titolo = 'Totale Richiami/Mai Contattati<br>Ancora da Gestire';
                             $icona = 'fa fa-line-chart';
                             $colore = 'yellow-lemon';
@@ -399,7 +407,7 @@ if(isset($_POST['intervallo_data'])) {
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                             <?php
-                            $sql_001 = "SELECT COUNT(*) AS conteggio FROM calendario WHERE (stato LIKE 'In Attesa di Controllo') $whereCommercialeCal $whereProdottoCal $whereCampagnaCal ";
+                            $sql_001 = "SELECT COUNT(*) AS conteggio FROM calendario WHERE (stato LIKE 'In Attesa di Controllo') $whereCommercialeCal $whereCampagnaCal $whereProdottoCal $whereTipoMarketingCal ";
                             $titolo = 'Totale In Attesa di Controllo<br>Ancora da Gestire';
                             $icona = 'fa fa-line-chart';
                             $colore = 'yellow-casablanca';
@@ -480,17 +488,18 @@ if(isset($_POST['intervallo_data'])) {
                             <?php
                             
                             $sql_0028 = "CREATE TEMPORARY TABLE stat_marketing_home_2 (SELECT  
-                            (SELECT nome FROM lista_tipo_marketing WHERE id = ag.id_tipo_marketing) AS tipo_marketing,
-                            SUM((SELECT COUNT(*) AS conteggio FROM calendario AS ca WHERE etichetta='Nuova Richiesta' AND ca.id_campagna=ag.id $where_intervallo_tot $whereProdottoCal $whereCampagnaCal $whereTipoMarketingCal)) AS Tutte_Richieste,
-                            SUM((SELECT COUNT(*) AS conteggio FROM calendario AS ca WHERE etichetta='Nuova Richiesta' AND (ca.stato LIKE 'Mai Contattato' OR ca.stato LIKE 'Richiamare') AND ca.id_campagna=ag.id)) AS Richiami,
-                            SUM((SELECT COUNT(*) AS conteggio FROM calendario AS ca WHERE etichetta='Nuova Richiesta' AND (ca.stato LIKE 'Mai Contattato' OR ca.stato LIKE 'Richiamare') AND ca.id_campagna=ag.id $where_intervallo_tot)) AS Tel_Richiami,
-                            SUM((SELECT COUNT(*) AS conteggio_gestite FROM lista_preventivi AS lp WHERE (lp.stato LIKE 'Negativo') AND lp.id_campagna=ag.id $where_intervallo_negativo_all)) AS Negativo,
-                            SUM((SELECT COUNT(*) AS conteggio_venduti FROM lista_preventivi AS lp WHERE (lp.stato LIKE 'Chiuso') AND lp.id_campagna=ag.id $where_intervallo_all)) AS Confermati,
-                            SUM((SELECT IF(SUM(lp.imponibile)>0, SUM(lp.imponibile), 0) AS conteggio_preventivi FROM lista_preventivi AS lp WHERE (lp.stato LIKE 'Chiuso') AND lp.id_campagna=ag.id $where_intervallo_all)) AS Ordinato_Lordo,
-                            SUM((SELECT IF(SUM(ABS(lf.imponibile))>0, SUM(ABS(lf.imponibile)), 0) AS conteggio_annullate FROM lista_fatture AS lf WHERE (lf.stato LIKE 'Nota di Credito%') AND lf.tipo LIKE 'Nota di Credito%' AND lf.id_campagna=ag.id $where_intervallo_fatture_all)) AS Fatture_Annullate,
-                            SUM((SELECT IF(SUM(ABS(lf.imponibile))>0, SUM(ABS(lf.imponibile)), 0) AS conteggio_annullate FROM lista_fatture AS lf WHERE (lf.stato LIKE 'In Attesa' OR lf.stato LIKE 'Pagata%') AND lf.tipo LIKE 'Fattura%' AND lf.id_campagna=ag.id $where_intervallo_fatture_all)) AS Fatturato
-                            FROM lista_campagne AS ag WHERE 1 $whereCampagnaId $whereTipoMarketing GROUP BY ag.id_tipo_marketing);";
+                            nome AS tipo_marketing,
+                            SUM((SELECT COUNT(*) AS conteggio FROM calendario AS ca WHERE etichetta='Nuova Richiesta' AND ca.id_tipo_marketing = ag.id $where_intervallo_tot)) AS Tutte_Richieste,
+                            SUM((SELECT COUNT(*) AS conteggio FROM calendario AS ca WHERE etichetta='Nuova Richiesta' AND (ca.stato LIKE 'Mai Contattato' OR ca.stato LIKE 'Richiamare') AND ca.id_tipo_marketing = ag.id $whereCommercialeCal $whereCampagnaCal $whereProdottoCal $whereTipoMarketingCal)) AS Richiami,
+                            SUM((SELECT COUNT(*) AS conteggio FROM calendario AS ca WHERE etichetta='Nuova Richiesta' AND (ca.stato LIKE 'Mai Contattato' OR ca.stato LIKE 'Richiamare') AND ca.id_tipo_marketing = ag.id $where_intervallo_tot)) AS Tel_Richiami,
+                            SUM((SELECT COUNT(*) AS conteggio_gestite FROM lista_preventivi AS lp WHERE (lp.stato LIKE 'Negativo') AND lp.id_campagna IN (SELECT ac.id FROM lista_campagne AS ac WHERE ac.id_tipo_marketing = ag.id) $where_intervallo_negativo_all)) AS Negativo,
+                            SUM((SELECT COUNT(*) AS conteggio_venduti FROM lista_preventivi AS lp WHERE (lp.stato LIKE 'Chiuso') AND lp.id_campagna IN (SELECT ac.id FROM lista_campagne AS ac WHERE ac.id_tipo_marketing = ag.id) $where_intervallo_all)) AS Confermati,
+                            SUM((SELECT IF(SUM(lp.imponibile)>0, SUM(lp.imponibile), 0) AS conteggio_preventivi FROM lista_preventivi AS lp WHERE (lp.stato LIKE 'Chiuso') AND lp.id_campagna IN (SELECT ac.id FROM lista_campagne AS ac WHERE ac.id_tipo_marketing = ag.id) $where_intervallo_all)) AS Ordinato_Lordo,
+                            SUM((SELECT IF(SUM(ABS(lf.imponibile))>0, SUM(ABS(lf.imponibile)), 0) AS conteggio_annullate FROM lista_fatture AS lf WHERE (lf.stato LIKE 'Nota di Credito%') AND lf.tipo LIKE 'Nota di Credito%' AND lf.id_campagna IN (SELECT ac.id FROM lista_campagne AS ac WHERE ac.id_tipo_marketing = ag.id) $where_intervallo_fatture_all)) AS Fatture_Annullate,
+                            SUM((SELECT IF(SUM(ABS(lf.imponibile))>0, SUM(ABS(lf.imponibile)), 0) AS conteggio_annullate FROM lista_fatture AS lf WHERE (lf.stato LIKE 'In Attesa' OR lf.stato LIKE 'Pagata%') AND lf.tipo LIKE 'Fattura%' AND lf.id_campagna IN (SELECT ac.id FROM lista_campagne AS ac WHERE ac.id_tipo_marketing = ag.id) $where_intervallo_fatture_all)) AS Fatturato
+                            FROM lista_tipo_marketing AS ag WHERE 1 $whereCampagnaIdTipoMK $whereTipoMarketingId GROUP BY ag.id);";
                             $dblink->query($sql_0028, true);
+                            //echo $dblink->get_query();
                             
                             $sql_0029 = "CREATE TEMPORARY TABLE stat_marketing_home_totale_tmp (SELECT tipo_marketing, Richiami, Tutte_Richieste, Tel_Richiami+Negativo+Confermati AS 'Tel_Gestite',"
                                     . " Confermati, Negativo, Ordinato_Lordo, Fatture_Annullate, (Ordinato_Lordo-Fatture_Annullate) AS Ordinato_Netto, "
@@ -521,7 +530,7 @@ if(isset($_POST['intervallo_data'])) {
                             
                             $sql_0036 = "CREATE TEMPORARY TABLE stat_marketing_home_no_id_tmp (SELECT 
                             'Nessun Tipo Marketing' AS tipo_marketing,
-                            (SELECT COUNT(*) AS conteggio FROM calendario AS ca WHERE etichetta='Nuova Richiesta' AND ca.id_campagna='0' $where_intervallo_tot $whereProdottoCal $whereCampagnaCal $whereTipoMarketingCal) AS Tutte_Richieste,
+                            (SELECT COUNT(*) AS conteggio FROM calendario AS ca WHERE etichetta='Nuova Richiesta' AND ca.id_campagna='0' $where_intervallo_tot) AS Tutte_Richieste,
                             (SELECT COUNT(*) AS conteggio FROM calendario AS ca WHERE etichetta='Nuova Richiesta' AND (ca.stato LIKE 'Mai Contattato' OR ca.stato LIKE 'Richiamare') AND ca.id_campagna='0') AS Richiami,
                             (SELECT COUNT(*) AS conteggio FROM calendario AS ca WHERE etichetta='Nuova Richiesta' AND (ca.stato LIKE 'Mai Contattato' OR ca.stato LIKE 'Richiamare') AND ca.id_campagna='0' $where_intervallo_tot) AS Tel_Richiami,
                             (SELECT COUNT(*) AS conteggio_gestite FROM lista_preventivi AS lp WHERE (lp.stato LIKE 'Negativo') AND lp.id_campagna='0' $where_intervallo_negativo_all) AS Negativo,
@@ -553,8 +562,8 @@ if(isset($_POST['intervallo_data'])) {
                             $sql_0024 = "CREATE TEMPORARY TABLE stat_campagna_home_2 (SELECT 
                             nome as Nome_Campagna,
                             (SELECT nome FROM lista_tipo_marketing WHERE id = ag.id_tipo_marketing) AS tipo_marketing,
-                            (SELECT COUNT(*) AS conteggio FROM calendario AS ca WHERE etichetta='Nuova Richiesta' AND ca.id_campagna=ag.id $where_intervallo_tot $whereProdottoCal $whereCampagnaCal $whereTipoMarketingCal) AS Tutte_Richieste,
-                            (SELECT COUNT(*) AS conteggio FROM calendario AS ca WHERE etichetta='Nuova Richiesta' AND (ca.stato LIKE 'Mai Contattato' OR ca.stato LIKE 'Richiamare') AND ca.id_campagna=ag.id) AS Richiami,
+                            (SELECT COUNT(*) AS conteggio FROM calendario AS ca WHERE etichetta='Nuova Richiesta' AND ca.id_campagna=ag.id $where_intervallo_tot) AS Tutte_Richieste,
+                            (SELECT COUNT(*) AS conteggio FROM calendario AS ca WHERE etichetta='Nuova Richiesta' AND (ca.stato LIKE 'Mai Contattato' OR ca.stato LIKE 'Richiamare') AND ca.id_campagna=ag.id $whereCommercialeCal $whereCampagnaCal $whereProdottoCal $whereTipoMarketingCal) AS Richiami,
                             (SELECT COUNT(*) AS conteggio FROM calendario AS ca WHERE etichetta='Nuova Richiesta' AND (ca.stato LIKE 'Mai Contattato' OR ca.stato LIKE 'Richiamare') AND ca.id_campagna=ag.id $where_intervallo_tot) AS Tel_Richiami,
                             (SELECT COUNT(*) AS conteggio_gestite FROM lista_preventivi AS lp WHERE (lp.stato LIKE 'Negativo') AND lp.id_campagna=ag.id $where_intervallo_negativo_all) AS Negativo,
                             (SELECT COUNT(*) AS conteggio_venduti FROM lista_preventivi AS lp WHERE (lp.stato LIKE 'Chiuso') AND lp.id_campagna=ag.id $where_intervallo_all) AS Confermati,
@@ -594,7 +603,7 @@ if(isset($_POST['intervallo_data'])) {
                             $sql_0034 = "CREATE TEMPORARY TABLE stat_campagna_home_no_id_tmp (SELECT 
                             'Nessuna Campagna' as Nome_Campagna,
                             'Nessun Tipo Marketing' AS tipo_marketing,
-                            (SELECT COUNT(*) AS conteggio FROM calendario AS ca WHERE etichetta='Nuova Richiesta' AND ca.id_campagna='0' $where_intervallo_tot $whereProdottoCal $whereCampagnaCal $whereTipoMarketingCal) AS Tutte_Richieste,
+                            (SELECT COUNT(*) AS conteggio FROM calendario AS ca WHERE etichetta='Nuova Richiesta' AND ca.id_campagna='0' $where_intervallo_tot) AS Tutte_Richieste,
                             (SELECT COUNT(*) AS conteggio FROM calendario AS ca WHERE etichetta='Nuova Richiesta' AND (ca.stato LIKE 'Mai Contattato' OR ca.stato LIKE 'Richiamare') AND ca.id_campagna='0') AS Richiami,
                             (SELECT COUNT(*) AS conteggio FROM calendario AS ca WHERE etichetta='Nuova Richiesta' AND (ca.stato LIKE 'Mai Contattato' OR ca.stato LIKE 'Richiamare') AND ca.id_campagna='0' $where_intervallo_tot) AS Tel_Richiami,
                             (SELECT COUNT(*) AS conteggio_gestite FROM lista_preventivi AS lp WHERE (lp.stato LIKE 'Negativo') AND lp.id_campagna='0' $where_intervallo_negativo_all) AS Negativo,

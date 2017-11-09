@@ -160,24 +160,41 @@ function Stampa_HTML_Dettaglio_Corsi($tabella,$id){
             FROM `lista_corsi` WHERE id ='".$id."'";
             stampa_table_static_basic($sql_0001, '', 'Corso', 'green-haze');
             echo '</div></div>';
-            echo '<center><a href="salva.php?tbl=lista_corsi&idCorso=' . $id . '&fn=aggiungiConfigurazioneCorso" class="btn green-meadow">
-                        Aggiungi Configurazione
-                        <i class="fa fa-plus"></i>
-                        </a></center>';
             echo '<div class="row"><div class="col-md-12 col-sm-12">';
             $sql_0001 = "SELECT id, 
             CONCAT('<a class=\"btn btn-circle btn-icon-only blue btn-outline\" href=\"modifica.php?tbl=lista_corsi_configurazioni&id=',id,'\" title=\"MODIFICA\" alt=\"MODIFICA\"><i class=\"fa fa-edit\"></i></a>') AS 'fa fa-edit',
             CONCAT('<a class=\"btn btn-circle btn-icon-only red btn-outline\" href=\"cancella.php?tbl=lista_corsi_configurazioni&id=',id,'\" title=\"ELIMINA\" alt=\"ELIMINA\"><i class=\"fa fa-trash\"></i></a>') AS 'fa fa-trash', 
             codice_corso AS 'Codice', id_classe AS 'Classe', professione, data_inizio, data_fine, crediti, durata_corso, avanzamento,  codice_accreditamento AS 'Cod. Accr.',
             id_attestato AS 'Attestato PDF' 
-            FROM `lista_corsi_configurazioni` WHERE id_corso ='".$id."'";
+            FROM `lista_corsi_configurazioni` WHERE id_corso ='".$id."' AND titolo NOT LIKE 'Base'";
             echo "<form enctype=\"multipart/form-data\" role=\"form\" action=\"salva.php?tbl=lista_corsi_configurazioni&idCorso=' . $id . '&fn=salvaConfigurazioneCorso\" method=\"POST\">";
             stampa_table_static_basic_input('lista_corsi_configurazioni', $sql_0001, '', 'Configurazione', 'green-haze');
+            echo '<center><a href="salva.php?tbl=lista_corsi&idCorso=' . $id . '&fn=aggiungiConfigurazioneCorso" class="btn blue-steel">
+                        <i class="fa fa-plus"></i> Aggiungi Configurazione
+                        </a>&nbsp;&nbsp;&nbsp;<button type="submit" class="btn green-meadow">
+                        <i class="fa fa-save"></i>
+                        Salva Configurazione
+                        </button></center><br />';
+            echo '</div></div>';
+            
+            echo '<div class="row"><div class="col-md-12 col-sm-12">';
+            $numRowBase = $dblink->num_rows("SELECT * FROM lista_corsi_configurazioni WHERE id_corso = '$id' AND titolo LIKE 'Base'");
+            if($numRowBase <= 0){
+                $dblink->query("INSERT INTO `lista_corsi_configurazioni` (`id`, `dataagg`, `scrittore`, `stato`, `id_corso`, `id_prodotto`,titolo, avanzamento, id_attestato, messaggio) SELECT '', NOW(), '".addslashes($_SESSION['cognome_nome_utente'])."', 'Non Attivo', id, id_prodotto, 'Base', '80.00', '9', '<h2>ATTESTATO di FREQUENZA</h2>Si attesta che<br>nel periodo dal _XXX_DATA_INIZIO_XXX_  al _XXX_DATA_FINE_XXX_ <br><br><h1>_XXX_TITOLO_XXX_ _XXX_COGNOME_XXX_ _XXX_NOME_XXX_</h1>nato a _XXX_LUOGO_NASCITA_XXX_  (_XXX_PROV_NASCITA_XXX_) il _XXX_DATA_NASCITA_XXX_ <br><br><br>ha frequentato il corso di<h3>\" _XXX_NOME_CORSO_XXX_ \"</h3>Durata del percorso formativo: <b>_XXX_ORE_CORSO_XXX_ ore</b><br>Codice: <b>_XXX_CODICE_ACCREDITAMENTO_XXX_</b><br>Crediti Formativi Professionali: <b>_XXX_NUMERO_CREDITI_XXX_</b><br><br><b>Lugo (RA), _XXX_DATA_FIRMA_XXX_</b>' FROM lista_corsi WHERE id='".$id."'");
+            }
+            $sql_0001 = "SELECT id, 
+            CONCAT('<a class=\"btn btn-circle btn-icon-only blue btn-outline\" href=\"modifica.php?tbl=lista_corsi_configurazioni&id=',id,'\" title=\"MODIFICA\" alt=\"MODIFICA\"><i class=\"fa fa-edit\"></i></a>') AS 'fa fa-edit',
+            codice_corso AS 'Codice', crediti, durata_corso, avanzamento,  codice_accreditamento AS 'Cod. Accr.',
+            id_attestato AS 'Attestato PDF' 
+            FROM `lista_corsi_configurazioni` WHERE id_corso ='".$id."' AND titolo LIKE 'Base'";
+            echo "<form enctype=\"multipart/form-data\" role=\"form\" action=\"salva.php?tbl=lista_corsi_configurazioni&idCorso=' . $id . '&fn=salvaConfigurazioneCorso\" method=\"POST\">";
+            stampa_table_static_basic_input('lista_corsi_configurazioni', $sql_0001, '', 'Configurazione Base', 'blue-hoki');
             echo '<center><button type="submit" class="btn green-meadow">
                         <i class="fa fa-save"></i>
                         Salva Configurazione
-                        </button></center>';
+                        </button></center><br />';
             echo '</div></div>';
+            
              echo '<div class="row"><div class="col-md-12 col-sm-12">';
             $sql_0001 = "SELECT CONCAT('<a class=\"btn btn-circle btn-icon-only blue btn-outline\" href=\"modifica.php?tbl=calendario_esami&id=',id,'\" title=\"MODIFICA\" alt=\"MODIFICA\"><i class=\"fa fa-edit\"></i></a>') AS 'fa-edit',
             data, ora, oggetto, stato
@@ -189,7 +206,7 @@ function Stampa_HTML_Dettaglio_Corsi($tabella,$id){
             echo '<center><a href="salva.php?tbl=lista_corsi&idCorsoNuovoEsame=' . $id . '&fn=aggiungiEsameCorso" class="btn green-meadow">
                         Aggiungi Esame
                         <i class="fa fa-plus"></i>
-                        </a></center>';
+                        </a></center><br />';
             echo '</div></div>';
             
              echo '<div class="row"><div class="col-md-12 col-sm-12">';

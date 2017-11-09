@@ -45,6 +45,9 @@ if (isset($_GET['idIscrizione'])) {
         
         foreach ($explodeProfessione as $valoreProfessione) {
             $rowCostiConfig = $dblink->get_row("SELECT * FROM lista_corsi_configurazioni WHERE id_corso = '$idCorso' AND professione = '$valoreProfessione' AND (((data_inizio<='$dataCompletamento' OR data_inizio='00-00-0000') AND (data_fine>='$dataCompletamento' OR data_fine='00-00-0000')) OR (data_inizio='00-00-0000' OR data_fine='00-00-0000')) ORDER BY data_fine DESC, data_inizio DESC", true);
+            if(empty($rowCostiConfig)){
+                $rowCostiConfig = $dblink->get_row("SELECT * FROM lista_corsi_configurazioni WHERE titolo LIKE 'Base' ORDER BY data_fine DESC, data_inizio DESC", true);
+            }
             $queryLast = $dblink->get_query();
             $crediti = $rowCostiConfig['crediti'];
             $durata = $rowCostiConfig['durata_corso'];
@@ -53,12 +56,18 @@ if (isset($_GET['idIscrizione'])) {
             $titolo = $rowCostiConfig['titolo'];
             $messaggio = $rowCostiConfig['messaggio'];
 
-            $rowAttestati = $dblink->get_row("SELECT * FROM lista_attestati WHERE id = '$idAttestato'", true);
+            if($idAttestato>0){
+                $rowAttestati = $dblink->get_row("SELECT * FROM lista_attestati WHERE id = '$idAttestato'", true);
+            }else{
+                $rowAttestati = $dblink->get_row("SELECT * FROM lista_attestati WHERE tipo_documento = 'template base'", true);
+                $messaggio = $rowAttestati['descrizione'];
+            }
             $orientamento = $rowAttestati['orientamento'];
             $nomeFile = $rowAttestati['nome'];
 
             $rowCorso = $dblink->get_row("SELECT * FROM lista_corsi WHERE id = '$idCorso'", true);
             $nomeCorso = $rowCorso['nome_prodotto'];
+            $codiceCorso = $rowCorso['codice'];
 
             $tmp = explode(" ",GiraDataOra($dataInizioCorso));
             $dataInizio = $tmp[0];
@@ -66,38 +75,39 @@ if (isset($_GET['idIscrizione'])) {
             $professione = $valoreProfessione;
 
             $messaggio = str_replace('_XXX_TITOLO_XXX_', $titolo_professionista, $messaggio);
-            $messaggio = str_replace('_XXX_PROFESSIONE_XXX_', $professione, $messaggio);
-            $messaggio = str_replace('_XXX_COGNOME_XXX_', $cognome, $messaggio);
-            $messaggio = str_replace('_XXX_NOME_XXX_', $nome, $messaggio);
+            $messaggio = str_replace('_XXX_PROFESSIONE_XXX_', ucwords(html_entity_decode($professione)), $messaggio);
+            $messaggio = str_replace('_XXX_COGNOME_XXX_', ucwords(html_entity_decode($cognome)), $messaggio);
+            $messaggio = str_replace('_XXX_NOME_XXX_', ucwords(html_entity_decode($nome)), $messaggio);
             $messaggio = str_replace('_XXX_DATA_INIZIO_XXX_', $dataInizio, $messaggio);
             $messaggio = str_replace('_XXX_DATA_FINE_XXX_', GiraDataOra($dataCompletamento), $messaggio);
             $messaggio = str_replace('_XXX_DATA_NASCITA_XXX_', GiraDataOra($dataDiNascita), $messaggio);
             $messaggio = str_replace('_XXX_PROV_NASCITA_XXX_', $provinciaDiNascita, $messaggio);
-            $messaggio = str_replace('_XXX_LUOGO_NASCITA_XXX_', $luogoDiNascita, $messaggio);
-            $messaggio = str_replace('_XXX_NOME_CORSO_XXX_', strtoupper($nomeCorso), $messaggio);
+            $messaggio = str_replace('_XXX_LUOGO_NASCITA_XXX_', ucwords(html_entity_decode($luogoDiNascita)), $messaggio);
+            $messaggio = str_replace('_XXX_NOME_CORSO_XXX_', mb_strtoupper(html_entity_decode($nomeCorso)), $messaggio);
             $messaggio = str_replace('_XXX_ORE_CORSO_XXX_', $durata, $messaggio);
             $messaggio = str_replace('_XXX_CODICE_ACCREDITAMENTO_XXX_', $codiceAccreditamento, $messaggio);
             $messaggio = str_replace('_XXX_NUMERO_CREDITI_XXX_', $crediti, $messaggio);
             $messaggio = str_replace('_XXX_CODICE_FISCALE_XXX_', $codiceFiscale, $messaggio);
             $messaggio = str_replace('_XXX_PROVINCIA_ALBO_XXX_', $provinciaAlbo, $messaggio);
             $messaggio = str_replace('_XXX_NUMERO_ORDINE_XXX_', $numeroAlbo, $messaggio);
-
+            $messaggio = str_replace('_XXX_DATA_FIRMA_XXX_', GiraDataOra($dataCompletamento), $messaggio);
+            
             $htmlDiv = '<div class="pagebreakafter_always"><div class="cornice"><img src="'.BASE_URL.'/moduli/corsi/'.$nomeFile.'" /></div>
                         <div id="divid">
                             _XXX_MESSAGGIO_XXX_
-                            <div id="firma">
-                                _XXX_DATA_FIRMA_XXX_
-                            </div>
                         </div></div>';
 
-            $messaggio = str_replace('_XXX_MESSAGGIO_XXX_', $messaggio, $htmlDiv);
-            $messaggio = str_replace('_XXX_DATA_FIRMA_XXX_', "Lugo (RA), ".GiraDataOra($dataCompletamento), $messaggio);
+            $messaggio = (str_replace('_XXX_MESSAGGIO_XXX_', $messaggio, $htmlDiv));
+            //$messaggio = mb_convert_encoding(htmlspecialchars_decode(html_entity_decode($messaggio, "ENT_COMPAT", "utf-8")), "UTF-8", "HTML-ENTITIES");
 
             $htmladd .= $messaggio;
         }
         
     }else{
         $rowCostiConfig = $dblink->get_row("SELECT * FROM lista_corsi_configurazioni WHERE id_corso = '$idCorso' AND id_classe = '$idClasse' AND (((data_inizio<='$dataCompletamento' OR data_inizio='00-00-0000') AND (data_fine>='$dataCompletamento' OR data_fine='00-00-0000')) OR (data_inizio='00-00-0000' OR data_fine='00-00-0000')) ORDER BY data_fine DESC, data_inizio DESC", true);
+        if(empty($rowCostiConfig)){
+            $rowCostiConfig = $dblink->get_row("SELECT * FROM lista_corsi_configurazioni WHERE titolo LIKE 'Base' ORDER BY data_fine DESC, data_inizio DESC", true);
+        }
         $crediti = $rowCostiConfig['crediti'];
         $durata = $rowCostiConfig['durata_corso'];
         $codiceAccreditamento = $rowCostiConfig['codice_accreditamento'];
@@ -105,45 +115,76 @@ if (isset($_GET['idIscrizione'])) {
         $titolo = $rowCostiConfig['titolo'];
         $messaggio = $rowCostiConfig['messaggio'];
         
-        $rowAttestati = $dblink->get_row("SELECT * FROM lista_attestati WHERE id = '$idAttestato'", true);
+        if($idAttestato>0){
+            $rowAttestati = $dblink->get_row("SELECT * FROM lista_attestati WHERE id = '$idAttestato'", true);
+        }else{
+            $rowAttestati = $dblink->get_row("SELECT * FROM lista_attestati WHERE tipo_documento = 'template base'", true);
+            $messaggio = $rowAttestati['descrizione'];
+        }
         $orientamento = $rowAttestati['orientamento'];
         $nomeFile = $rowAttestati['nome'];
 
         $rowCorso = $dblink->get_row("SELECT * FROM lista_corsi WHERE id = '$idCorso'", true);
         $nomeCorso = $rowCorso['nome_prodotto'];
+        $codiceCorso = $rowCorso['codice'];
 
         $tmp = explode(" ",GiraDataOra($dataInizioCorso));
         $dataInizio = $tmp[0];
 
-        $messaggio = str_replace('_XXX_PROFESSIONE_XXX_', $professione, $messaggio);
-        $messaggio = str_replace('_XXX_COGNOME_XXX_', $cognome, $messaggio);
-        $messaggio = str_replace('_XXX_NOME_XXX_', $nome, $messaggio);
+        $messaggio = str_replace('_XXX_TITOLO_XXX_', $titolo_professionista, $messaggio);
+        $messaggio = str_replace('_XXX_PROFESSIONE_XXX_', ucwords(html_entity_decode($professione)), $messaggio);
+        $messaggio = str_replace('_XXX_COGNOME_XXX_', ucwords(html_entity_decode($cognome)), $messaggio);
+        $messaggio = str_replace('_XXX_NOME_XXX_', ucwords(html_entity_decode($nome)), $messaggio);
         $messaggio = str_replace('_XXX_DATA_INIZIO_XXX_', $dataInizio, $messaggio);
         $messaggio = str_replace('_XXX_DATA_FINE_XXX_', GiraDataOra($dataCompletamento), $messaggio);
         $messaggio = str_replace('_XXX_DATA_NASCITA_XXX_', GiraDataOra($dataDiNascita), $messaggio);
         $messaggio = str_replace('_XXX_PROV_NASCITA_XXX_', $provinciaDiNascita, $messaggio);
-        $messaggio = str_replace('_XXX_LUOGO_NASCITA_XXX_', $luogoDiNascita, $messaggio);
-        $messaggio = str_replace('_XXX_NOME_CORSO_XXX_', strtoupper($nomeCorso), $messaggio);
+        $messaggio = str_replace('_XXX_LUOGO_NASCITA_XXX_', ucwords(html_entity_decode($luogoDiNascita)), $messaggio);
+        $messaggio = str_replace('_XXX_NOME_CORSO_XXX_', mb_strtoupper(html_entity_decode($nomeCorso)), $messaggio);
         $messaggio = str_replace('_XXX_ORE_CORSO_XXX_', $durata, $messaggio);
         $messaggio = str_replace('_XXX_CODICE_ACCREDITAMENTO_XXX_', $codiceAccreditamento, $messaggio);
         $messaggio = str_replace('_XXX_NUMERO_CREDITI_XXX_', $crediti, $messaggio);
         $messaggio = str_replace('_XXX_CODICE_FISCALE_XXX_', $codiceFiscale, $messaggio);
         $messaggio = str_replace('_XXX_PROVINCIA_ALBO_XXX_', $provinciaAlbo, $messaggio);
         $messaggio = str_replace('_XXX_NUMERO_ORDINE_XXX_', $numeroAlbo, $messaggio);
+        $messaggio = str_replace('_XXX_DATA_FIRMA_XXX_', GiraDataOra($dataCompletamento), $messaggio);
         
-        $htmlDiv = '<div class="pagebreakafter_always"><div class="cornice"><img src="'.BASE_URL.'/moduli/corsi/'.$nomeFile.'" /></div>
+        $htmlDiv = '<div class="pagebreakafter_always"><div class="cornice"><img src="'.BASE_URL.'/moduli/corsi/'.str_replace(" ", "%20", $nomeFile).'" /></div>    
                     <div id="divid">
                         _XXX_MESSAGGIO_XXX_
-                        <div id="firma">
-                            _XXX_DATA_FIRMA_XXX_
-                        </div>
                     </div></div>';
         
-        $messaggio = str_replace('_XXX_MESSAGGIO_XXX_', $messaggio, $htmlDiv);
-        $messaggio = str_replace('_XXX_DATA_FIRMA_XXX_', "Lugo (RA), ".GiraDataOra($dataCompletamento), $messaggio);
+        $messaggio = (str_replace('_XXX_MESSAGGIO_XXX_', $messaggio, $htmlDiv));
+        //$messaggio = str_replace('_XXX_DATA_FIRMA_XXX_', "Lugo (RA), ".GiraDataOra($dataCompletamento), $messaggio);
+        
+        //$messaggio = mb_convert_encoding(htmlspecialchars_decode(html_entity_decode($messaggio)), "UTF-8", "HTML-ENTITIES");
         
         $htmladd .= $messaggio;
         
+    }
+    
+    $dataArray = explode("-",$dataCompletamento);
+    $anno = $dataArray[0];
+    $mese = $dataArray[1];
+    $filename = "{$cognome}-{$nome}-{$anno}-{$mese}-{$codiceCorso}.pdf";
+
+    if(!is_dir(BASE_ROOT . "media")){
+        mkdir(BASE_ROOT . "media", 0777);
+    }
+    if(!is_dir(BASE_ROOT . "media/lista_attestati")){
+        mkdir(BASE_ROOT . "media/lista_attestati", 0777);
+    }
+    if(!is_dir(BASE_ROOT . "media/lista_attestati/".$codiceCorso)){
+        mkdir(BASE_ROOT . "media/lista_attestati/".$codiceCorso, 0777);
+    }
+    if(!is_dir(BASE_ROOT . "media/lista_attestati/".$codiceCorso."/".$anno)){
+        mkdir(BASE_ROOT . "media/lista_attestati/".$codiceCorso."/".$anno, 0777);
+    }
+    if(!is_dir(BASE_ROOT . "media/lista_attestati/".$codiceCorso."/".$anno."/".$mese)){
+        mkdir(BASE_ROOT . "media/lista_attestati/".$codiceCorso."/".$anno."/".$mese, 0777);
+    }
+    if(file_exists(BASE_ROOT . "media/lista_attestati/".$codiceCorso."/".$anno."/".$mese."/".$filename)){
+        chmod(BASE_ROOT. "media/lista_attestati/".$codiceCorso."/".$anno."/".$mese."/" . $filename, 0777);
     }
         
 
@@ -224,7 +265,7 @@ if (isset($_GET['idIscrizione'])) {
             $html2pdf = new Html2Pdf($orientamento, 'A4', 'it', true, 'UTF-8',array(0, 0, 0, 0 ));
             $html2pdf->setDefaultFont('Times');
             $html2pdf->writeHTML($content);
-            $html2pdf->output('Attestato_Crocco.pdf');
+            $html2pdf->output(BASE_ROOT. "media/lista_attestati/".$codiceCorso."/".$anno."/".$mese."/" . $filename, 'FI');
         } catch (Html2PdfException $e) {
             $formatter = new ExceptionFormatter($e);
             echo $formatter->getHtmlMessage();
@@ -301,30 +342,14 @@ if (isset($_GET['idIscrizione'])) {
             $html2pdf = new Html2Pdf($orientamento, 'A4', 'it', true, 'UTF-8',array(0, 0, 0, 0 ));
             $html2pdf->setDefaultFont('Times');
             $html2pdf->writeHTML($content);
-            $html2pdf->output('Attestato_Crocco.pdf');
+            $html2pdf->output(BASE_ROOT. "media/lista_attestati/".$codiceCorso."/".$anno."/".$mese."/" . $filename, 'FI');
         } catch (Html2PdfException $e) {
             $formatter = new ExceptionFormatter($e);
             echo $formatter->getHtmlMessage();
         }
     }
-
-    $filename = 'Attestato_Crocco.pdf';
     
 }
-
-if(!is_dir(BASE_ROOT . "media")){
-    mkdir(BASE_ROOT . "media", 0777);
-}
-if(!is_dir(BASE_ROOT . "media/lista_attestati")){
-    mkdir(BASE_ROOT . "media/lista_attestati", 0777);
-}
-if(file_exists(BASE_ROOT . "media/lista_attestati/".$filename)){
-    chmod(BASE_ROOT. 'media/lista_attestati/' . $filename, 0777);
-}
-
-//$pdf->Output(BASE_ROOT . 'media/lista_attestati/' . $filename, 'F');
-
-//$pdf->Output($filename, 'I');
 
 
 

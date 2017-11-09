@@ -307,8 +307,8 @@ if (isset($_POST['intervallo_data'])) {
                                 $whereCommerciale = "";
                             }
                             
-                            $sql_001 = "SELECT COUNT(*) AS conteggio FROM calendario WHERE (stato LIKE 'Mai Contattato' OR stato LIKE 'Richiamare') $whereCommerciale ";
-                            $titolo = 'Totale Richiami/Mai Contattati<br>Ancora da Gestire';
+                            $sql_001 = "SELECT COUNT(*) AS conteggio FROM calendario WHERE (stato LIKE 'Mai Contattato' OR stato LIKE 'Richiamare') $where_intervalloCal ";
+                            $titolo = 'Totale Richiami/Mai Contattati<br>'.$titolo_intervallo;
                             $icona = 'fa fa-line-chart';
                             $colore = 'yellow-lemon';
                             //$link = '/moduli/anagrafiche/index.php?tbl=lista_professionisti&idMenu=3';
@@ -325,8 +325,8 @@ if (isset($_POST['intervallo_data'])) {
                                 $whereCommerciale = "";
                             }
                             
-                            $sql_001 = "SELECT COUNT(*) AS conteggio FROM calendario WHERE (stato LIKE 'In Attesa di Controllo') $whereCommerciale ";
-                            $titolo = 'Totale In Attesa di Controllo<br>Ancora da Gestire';
+                            $sql_001 = "SELECT COUNT(*) AS conteggio FROM calendario WHERE (stato LIKE 'In Attesa di Controllo') $where_intervalloCal";
+                            $titolo = 'Totale In Attesa di Controllo<br>'.$titolo_intervallo;
                             $icona = 'fa fa-line-chart';
                             $colore = 'yellow-casablanca';
                             //$link = '/moduli/anagrafiche/index.php?tbl=lista_professionisti&idMenu=3';

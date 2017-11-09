@@ -193,6 +193,7 @@ if(id_professionista<=0,email, (SELECT email from lista_professionisti WHERE lis
 (SELECT concat(cognome,' ',nome) from lista_password WHERE lista_password.id = id_agente) AS commerciale,
 (SELECT nome from lista_tipo_marketing WHERE lista_tipo_marketing.id = id_tipo_marketing) AS tipo_mkt,
 (SELECT nome from lista_campagne WHERE lista_campagne.id = id_campagna) AS campagna_mkt,
+'link',
 messaggio as note,
 calendario.stato as stato,
 datainsert as data_richiesta,

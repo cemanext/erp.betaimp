@@ -352,6 +352,7 @@ if(id_professionista<=0,email, (SELECT email from lista_professionisti WHERE lis
 (SELECT concat(cognome,' ',nome) from lista_password WHERE lista_password.id = id_agente) AS commerciale,
 (SELECT nome from lista_tipo_marketing WHERE lista_tipo_marketing.id = id_tipo_marketing) AS tipo_mkt,
 (SELECT nome from lista_campagne WHERE lista_campagne.id = id_campagna) AS campagna_mkt,
+SUBSTRING_INDEX(campo_8,'/',-2) AS link,
 messaggio as note,
 calendario.stato as stato,
 datainsert as data_richiesta,
@@ -363,7 +364,7 @@ orainsert as ora_richiesta";
                 if($campoRicerca=="iscritto") $campoRicerca = "venduto";
                 $campoRicerca = $dblink->filter($campoRicerca);
                 $where.= " AND (calendario.oggetto LIKE '%".$campoRicerca."%' OR calendario.mittente LIKE '%".$campoRicerca."%'";
-                $where.= " OR data_iscrizione LIKE '%".$campoRicerca."%' OR calendario.campo_5 LIKE '%".$campoRicerca."%'";
+                $where.= " OR calendario.campo_8 LIKE '%".$campoRicerca."%' OR calendario.campo_5 LIKE '%".$campoRicerca."%'";
                 $where.= " OR calendario.nome LIKE '%".$campoRicerca."%' OR calendario.cognome LIKE '%".$campoRicerca."%'";
                 $where.= " OR calendario.email LIKE '%".$campoRicerca."%' OR calendario.campo_9 LIKE '%".$campoRicerca."%'";
                 $where.= " OR calendario.tipo_marketing LIKE '%".$campoRicerca."%' OR calendario.telefono LIKE '%".$campoRicerca."%'";

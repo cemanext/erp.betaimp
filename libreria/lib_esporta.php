@@ -4,7 +4,7 @@ STAMPA FORM DA TABELLA CON DEFINIZIONE ARRAY
 link:http://keenthemes.com/preview/metronic/theme/admin_1/form_controls.html
 */
 function stampa_bootstrap_form_esporta($tabella,$id,$titolo,$action="".BASE_URL."/libreria/esporta.php"){
-    global $dblink, $table_listaAziende, $table_listaProfessionisti, $table_listaProfessioni,
+    global $dblink, $table_listaAziende, $table_listaProfessionisti, $table_listaProfessioni,$table_listaOrdini,
             $table_listaPassword, $table_calendario, $table_listaPreventivi, $table_listaPreventiviDettaglio,
             $table_listaAlbiProfessionali, $table_listaRichiesteStati, $table_listaCampagne, $table_listaProdotti, $table_listaCorsi, $table_listaCorsiDettaglio,
             $table_listaIscrizioni,$table_listaIscrizioniPartecipanti, $table_listaCommerciali, $table_listaFattureInvioMultiplo, $table_listaCosti;
@@ -90,6 +90,13 @@ function stampa_bootstrap_form_esporta($tabella,$id,$titolo,$action="".BASE_URL.
         case 'lista_preventivi':
             $arrayReturn['tabella'] = "lista_preventivi";
             $arrayReturn = get_campi_tabella($table_listaPreventivi['esporta'], $arrayReturn);
+            $arrayReturn['where'] = " `id` =".$id;
+            $arrayReturn['titolo'] = $titolo;
+        break;
+
+        case 'lista_ordini':
+            $arrayReturn['tabella'] = "lista_ordini";
+            $arrayReturn = get_campi_tabella($table_listaOrdini['esporta'], $arrayReturn);
             $arrayReturn['where'] = " `id` =".$id;
             $arrayReturn['titolo'] = $titolo;
         break;
