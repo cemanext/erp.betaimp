@@ -240,6 +240,7 @@ if (isset($_POST['intervallo_data'])) {
                     echo '<div class="row"><div class="col-md-12 col-sm-12">';
                     $sql_0001 = "SELECT 
                     IF(stato LIKE 'In Attesa' OR stato LIKE 'Pagata%', CONCAT('<a class=\"btn btn-circle btn-icon-only blue-steel btn-outline\" href=\"".BASE_URL."/moduli/fatture/printFattureXML.php?anno=',YEAR(data_creazione),'&mese=',MONTH(data_creazione),'&sezionale=',sezionale,'&stato=',stato,'\" target=\"_blank\" title=\"XML COMMERCIALISTA\" alt=\"XML COMMERCIALISTA\"><i class=\"fa fa-file-code-o\"></i></a>') ,'') as 'fa-file-code-o',
+                    IF(stato LIKE 'In Attesa' OR stato LIKE 'Pagata%', CONCAT('<a class=\"btn btn-circle btn-icon-only blue-steel btn-outline\" href=\"".BASE_URL."/moduli/fatture/printFattureTeamSystem.php?anno=',YEAR(data_creazione),'&mese=',MONTH(data_creazione),'&sezionale=',sezionale,'&stato=',stato,'\" target=\"_blank\" title=\"TXT COMMERCIALISTA\" alt=\"TXT COMMERCIALISTA\"><i class=\"fa fa-file-code\"></i></a>') ,'') as 'fa-file-code',
                     YEAR(data_creazione) AS Anno, MONTH(data_creazione) AS Mese, SUM(imponibile) AS Imponibile, COUNT(stato) AS CONTEGGIO, tipo, sezionale, stato 
                     FROM lista_fatture WHERE sezionale NOT LIKE '%CN%' AND data_creazione != '0000-00-00'
                     GROUP BY YEAR(data_creazione), MONTH(data_creazione), tipo, sezionale, stato 
