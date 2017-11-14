@@ -75,14 +75,14 @@ if (isset($_GET['idIscrizione'])) {
             $professione = $valoreProfessione;
 
             $messaggio = str_replace('_XXX_TITOLO_XXX_', $titolo_professionista, $messaggio);
-            $messaggio = str_replace('_XXX_PROFESSIONE_XXX_', ucwords(html_entity_decode($professione)), $messaggio);
-            $messaggio = str_replace('_XXX_COGNOME_XXX_', ucwords(html_entity_decode($cognome)), $messaggio);
-            $messaggio = str_replace('_XXX_NOME_XXX_', ucwords(html_entity_decode($nome)), $messaggio);
+            $messaggio = str_replace('_XXX_PROFESSIONE_XXX_', ucwords(strtolower(html_entity_decode($professione))), $messaggio);
+            $messaggio = str_replace('_XXX_COGNOME_XXX_', ucwords(strtolower(html_entity_decode($cognome))), $messaggio);
+            $messaggio = str_replace('_XXX_NOME_XXX_', ucwords(strtolower(html_entity_decode($nome))), $messaggio);
             $messaggio = str_replace('_XXX_DATA_INIZIO_XXX_', $dataInizio, $messaggio);
             $messaggio = str_replace('_XXX_DATA_FINE_XXX_', GiraDataOra($dataCompletamento), $messaggio);
             $messaggio = str_replace('_XXX_DATA_NASCITA_XXX_', GiraDataOra($dataDiNascita), $messaggio);
             $messaggio = str_replace('_XXX_PROV_NASCITA_XXX_', $provinciaDiNascita, $messaggio);
-            $messaggio = str_replace('_XXX_LUOGO_NASCITA_XXX_', ucwords(html_entity_decode($luogoDiNascita)), $messaggio);
+            $messaggio = str_replace('_XXX_LUOGO_NASCITA_XXX_', ucwords(strtolower(html_entity_decode($luogoDiNascita))), $messaggio);
             $messaggio = str_replace('_XXX_NOME_CORSO_XXX_', mb_strtoupper(html_entity_decode($nomeCorso)), $messaggio);
             $messaggio = str_replace('_XXX_ORE_CORSO_XXX_', $durata, $messaggio);
             $messaggio = str_replace('_XXX_CODICE_ACCREDITAMENTO_XXX_', $codiceAccreditamento, $messaggio);
@@ -132,14 +132,14 @@ if (isset($_GET['idIscrizione'])) {
         $dataInizio = $tmp[0];
 
         $messaggio = str_replace('_XXX_TITOLO_XXX_', $titolo_professionista, $messaggio);
-        $messaggio = str_replace('_XXX_PROFESSIONE_XXX_', ucwords(html_entity_decode($professione)), $messaggio);
-        $messaggio = str_replace('_XXX_COGNOME_XXX_', ucwords(html_entity_decode($cognome)), $messaggio);
-        $messaggio = str_replace('_XXX_NOME_XXX_', ucwords(html_entity_decode($nome)), $messaggio);
+        $messaggio = str_replace('_XXX_PROFESSIONE_XXX_', ucwords(strtolower(html_entity_decode($professione))), $messaggio);
+        $messaggio = str_replace('_XXX_COGNOME_XXX_', ucwords(strtolower(html_entity_decode($cognome))), $messaggio);
+        $messaggio = str_replace('_XXX_NOME_XXX_', ucwords(strtolower(html_entity_decode($nome))), $messaggio);
         $messaggio = str_replace('_XXX_DATA_INIZIO_XXX_', $dataInizio, $messaggio);
         $messaggio = str_replace('_XXX_DATA_FINE_XXX_', GiraDataOra($dataCompletamento), $messaggio);
         $messaggio = str_replace('_XXX_DATA_NASCITA_XXX_', GiraDataOra($dataDiNascita), $messaggio);
         $messaggio = str_replace('_XXX_PROV_NASCITA_XXX_', $provinciaDiNascita, $messaggio);
-        $messaggio = str_replace('_XXX_LUOGO_NASCITA_XXX_', ucwords(html_entity_decode($luogoDiNascita)), $messaggio);
+        $messaggio = str_replace('_XXX_LUOGO_NASCITA_XXX_', ucwords(strtolower(html_entity_decode($luogoDiNascita))), $messaggio);
         $messaggio = str_replace('_XXX_NOME_CORSO_XXX_', mb_strtoupper(html_entity_decode($nomeCorso)), $messaggio);
         $messaggio = str_replace('_XXX_ORE_CORSO_XXX_', $durata, $messaggio);
         $messaggio = str_replace('_XXX_CODICE_ACCREDITAMENTO_XXX_', $codiceAccreditamento, $messaggio);
@@ -207,9 +207,11 @@ if (isset($_GET['idIscrizione'])) {
         #divid{margin-top: 0px;margin-left: 0px;
             text-align:center;
             vertical-align: middle;
-            width: 287mm;
+            width: 277mm;
             height: 200mm;
             font-size: 14pt;
+            margin-left: 10mm;
+            margin-right: 10mm;
          }
          .pagebreakafter_always {
             page-break-after: always;

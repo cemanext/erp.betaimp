@@ -509,25 +509,6 @@ if(isset($_POST['intervallo_data'])) {
                                     . " FROM stat_marketing_home_2);";
                             $dblink->query($sql_0029, true);
                             
-                            $sql_0030 = "CREATE TEMPORARY TABLE stat_marketing_home_totale_tot_tmp (SELECT 'TOTALE', SUM(Richiami) AS Richiami, SUM(Tutte_Richieste) AS Tutte_Richieste, SUM(Tel_Richiami+Negativo+Confermati) AS 'Tel_Gestite', SUM(Confermati) AS Confermati,"
-                                    . " SUM(Negativo) AS Negativo, SUM(Ordinato_Lordo) AS Ordinato_Lordo, SUM(Fatture_Annullate) AS Fatture_Annullate, SUM((Ordinato_Lordo-Fatture_Annullate)) AS Ordinato_Netto,"
-                                    . " SUM(Fatturato) AS Fatturato_Lordo, SUM((Fatturato-Fatture_Annullate)) AS Fatturato_Netto, 0 AS Realizzato,"
-                                    . " 0 AS Media_part_su_Fattura FROM stat_marketing_home_2);";
-                            $dblink->query($sql_0030, true);
-                            
-                            $sql_0031 = "CREATE TEMPORARY TABLE stat_marketing_home_totale_tot (SELECT '<b>TOTALE</b>', Richiami, Tutte_Richieste, Tel_Gestite,"
-                                    . " Confermati, Negativo, Ordinato_Lordo, Fatture_Annullate, Ordinato_Netto, Fatturato_Lordo, Fatturato_Netto, ROUND((Confermati*100)/(Negativo+Confermati), 2) AS Realizzato,"
-                                    . " IF(Ordinato_Lordo>0, ROUND((Ordinato_Lordo-Fatture_Annullate)/Confermati,2), 0) AS Media_part_su_Fattura"
-                                    . " FROM stat_marketing_home_totale_tot_tmp);";
-                            $dblink->query($sql_0031, true);
-                            
-                            $sql_0032 = "CREATE TEMPORARY TABLE stat_marketing_home_totale (SELECT tipo_marketing, Richiami, Tutte_Richieste, Tel_Gestite,"
-                                    . " Confermati, Negativo, Ordinato_Lordo, Fatture_Annullate, Ordinato_Netto, "
-                                    . " Fatturato_Lordo, Fatturato_Netto, Realizzato,"
-                                    . " Media_part_su_Ordinato"
-                                    . " FROM stat_marketing_home_totale_tmp WHERE elimina_vuote > 0);";
-                            $dblink->query($sql_0032, true);
-                            
                             $sql_0036 = "CREATE TEMPORARY TABLE stat_marketing_home_no_id_tmp (SELECT 
                             'Nessun Tipo Marketing' AS tipo_marketing,
                             (SELECT COUNT(*) AS conteggio FROM calendario AS ca WHERE etichetta='Nuova Richiesta' AND ca.id_campagna='0' $where_intervallo_tot) AS Tutte_Richieste,
@@ -547,6 +528,32 @@ if(isset($_POST['intervallo_data'])) {
                                     . " IF(Ordinato_Lordo>0, ROUND((Ordinato_Lordo-Fatture_Annullate)/Confermati,2), 0) AS Media_part_su_Ordinato"
                                     . " FROM stat_marketing_home_no_id_tmp);";
                             $dblink->query($sql_0037, true);
+                            
+                            $sql_00261 = "CREATE TEMPORARY TABLE stat_marketing_tutte_le_righe (SELECT * FROM stat_marketing_home_2);";
+                            $dblink->query($sql_00261, true);
+                            $sql_00262 = "INSERT INTO stat_marketing_tutte_le_righe (SELECT * FROM stat_marketing_home_no_id_tmp);";
+                            $dblink->query($sql_00262, true);
+                            
+                            $sql_0030 = "CREATE TEMPORARY TABLE stat_marketing_home_totale_tot_tmp (SELECT 'TOTALE', SUM(Richiami) AS Richiami, SUM(Tutte_Richieste) AS Tutte_Richieste, SUM(Tel_Richiami+Negativo+Confermati) AS 'Tel_Gestite', SUM(Confermati) AS Confermati,"
+                                    . " SUM(Negativo) AS Negativo, SUM(Ordinato_Lordo) AS Ordinato_Lordo, SUM(Fatture_Annullate) AS Fatture_Annullate, SUM((Ordinato_Lordo-Fatture_Annullate)) AS Ordinato_Netto,"
+                                    . " SUM(Fatturato) AS Fatturato_Lordo, SUM((Fatturato-Fatture_Annullate)) AS Fatturato_Netto, 0 AS Realizzato,"
+                                    . " 0 AS Media_part_su_Fattura FROM stat_marketing_tutte_le_righe);";
+                            $dblink->query($sql_0030, true);
+                            
+                            $sql_0031 = "CREATE TEMPORARY TABLE stat_marketing_home_totale_tot (SELECT '<b>TOTALE</b>', Richiami, Tutte_Richieste, Tel_Gestite,"
+                                    . " Confermati, Negativo, Ordinato_Lordo, Fatture_Annullate, Ordinato_Netto, Fatturato_Lordo, Fatturato_Netto, ROUND((Confermati*100)/(Negativo+Confermati), 2) AS Realizzato,"
+                                    . " IF(Ordinato_Lordo>0, ROUND((Ordinato_Lordo-Fatture_Annullate)/Confermati,2), 0) AS Media_part_su_Fattura"
+                                    . " FROM stat_marketing_home_totale_tot_tmp);";
+                            $dblink->query($sql_0031, true);
+                            
+                            $sql_0032 = "CREATE TEMPORARY TABLE stat_marketing_home_totale (SELECT tipo_marketing, Richiami, Tutte_Richieste, Tel_Gestite,"
+                                    . " Confermati, Negativo, Ordinato_Lordo, Fatture_Annullate, Ordinato_Netto, "
+                                    . " Fatturato_Lordo, Fatturato_Netto, Realizzato,"
+                                    . " Media_part_su_Ordinato"
+                                    . " FROM stat_marketing_home_totale_tmp WHERE elimina_vuote > 0);";
+                            $dblink->query($sql_0032, true);
+                            
+                            
                             
                             stampa_table_datatables_responsive("SELECT * FROM stat_marketing_home_no_id UNION SELECT * FROM stat_marketing_home_totale UNION SELECT * FROM stat_marketing_home_totale_tot;", "Statistiche per TIPO MARKETING".$titolo_intervallo, "tabella_base1");
                             
@@ -581,25 +588,6 @@ if(isset($_POST['intervallo_data'])) {
                                     . " FROM stat_campagna_home_2);";
                             $dblink->query($sql_0025, true);
                             
-                            $sql_0026 = "CREATE TEMPORARY TABLE stat_campagna_home_totale_tot_tmp (SELECT 'TOTALE', 'TUTTI', SUM(Richiami) AS Richiami, SUM(Tutte_Richieste) AS Tutte_Richieste, SUM(Tel_Richiami+Negativo+Confermati) AS 'Tel_Gestite', SUM(Confermati) AS Confermati,"
-                                    . " SUM(Negativo) AS Negativo, SUM(Ordinato_Lordo) AS Ordinato_Lordo, SUM(Fatture_Annullate) AS Fatture_Annullate, SUM((Ordinato_Lordo-Fatture_Annullate)) AS Ordinato_Netto,"
-                                    . " SUM(Fatturato) AS Fatturato_Lordo, SUM((Fatturato-Fatture_Annullate)) AS Fatturato_Netto, 0 AS Realizzato,"
-                                    . " 0 AS Media_part_su_Fattura FROM stat_campagna_home_2);";
-                            $dblink->query($sql_0026, true);
-                            
-                            $sql_0027 = "CREATE TEMPORARY TABLE stat_campagna_home_totale_tot (SELECT '<b>TOTALE</b>', 'TUTTI', Richiami, Tutte_Richieste, Tel_Gestite,"
-                                    . " Confermati, Negativo, Ordinato_Lordo, Fatture_Annullate, Ordinato_Netto, Fatturato_Lordo, Fatturato_Netto, ROUND((Confermati*100)/(Negativo+Confermati), 2) AS Realizzato,"
-                                    . " IF(Ordinato_Lordo>0, ROUND((Ordinato_Lordo-Fatture_Annullate)/Confermati,2), 0) AS Media_part_su_Fattura"
-                                    . " FROM stat_campagna_home_totale_tot_tmp);";
-                            $dblink->query($sql_0027, true);
-                            
-                            $sql_0033 = "CREATE TEMPORARY TABLE stat_campagna_home_totale (SELECT Nome_Campagna, tipo_marketing, Richiami, Tutte_Richieste, Tel_Gestite,"
-                                    . " Confermati, Negativo, Ordinato_Lordo, Fatture_Annullate, Ordinato_Netto, "
-                                    . " Fatturato_Lordo, Fatturato_Netto, Realizzato,"
-                                    . " Media_part_su_Ordinato"
-                                    . " FROM stat_campagna_home_totale_tmp WHERE elimina_vuote > 0);";
-                            $dblink->query($sql_0033, true);
-                            
                             $sql_0034 = "CREATE TEMPORARY TABLE stat_campagna_home_no_id_tmp (SELECT 
                             'Nessuna Campagna' as Nome_Campagna,
                             'Nessun Tipo Marketing' AS tipo_marketing,
@@ -620,6 +608,31 @@ if(isset($_POST['intervallo_data'])) {
                                     . " IF(Ordinato_Lordo>0, ROUND((Ordinato_Lordo-Fatture_Annullate)/Confermati,2), 0) AS Media_part_su_Ordinato"
                                     . " FROM stat_campagna_home_no_id_tmp);";
                             $dblink->query($sql_0035, true);
+                            
+                            $sql_00261 = "CREATE TEMPORARY TABLE stat_tutte_le_righe (SELECT * FROM stat_campagna_home_2);";
+                            $dblink->query($sql_00261, true);
+                            $sql_00262 = "INSERT INTO stat_tutte_le_righe (SELECT * FROM stat_campagna_home_no_id_tmp);";
+                            $dblink->query($sql_00262, true);
+                            
+                            $sql_0026 = "CREATE TEMPORARY TABLE stat_campagna_home_totale_tot_tmp (SELECT 'TOTALE', 'TUTTI', SUM(Richiami) AS Richiami, SUM(Tutte_Richieste) AS Tutte_Richieste, SUM(Tel_Richiami+Negativo+Confermati) AS 'Tel_Gestite', SUM(Confermati) AS Confermati,"
+                                    . " SUM(Negativo) AS Negativo, SUM(Ordinato_Lordo) AS Ordinato_Lordo, SUM(Fatture_Annullate) AS Fatture_Annullate, SUM((Ordinato_Lordo-Fatture_Annullate)) AS Ordinato_Netto,"
+                                    . " SUM(Fatturato) AS Fatturato_Lordo, SUM((Fatturato-Fatture_Annullate)) AS Fatturato_Netto, 0 AS Realizzato,"
+                                    . " 0 AS Media_part_su_Fattura FROM stat_tutte_le_righe );";
+                            $dblink->query($sql_0026, true);
+                            
+                            $sql_0027 = "CREATE TEMPORARY TABLE stat_campagna_home_totale_tot (SELECT '<b>TOTALE</b>', 'TUTTI', SUM(Richiami), SUM(Tutte_Richieste), SUM(Tel_Gestite),"
+                                    . " SUM(Confermati), SUM(Negativo), SUM(Ordinato_Lordo), SUM(Fatture_Annullate), SUM(Ordinato_Netto), SUM(Fatturato_Lordo), SUM(Fatturato_Netto), ROUND((SUM(Confermati)*100)/(SUM(Negativo)+SUM(Confermati)), 2) AS Realizzato,"
+                                    . " IF(SUM(Ordinato_Lordo)>0, ROUND((SUM(Ordinato_Lordo)-SUM(Fatture_Annullate))/SUM(Confermati),2), 0) AS Media_part_su_Fattura"
+                                    . " FROM stat_campagna_home_totale_tot_tmp);";
+                            $dblink->query($sql_0027, true);
+                            
+                            $sql_0033 = "CREATE TEMPORARY TABLE stat_campagna_home_totale (SELECT Nome_Campagna, tipo_marketing, Richiami, Tutte_Richieste, Tel_Gestite,"
+                                    . " Confermati, Negativo, Ordinato_Lordo, Fatture_Annullate, Ordinato_Netto, "
+                                    . " Fatturato_Lordo, Fatturato_Netto, Realizzato,"
+                                    . " Media_part_su_Ordinato"
+                                    . " FROM stat_campagna_home_totale_tmp WHERE elimina_vuote > 0);";
+                            $dblink->query($sql_0033, true);
+                            
                             
                             stampa_table_datatables_responsive("SELECT * FROM stat_campagna_home_no_id UNION SELECT * FROM stat_campagna_home_totale UNION SELECT * FROM stat_campagna_home_totale_tot;", "Statistiche per CAMPAGNA".$titolo_intervallo, "tabella_base_home");
                            ?>
