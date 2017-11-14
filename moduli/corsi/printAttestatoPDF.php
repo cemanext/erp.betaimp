@@ -55,12 +55,14 @@ if (isset($_GET['idIscrizione'])) {
             $idAttestato = $rowCostiConfig['id_attestato'];
             $titolo = $rowCostiConfig['titolo'];
             $messaggio = $rowCostiConfig['messaggio'];
+            $firma = $rowCostiConfig['firma'];
 
             if($idAttestato>0){
                 $rowAttestati = $dblink->get_row("SELECT * FROM lista_attestati WHERE id = '$idAttestato'", true);
             }else{
                 $rowAttestati = $dblink->get_row("SELECT * FROM lista_attestati WHERE tipo_documento = 'template base'", true);
                 $messaggio = $rowAttestati['descrizione'];
+                $firma = "Lugo (RA), _XXX_DATA_FIRMA_XXX_";
             }
             $orientamento = $rowAttestati['orientamento'];
             $nomeFile = $rowAttestati['nome'];
@@ -90,14 +92,16 @@ if (isset($_GET['idIscrizione'])) {
             $messaggio = str_replace('_XXX_CODICE_FISCALE_XXX_', $codiceFiscale, $messaggio);
             $messaggio = str_replace('_XXX_PROVINCIA_ALBO_XXX_', $provinciaAlbo, $messaggio);
             $messaggio = str_replace('_XXX_NUMERO_ORDINE_XXX_', $numeroAlbo, $messaggio);
-            $messaggio = str_replace('_XXX_DATA_FIRMA_XXX_', GiraDataOra($dataCompletamento), $messaggio);
+            $firma = str_replace('_XXX_DATA_FIRMA_XXX_', GiraDataOra($dataCompletamento), $firma);
             
             $htmlDiv = '<div class="pagebreakafter_always"><div class="cornice"><img src="'.BASE_URL.'/moduli/corsi/'.$nomeFile.'" /></div>
                         <div id="divid">
                             _XXX_MESSAGGIO_XXX_
+                            <div id="firma">_XXX_FIRMA_XXX_</div>
                         </div></div>';
 
             $messaggio = (str_replace('_XXX_MESSAGGIO_XXX_', $messaggio, $htmlDiv));
+            $messaggio = str_replace('_XXX_FIRMA_XXX_', $firma, $messaggio);
             //$messaggio = mb_convert_encoding(htmlspecialchars_decode(html_entity_decode($messaggio, "ENT_COMPAT", "utf-8")), "UTF-8", "HTML-ENTITIES");
 
             $htmladd .= $messaggio;
@@ -114,12 +118,14 @@ if (isset($_GET['idIscrizione'])) {
         $idAttestato = $rowCostiConfig['id_attestato'];
         $titolo = $rowCostiConfig['titolo'];
         $messaggio = $rowCostiConfig['messaggio'];
+        $firma = $rowCostiConfig['firma'];
         
         if($idAttestato>0){
             $rowAttestati = $dblink->get_row("SELECT * FROM lista_attestati WHERE id = '$idAttestato'", true);
         }else{
             $rowAttestati = $dblink->get_row("SELECT * FROM lista_attestati WHERE tipo_documento = 'template base'", true);
             $messaggio = $rowAttestati['descrizione'];
+            $firma = "Lugo (RA), _XXX_DATA_FIRMA_XXX_";
         }
         $orientamento = $rowAttestati['orientamento'];
         $nomeFile = $rowAttestati['nome'];
@@ -147,15 +153,16 @@ if (isset($_GET['idIscrizione'])) {
         $messaggio = str_replace('_XXX_CODICE_FISCALE_XXX_', $codiceFiscale, $messaggio);
         $messaggio = str_replace('_XXX_PROVINCIA_ALBO_XXX_', $provinciaAlbo, $messaggio);
         $messaggio = str_replace('_XXX_NUMERO_ORDINE_XXX_', $numeroAlbo, $messaggio);
-        $messaggio = str_replace('_XXX_DATA_FIRMA_XXX_', GiraDataOra($dataCompletamento), $messaggio);
+        $firma = str_replace('_XXX_DATA_FIRMA_XXX_', GiraDataOra($dataCompletamento), $firma);
         
         $htmlDiv = '<div class="pagebreakafter_always"><div class="cornice"><img src="'.BASE_URL.'/moduli/corsi/'.str_replace(" ", "%20", $nomeFile).'" /></div>    
                     <div id="divid">
                         _XXX_MESSAGGIO_XXX_
+                        <div id="firma">_XXX_FIRMA_XXX_</div>
                     </div></div>';
         
         $messaggio = (str_replace('_XXX_MESSAGGIO_XXX_', $messaggio, $htmlDiv));
-        //$messaggio = str_replace('_XXX_DATA_FIRMA_XXX_', "Lugo (RA), ".GiraDataOra($dataCompletamento), $messaggio);
+        $messaggio = str_replace('_XXX_FIRMA_XXX_', $firma, $messaggio);
         
         //$messaggio = mb_convert_encoding(htmlspecialchars_decode(html_entity_decode($messaggio)), "UTF-8", "HTML-ENTITIES");
         
@@ -246,8 +253,8 @@ if (isset($_GET['idIscrizione'])) {
 
         #firma{
             text-align:left;
-            margin-left: 150px;
-            margin-top: 680px;
+            margin-left: 112px;
+            margin-top: 610px;
             font-size: 11pt;
             position: absolute;
             font-weight: bold;
@@ -322,9 +329,9 @@ if (isset($_GET['idIscrizione'])) {
          }
 
         #firma{
-            text-align:left;
-            margin-left: 150px;
-            margin-top: 920px;
+            text-align:right;
+            margin-left: 510px;
+            margin-top: 900px;
             font-size: 11pt;
             position: absolute;
             font-weight: bold;

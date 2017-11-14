@@ -4694,6 +4694,11 @@ $table_listaCorsiConfigurazioni = array(
                         "tipo" => "htmlarea",
                         "etichetta" => "Corpo Documento",
                         "readonly" => false
+                    ),
+                    array(  "campo" => "firma",
+                        "tipo" => "text",
+                        "etichetta" => "Luogo e Data Documento",
+                        "readonly" => false
                     ))
             );
 
