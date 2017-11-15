@@ -97,7 +97,9 @@ if (isset($_GET['idIscrizione'])) {
             $htmlDiv = '<div class="pagebreakafter_always"><div class="cornice"><img src="'.BASE_URL.'/moduli/corsi/'.$nomeFile.'" /></div>
                         <div id="divid">
                             _XXX_MESSAGGIO_XXX_
-                            <div id="firma">_XXX_FIRMA_XXX_</div>
+                            <div id="firma">
+                                _XXX_FIRMA_XXX_
+                            </div>
                         </div></div>';
 
             $messaggio = (str_replace('_XXX_MESSAGGIO_XXX_', $messaggio, $htmlDiv));
@@ -158,7 +160,9 @@ if (isset($_GET['idIscrizione'])) {
         $htmlDiv = '<div class="pagebreakafter_always"><div class="cornice"><img src="'.BASE_URL.'/moduli/corsi/'.str_replace(" ", "%20", $nomeFile).'" /></div>    
                     <div id="divid">
                         _XXX_MESSAGGIO_XXX_
-                        <div id="firma">_XXX_FIRMA_XXX_</div>
+                        <div id="firma">
+                            _XXX_FIRMA_XXX_
+                        </div>
                     </div></div>';
         
         $messaggio = (str_replace('_XXX_MESSAGGIO_XXX_', $messaggio, $htmlDiv));
@@ -254,7 +258,7 @@ if (isset($_GET['idIscrizione'])) {
         #firma{
             text-align:left;
             margin-left: 112px;
-            margin-top: 610px;
+            margin-top: 710px;
             font-size: 11pt;
             position: absolute;
             font-weight: bold;
@@ -331,7 +335,7 @@ if (isset($_GET['idIscrizione'])) {
         #firma{
             text-align:right;
             margin-left: 510px;
-            margin-top: 900px;
+            margin-top: 1000px;
             font-size: 11pt;
             position: absolute;
             font-weight: bold;
