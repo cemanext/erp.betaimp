@@ -506,7 +506,7 @@ var ComponentiDateTimePickers = function () {
                     firstDay: 1
                 },
                 "showDropdowns": true,
-            },
+            }
             /*function (startDate, endDate) {
                 $('.date-picker-range input').val(startDate.format('DD-MM-YYYY') + ' al ' + endDate.format('DD-MM-YYYY'));
             }*/

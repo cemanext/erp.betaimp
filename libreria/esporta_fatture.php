@@ -25,6 +25,16 @@ foreach ($rowsFatture as $rowFattura) {
         $datiFatturazione = $dblink->get_row("SELECT * FROM lista_aziende WHERE id = '".$rowFattura['id_azienda']."'",true);
         $rsDatiPagamento = $dblink->get_results("SELECT data_creazione, entrate FROM lista_costi WHERE id_fattura = '".$rowFattura['id']."'");
 
+        $partitaIVA = $datiFatturazione['partita_iva'];
+        $codiceFiscale = $datiFatturazione['codice_fiscale'];
+        
+        if(strlen($datiFatturazione['partita_iva']) == 16){
+            if(strlen($datiFatturazione['codice_fiscale'])<16){
+                $codiceFiscale = $datiFatturazione['partita_iva'];
+            }
+            $partitaIVA = "";
+        }
+        
         $riga = "";
         $riga .= "00000";       // TRF-DITTA
         $riga .= "3";           // TRF-VERSIONE
@@ -37,8 +47,8 @@ foreach ($rowsFatture as $rowFattura) {
         $riga .= aggiungiSpaziAllaStringa($datiFatturazione['cap'], 5);  //TRF-CAP
         $riga .= aggiungiSpaziAllaStringa(html_entity_decode($datiFatturazione['citta'],ENT_QUOTES), 25);  //TRF-CITTA
         $riga .= aggiungiSpaziAllaStringa(html_entity_decode($datiFatturazione['provincia'],ENT_QUOTES), 2);  //TRF-PROV
-        $riga .= aggiungiSpaziAllaStringa($datiFatturazione['codice_fiscale'], 16);  //TRF-COFI
-        $riga .= aggiungiSpaziAllaStringa($datiFatturazione['partita_iva'], 11);  //TRF-PIVA
+        $riga .= aggiungiSpaziAllaStringa($codiceFiscale, 16);  //TRF-COFI
+        $riga .= aggiungiSpaziAllaStringa($partitaIVA, 11);  //TRF-PIVA
         $riga .= aggiungiSpaziAllaStringa(verificaSePersonaFisica($datiFatturazione['codice_fiscale']), 1);  //TRF-PF
         if(verificaSePersonaFisica($datiFatturazione['codice_fiscale']) == "S"){
             $riga .= aggiungiSpaziAllaStringa(strpos($datiFatturazione['ragione_sociale'], " "), 2, true, "0", false);  //TRF-DIVIDE
@@ -235,7 +245,7 @@ foreach ($rowsFatture as $rowFattura) {
         
         $righe.=$riga."\r\n";
         
-        /*
+        
         // Pagamento
         if(!empty($rsDatiPagamento)){
             $riga = "";
@@ -279,7 +289,7 @@ foreach ($rowsFatture as $rowFattura) {
             $riga .= aggiungiSpaziAllaStringa("", (7002-strlen($riga)+1), true); //SPAZIO VUOTO ???
 
             $righe.=$riga."\r\n";
-        }*/
+        }
     }
     
 }
@@ -290,7 +300,7 @@ print($righe);
 
 function aggiungiSpaziAllaStringa($testo, $numSpazi = 0 , $contaStringa = true, $carattere = " ",$dopo = true){
     
-    $testo = trim($testo);
+    $testo = pulisciRigaDiTesto($testo);
     
     if($contaStringa){
         $numPartenza = mb_strlen($testo, 'UTF-8');
@@ -326,4 +336,17 @@ function verificaSePersonaFisica($codiceFiscale){
     }
 }
 
+function pulisciRigaDiTesto($testo){
+    
+    $testo = str_replace("à", "a", $testo);
+    $testo = str_replace("è", "e", $testo);
+    $testo = str_replace("é", "e", $testo);
+    $testo = str_replace("ù", "u", $testo);
+    $testo = str_replace("ì", "i", $testo);
+    //$testo = str_replace("&", "e", $testo);
+    
+    $testo = preg_replace('/[^A-Za-z0-9\. -_+&,]/', '', $testo);
+    
+    return trim($testo);
+}
 ?>

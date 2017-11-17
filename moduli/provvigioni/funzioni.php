@@ -10,7 +10,7 @@ function Stampa_HTML_index_Provvigioni($tabella){
             $tabella = "lista_provvigioni";
             $where = $table_listaProvvigioni['index']['where'];
             $campi_visualizzati = $table_listaProvvigioni['index']['campi'];
-            $titolo = 'Elenco Partener';
+            $titolo = 'Elenco Partner';
             $colore = COLORE_PRIMARIO;
             $ordine = $table_listaProvvigioni['index']['order'];
             $sql_0001 = "SELECT " . $campi_visualizzati . " FROM " . $tabella . " WHERE $where $ordine LIMIT 1";
@@ -64,7 +64,7 @@ function Stampa_HTML_Dettaglio_Provvigioni($tabella, $id){
                                         provvigione AS 'Provvigione &euro;',
                                         provvigione_percentuale AS 'Provvigione %',
                                         `stato`";
-                $titolo = 'Dettaglio Partener';
+                $titolo = 'Dettaglio Partner';
                 $colore = COLORE_PRIMARIO;
                 $ordine = $table_listaProvvigioni['index']['order'];
                 $sql_0001 = "SELECT " . $campi_visualizzati . " FROM " . $tabella . " WHERE $where $ordine LIMIT 1";
