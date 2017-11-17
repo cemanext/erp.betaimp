@@ -88,8 +88,8 @@ switch ($step) {
                 $idProfessionista = $dblink->lastid();
                 if($ok){
                     $sql_0006 = "UPDATE lista_professionisti
-                                SET codice = CONCAT('BF',RIGHT(concat('0000000000',id),6)) 
-                                WHERE codice NOT LIKE 'BF'";
+                                SET codice = CONCAT('".SUFFISSO_CODICE_CLIENTE."',RIGHT(concat('0000000000',id),6)) 
+                                WHERE codice NOT LIKE '".SUFFISSO_CODICE_CLIENTE."'";
                     $dblink->query($sql_0006);
                     echo "<li>Professionsita creato ID: ($idProfessionista)</li>";
                 }
@@ -109,8 +109,8 @@ switch ($step) {
                 $ok = $dblink->update("lista_password",$updatePass, array("id_professionista"=>$idProfessionista));
                 
                 $sql_0006 = "UPDATE lista_professionisti
-                            SET codice = CONCAT('BF',RIGHT(concat('0000000000',id),6)) 
-                            WHERE codice NOT LIKE 'BF'";
+                            SET codice = CONCAT('".SUFFISSO_CODICE_CLIENTE."',RIGHT(concat('0000000000',id),6)) 
+                            WHERE codice NOT LIKE '".SUFFISSO_CODICE_CLIENTE."'";
                 $dblink->query($sql_0006);
             }
 

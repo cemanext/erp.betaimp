@@ -32,6 +32,7 @@ switch($tabella){
             foreach ($arrayCampoRicerca as $campoRicerca) {
                 $where.= " AND (nome LIKE '%".$campoRicerca."%' OR descrizione LIKE '%".$campoRicerca."%'";
                 $where.= " OR data_inizio LIKE '%".$campoRicerca."%' OR data_fine LIKE '%".$campoRicerca."%'";
+                $where.= " OR id_tipo_marketing IN (SELECT id FROM lista_tipo_marketing WHERE nome LIKE '%".$campoRicerca."%') ";
                 $where.= " OR stato LIKE '%".$campoRicerca."%' OR numerico_5 LIKE '%".$campoRicerca."%' OR id LIKE '$campoRicerca' )";
             }
         }

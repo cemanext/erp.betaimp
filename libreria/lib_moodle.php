@@ -5,8 +5,8 @@ function creaUtenteTotale($idProfessionista) {
     global $dblink, $moodle;
     
     $sql_0006 = "UPDATE lista_professionisti
-                SET codice = CONCAT('BF',RIGHT(concat('0000000000',id),6)) 
-                WHERE codice NOT LIKE 'BF'";
+                SET codice = CONCAT('".SUFFISSO_CODICE_CLIENTE."',RIGHT(concat('0000000000',id),6)) 
+                WHERE codice NOT LIKE '".SUFFISSO_CODICE_CLIENTE."'";
     $dblink->query($sql_0006);
     
     $esisteInListaPassword = $dblink->num_rows("SELECT id FROM lista_password WHERE id_professionista = '" . $idProfessionista . "' AND livello='cliente' ");
@@ -59,8 +59,8 @@ function resetPasswordUtenteMoodle($idProfessionista, $forzaReset = false){
     global $dblink, $moodle, $log;
     
     $sql_0006 = "UPDATE lista_professionisti
-                SET codice = CONCAT('BF',RIGHT(concat('0000000000',id),6)) 
-                WHERE codice NOT LIKE 'BF'";
+                SET codice = CONCAT('".SUFFISSO_CODICE_CLIENTE."',RIGHT(concat('0000000000',id),6)) 
+                WHERE codice NOT LIKE '".SUFFISSO_CODICE_CLIENTE."'";
     $dblink->query($sql_0006);
     
     if($forzaReset){
@@ -77,7 +77,7 @@ function resetPasswordUtenteMoodle($idProfessionista, $forzaReset = false){
 
     if(!empty($row_cerca_in_lista_password)){
         
-        $rowProfessionista = $dblink->get_row("SELECT codice, id_moodle_user, email FROM lista_professionisti WHERE id = '".$idProfessionista."' AND codice LIKE '%BF%'", true);
+        $rowProfessionista = $dblink->get_row("SELECT codice, id_moodle_user, email FROM lista_professionisti WHERE id = '".$idProfessionista."' AND codice LIKE '%".SUFFISSO_CODICE_CLIENTE."%'", true);
         
         if(!empty($rowProfessionista)){
             $dblink->update(MOODLE_DB_NAME.".mdl_user", array("username" => $rowProfessionista['codice']), array("id" => $rowProfessionista['id_moodle_user'], "idnumber" => $idProfessionista));
@@ -126,8 +126,6 @@ function resetPasswordUtenteMoodle($idProfessionista, $forzaReset = false){
 
         $idUtenteMoodle = $moodle->creaUtenteMoodle($username, $email, $firstname, $lastname, $password, $idnumber);
 
-        
-        
         if($idUtenteMoodle>0){
             $sql_aggiorna_password = "UPDATE lista_password 
             SET id_moodle_user = '".$idUtenteMoodle."' , 

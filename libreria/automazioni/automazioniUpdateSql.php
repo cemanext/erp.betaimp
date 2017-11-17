@@ -49,8 +49,8 @@ $dblink->query($sql_0005);
 
 // AGGIORNO CODICE CLIENTE PROFESSIONISTA
 $sql_0006 = "UPDATE lista_professionisti
-            SET codice = CONCAT('BF',RIGHT(concat('0000000000',id),6)) 
-            WHERE codice NOT LIKE 'BF'";
+            SET codice = CONCAT('".SUFFISSO_CODICE_CLIENTE."',RIGHT(concat('0000000000',id),6)) 
+            WHERE codice NOT LIKE '".SUFFISSO_CODICE_CLIENTE."'";
 $dblink->query($sql_0006);
 
 //AGGIORNO DATI DI RICERCA IN FATTURE

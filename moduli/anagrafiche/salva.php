@@ -845,7 +845,7 @@ if(isset($_GET['fn'])){
                     $id_professionista = $dblink->lastid();
                     
                     $sql_0006 = "UPDATE lista_professionisti
-                    SET codice = CONCAT('BF',RIGHT(concat('0000000000',id),6)) 
+                    SET codice = CONCAT('".SUFFISSO_CODICE_CLIENTE."',RIGHT(concat('0000000000',id),6)) 
                     WHERE id = '$id_professionista'";
                     
                     $ok = $ok && $dblink->query($sql_0006);

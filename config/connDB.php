@@ -24,6 +24,8 @@ define('DURATA_CORSO_INGEGNERI', "190"); //6 MESI IN GIORNI
 define('DURATA_ABBONAMENTO', "370"); //12 MESI IN GIORNI
 define('DURATA_PASSWORD_UTENTE', "190"); //6 MESI IN GIORNI
 
+define('SUFFISSO_CODICE_CLIENTE', "BF"); //BF - Betaformazione
+
 /** CONFIGURAZIONE MOODLE DI BETAFORMAZIONE **/
 define('MOODLE_DOMAIN_NAME', 'http://mdl.xxxxxxxx.com');
 define('MOODLE_DB_NAME', 'dev_el_betaform');
