@@ -1,5 +1,5 @@
 <?php
-include_once('../../config/connDB.php');
+include_once($_SERVER['DOCUMENT_ROOT'].'/config/connDB.php');
 include_once(BASE_ROOT . 'config/confAccesso.php');
 
 $sql_00001 = "UPDATE calendario, lista_campagne 
