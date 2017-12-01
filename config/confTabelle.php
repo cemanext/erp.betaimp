@@ -2305,7 +2305,7 @@ FROM `lista_campagne` WHERE 1
  */
 $table_listaCampagne = array(
                 "index" => array("campi" => "CONCAT('<a class=\"btn btn-circle btn-icon-only yellow btn-outline\" href=\"dettaglio.php?tbl=lista_campagne&id=',id,'\" title=\"DETTAGLIO\" alt=\"DETTAGLIO\"><i class=\"fa fa-search\"></i></a>') AS 'fa-search',
-                                            IF(id > 99,CONCAT('<a class=\"btn btn-circle btn-icon-only blue btn-outline\" href=\"modifica.php?tbl=lista_campagne&id=',id,'\" title=\"MODIFICA\" alt=\"MODIFICA\"><i class=\"fa fa-edit\"></i></a>'),'') AS 'fa-edit',
+                                            IF(id > 0,CONCAT('<a class=\"btn btn-circle btn-icon-only blue btn-outline\" href=\"modifica.php?tbl=lista_campagne&id=',id,'\" title=\"MODIFICA\" alt=\"MODIFICA\"><i class=\"fa fa-edit\"></i></a>'),'') AS 'fa-edit',
                                             CONCAT('<a class=\"btn btn-circle btn-icon-only green btn-outline\" href=\"duplica.php?tbl=lista_campagne&id=',id,'\" title=\"DUPLICA\" alt=\"DUPLICA\"><i class=\"fa fa-copy\"></i></a>') AS 'fa-copy',
                                             CONCAT('<span class=\"btn btn-lg sbold uppercase btn-outline blue-madison\">',id,'</span>') AS 'Codice',
                                             CONCAT('<span class=\"btn sbold uppercase btn-outline blue-dark\">',`nome`,'</span>') AS Nome,
