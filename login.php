@@ -144,7 +144,7 @@ if (isset($_POST['txt1']) and isset($_POST['txt2']) and strlen($_POST['txt1']) >
                           <input type="checkbox" name="remember" value="1" /> Remember me
                           <span></span>
                       </label>-->
-                    <button type="submit" class="btn yellow-crusta pull-right"> Accedi </button>
+                    <button type="submit" class="btn blue pull-right"> Accedi </button>
                 </div>
                 <!--  <div class="login-options">
                       <h4>Or login with</h4>

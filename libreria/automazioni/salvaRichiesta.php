@@ -1,8 +1,6 @@
 <?php
+session_start();
 include_once($_SERVER['DOCUMENT_ROOT'].'/config/connDB.php');
-if(DISPLAY_DEBUG){
-    ob_start();
-}
 include_once(BASE_ROOT.'libreria/libreria.php');
 
 if(isset($_POST)){
