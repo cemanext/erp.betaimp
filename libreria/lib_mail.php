@@ -661,7 +661,7 @@ function inviaEmailCorsoCompletato($idIscrione,$updateIscrizione) {
         //require_once BASE_ROOT . "classi/phpmailer/class.phpmailer.php";
         $messaggio = new PHPmailer();
         $messaggio->IsHTML(true);
-        //$messaggio->SMTPDebug  = 2;
+        $messaggio->SMTPDebug  = 2;
         $messaggio->IsSMTP();
         # I added SetLanguage like this
         $messaggio->SetLanguage('it', BASE_ROOT . 'classi/phpmailer/language/');

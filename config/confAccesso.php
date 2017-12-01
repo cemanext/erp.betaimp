@@ -337,10 +337,10 @@ $title_contatti = "Gestione Contatti";
 $description_contatti = "Modulo per la gestione dei contatti";
 $keywords_contatti = "";
 
-$site_name = "Beta Formazione";
+$site_name = "Beta Imprese";
 $author = "CEMA NEXT";
 
-$config_tipo_lista_menu = "betaform_erp";
+$config_tipo_lista_menu = "betaimprese_erp";
 
 include_once(BASE_ROOT . 'config/confTabelle.php');
 include_once(BASE_ROOT . 'libreria/libreria.php');

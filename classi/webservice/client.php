@@ -132,9 +132,9 @@ class moodleWebService
         $moodleUserNumber = $dblink->get_row($sql_000,true);
         if(empty($moodleUserNumber)) {
         
-            $sql_001 = "SELECT * FROM ".MOODLE_DB_NAME.".mdl_user WHERE email = '$email'";
-            $moodleUser = $dblink->get_row($sql_001,true);
-            if(empty($moodleUser)) {
+            //$sql_001 = "SELECT * FROM ".MOODLE_DB_NAME.".mdl_user WHERE email = '$email'";
+            //$moodleUser = $dblink->get_row($sql_001,true);
+            //if(empty($moodleUser)) {
 
                 $this->log->log_all_errors("OK->$sql_001", "AVVISO");
 
@@ -170,7 +170,7 @@ class moodleWebService
                     return $u['id'];
                 }
 
-            }else{
+            /*}else{
                 $idUtenteMoodle = $moodleUser['id'];
                 //LO TROVO PER ID NUMBER
                 $this->log->log_all_errors("client.php->creaUtenteMoodle\twebservice->$functionnameUpdate\tUtente già presente email: $email", "OK");
@@ -228,7 +228,7 @@ class moodleWebService
                     $this->log->log_all_errors("client.php->creaUtenteMoodle\twebservice->$functionnameUpdate\tUtente già presente e ripristinato email: $email", "OK");
                     return $idUtenteMoodle; //UTENTE GIA PRESENTE
                 }
-            }
+            }*/
         }else{
             $idUtenteMoodle = $moodleUserNumber['id'];
             //LO TROVO PER ID NUMBER
@@ -752,7 +752,7 @@ class moodleWebService
                         
                         $resp = $this->curl->post($path, $params);
                         
-                        $this->log->log_all_errors("$resp");
+                        $this->log->log_all_errors("$resp","AVVISO");
 
                         if(!$this->curl->get_errno()){
                             $this->log->log_all_errors("client.php->iscrizioneCorsoMoodle\tUtente ($userid) inserisci il corso ($courseId) su mdl_user_enrolments iscritto con il webservice! - PARAM: ".var_export($params,true)."", "OK");
