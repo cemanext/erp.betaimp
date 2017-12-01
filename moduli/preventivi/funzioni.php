@@ -158,7 +158,7 @@ function Stampa_HTML_Dettaglio_Preventivi($tabella, $id) {
                     )
                 ) AS stato,
                 IF(id_professionista>0,
-                    IF(" . $rowUtente['id_classe'] . ">0,
+                    IF(" . $rowUtente['id_classe'] . "<=0,
                         IF(LENGTH(sezionale)>0,
                             IF(lista_preventivi.stato LIKE 'In Attesa' OR lista_preventivi.stato LIKE 'Venduto' ,
                                 CONCAT('<a class=\"btn btn-circle btn-icon-only green-jungle\" href=\"salva.php?tbl=lista_preventivi&idPreventivoFirmato=',id,'&codSezionale=',sezionale,'&fn=preventivoFirmato\" title=\"CHIUSO\" alt=\"CHIUSO\"><i class=\"fa fa-check\"></i></a><a class=\"btn btn-circle btn-icon-only red-thunderbird\" href=\"salva.php?tbl=lista_preventivi&idPreventivoNegativo=',id,'&codSezionale=',sezionale,'&fn=preventivoNegativo\" title=\"NEGATIVO\" alt=\"NEGATIVO\"><i class=\"fa fa-times\"></i></a>'),

@@ -49,6 +49,21 @@ function nuovoCodiceFattura($idFattura, $codSezionale) {
 	AND lista_fatture.sezionale = '" . $codSezionale . "'
 	AND codice>0
 	ORDER BY codice DESC LIMIT 1";
+	
+	
+	
+	$sql_numero_fattura = "SELECT `id`, YEAR(data_creazione) AS anno, 
+	RIGHT(YEAR(CURDATE()),2) AS anno_corto, 
+	YEAR(CURDATE()) AS anno_lungo, 
+	YEAR(CURDATE()) AS anno_in_corso, 
+	IF(MONTH(CURDATE())<=9,CONCAT('0',MONTH(CURDATE())),MONTH(CURDATE())) AS mese_lungo, 
+	SUBSTRING_INDEX(`codice`,'/',1) as numero_fattura, 
+	SUBSTRING_INDEX(`codice`,'/',-1) as anno_preventivo, `codice` 
+	FROM lista_fatture 
+	WHERE `codice` LIKE '%/%' 
+	AND lista_fatture.sezionale = '" . $codSezionale . "'
+	AND codice>0
+	ORDER BY codice_numerico DESC LIMIT 1";
     $rs_numero_fattura = $dblink->get_results($sql_numero_fattura);
     //echo '<li>$sql_numero_fattura = '.$sql_numero_fattura.'</li>';
     if (!empty($rs_numero_fattura)) {
@@ -59,13 +74,17 @@ function nuovoCodiceFattura($idFattura, $codSezionale) {
                 $sezionale_fattura_nuova = $codSezionale;
 
                 //$fattura_nuova = ''.$anno_fattura_nuova.$mese_fattura_nuova.'-'.$numero_fattura_nuova.'/'.$sezionale_fattura_nuova;
-                $fattura_nuova = $numero_fattura_nuova;
+                //$fattura_nuova = $numero_fattura_nuova;
+                $anno_fatture_nuovo = $row_numero_fattura['anno_in_corso'];
+                $fattura_nuova = $numero_fattura_nuova.'/'.$anno_fatture_nuovo;
             } else {
                 $numero_fattura_nuova = "1";
                 $sezionale_fattura_nuova = $codSezionale;
 
                 //$fattura_nuova = ''.$anno_fattura_nuova.$mese_fattura_nuova.'-'.$numero_fattura_nuova.'/'.$sezionale_fattura_nuova;
-                $fattura_nuova = $numero_fattura_nuova;
+                //$fattura_nuova = $numero_fattura_nuova;
+                $anno_fatture_nuovo = $row_numero_fattura['anno_in_corso'];
+                $fattura_nuova = $numero_fattura_nuova.'/'.$anno_fatture_nuovo;
             }
         }
     } else {
@@ -73,7 +92,9 @@ function nuovoCodiceFattura($idFattura, $codSezionale) {
         $sezionale_fattura_nuova = $codSezionale;
 
         //$fattura_nuova = ''.$anno_fattura_nuova.$mese_fattura_nuova.'-'.$numero_fattura_nuova.'/'.$sezionale_fattura_nuova;
-        $fattura_nuova = $numero_fattura_nuova;
+        //$fattura_nuova = $numero_fattura_nuova;
+        $anno_fatture_nuovo = $row_numero_fattura['anno_in_corso'];
+        $fattura_nuova = $numero_fattura_nuova.'/'.$anno_fatture_nuovo;
     }
 
     //echo '<li>$fattura_nuova = '.$fattura_nuova.'</li>';
@@ -327,7 +348,8 @@ function creaFatturaPDF($idFatt, $echo = false) {
                         $margine_y_codice_fattura = 51;
 
                         $pdf->SetXY($margine_x_codice_fattura, $margine_y_codice_fattura);
-                        $pdf->Cell(36, 5, '' . $row_1['codice'] . '/' . $row_1['sezionale'], 0, 0, 'C', 0, 0);
+                        //$pdf->Cell(36, 5, '' . $row_1['codice'] . '/' . $row_1['sezionale'], 0, 0, 'C', 0, 0);
+                        $pdf->Cell(36, 5, '' . $row_1['codice_ricerca'] . '', 0, 0, 'C', 0, 0);
 
                         $pdf->SetXY($margine_x_codice_fattura + 38, $margine_y_codice_fattura);
                         $pdf->Cell(17, 5, '' . $row_1['data_creazione'] . '', 0, 0, 'C', 0, 0);

@@ -167,7 +167,7 @@ function Stampa_HTML_Dettaglio_Anagrafica($tabella, $id) {
                     . "WHERE mdl_user.`id` = " . $rowUtente['Id Moodle'] . " AND mdl_user_info_data.fieldid='1'";
             stampa_table_static_basic($sql_0032, '', 'Stato Utente attuale su Moodle', 'green-jungle', 'fa fa-user');
             echo '</div></div>';
-            echo '<div class="row"><div class="col-md-12 col-sm-12">';
+            /*echo '<div class="row"><div class="col-md-12 col-sm-12">';
             $sql_0031 = "SELECT mdl_user.`id` AS 'Id Moodle', mdl_user.`username`, mdl_user.`email`, "
                     . "DATE_FORMAT(FROM_UNIXTIME(mdl_user.`lastlogin`),'%d-%m-%Y') AS 'Ultimo Login', "
                     . "DATE_FORMAT(FROM_UNIXTIME(mdl_user.`lastaccess`),'%d-%m-%Y') AS 'Ultimo Accesso', "
@@ -178,7 +178,7 @@ function Stampa_HTML_Dettaglio_Anagrafica($tabella, $id) {
                     . "ON mdl_user.id = mdl_user_info_data.userid "
                     . "WHERE mdl_user.`id` = " . $rowUtente['Id Moodle'] . " AND mdl_user_info_data.fieldid=1";
             stampa_table_static_basic($sql_0031, '', 'Stato Utente Su Leolearning al 31/07/2017', 'red-flamingo', 'fa fa-user');
-            echo '</div></div>';
+            echo '</div></div>';*/
 
             echo '<div class="row"><div class="col-md-12 col-sm-12">';
             $sql_0007 = "SELECT dataagg, username, email, passwd, DATE(data_creazione) AS Creazione, DATE(data_scadenza) AS Scadenza, (SELECT nome FROM lista_classi WHERE id = id_classe ) AS Classe, 

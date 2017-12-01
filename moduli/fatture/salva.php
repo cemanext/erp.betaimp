@@ -438,7 +438,7 @@ if (isset($_GET['fn'])) {
                 data_creazione = CURDATE(),
                 data_scadenza = CURDATE(),
                 codice = '" . $fattura_nuova . "',
-                codice_ricerca = CONCAT('" . $fattura_nuova . "/',sezionale),
+                codice_ricerca = CONCAT('" . $fattura_nuova . "-',sezionale),
                 scrittore = '" . addslashes($_SESSION['cognome_nome_utente']) . "',
                 cognome_nome_agente = (SELECT CONCAT(lista_password.cognome,' ', lista_password.nome) FROM lista_password WHERE lista_password.id = lista_fatture.id_agente),
                 cognome_nome_professionista = (SELECT CONCAT(lista_professionisti.cognome,' ', lista_professionisti.nome) FROM lista_professionisti WHERE lista_professionisti.id = lista_fatture.id_professionista),
@@ -463,6 +463,14 @@ if (isset($_GET['fn'])) {
                         FROM lista_fatture WHERE id='" . $idFattura . "'";
                         $rs1 = $dblink->query($sql1);
                         if ($rs1) {
+                        
+                        $sql_007_2 = "UPDATE lista_fatture SET
+                        dataagg = NOW(),
+                        codice_numerico = SUBSTRING_INDEX(`codice`,'/',1),
+                        scrittore = '" . addslashes($_SESSION['cognome_nome_utente']) . "'
+                        WHERE id ='" . $idFattura . "'";
+                        $rs_007_2 = $dblink->query($sql_007_2);
+                            
                             header("Location:" . $referer . "");
                         }
                     }
