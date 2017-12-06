@@ -138,7 +138,7 @@ function Stampa_HTML_index_Fatture($tabella){
                 WHERE lista_fatture_dettaglio.id_professionista>0
                 AND lista_password.id_moodle_user>0
                 AND lista_corsi.id_corso_moodle>0
-                AND NOT  EXISTS (SELECT DISTINCT id_fattura_dettaglio FROM lista_iscrizioni WHERE 1 AND lista_fatture_dettaglio.id=lista_iscrizioni.id_fattura_dettaglio));";
+                AND NOT EXISTS (SELECT DISTINCT id_fattura_dettaglio FROM lista_iscrizioni WHERE 1 AND lista_fatture_dettaglio.id=lista_iscrizioni.id_fattura_dettaglio));";
                 //AND lista_fatture_dettaglio.id NOT IN (SELECT DISTINCT id_fattura_dettaglio FROM lista_iscrizioni WHERE 1));";
                 $rs_0001 = $dblink->query($sql_0001);
                 
