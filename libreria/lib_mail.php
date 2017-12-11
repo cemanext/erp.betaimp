@@ -661,7 +661,7 @@ function inviaEmailCorsoCompletato($idIscrione,$updateIscrizione) {
         //require_once BASE_ROOT . "classi/phpmailer/class.phpmailer.php";
         $messaggio = new PHPmailer();
         $messaggio->IsHTML(true);
-        $messaggio->SMTPDebug  = 2;
+        //$messaggio->SMTPDebug  = 2;
         $messaggio->IsSMTP();
         # I added SetLanguage like this
         $messaggio->SetLanguage('it', BASE_ROOT . 'classi/phpmailer/language/');
@@ -1129,19 +1129,22 @@ function inviaEmailTemplate_Base($idProfessionista, $nome_tamplate, $idFatturaDe
         }
     }
 
-    if(EMAIL_DEBUG){
+    
+    $messaggio_da_inviare = str_replace('_XXX_EMAIL_XXX_', $destinatario, $messaggio_da_inviare);
+    $messaggio_da_inviare = str_replace('_XXX_', $cognome_nome_professionista, $messaggio_da_inviare);
+    $messaggio_da_inviare = str_replace('_CREDENZIALI_', $dati_credenziali, $messaggio_da_inviare);
+    $messaggio_da_inviare = str_replace('_NOME_DEL_CORSO_', $nome_del_corso, $messaggio_da_inviare);
+    $messaggio_da_inviare = str_replace('_NOME_ABBONAMENTO_', $nome_del_corso, $messaggio_da_inviare);
+
+    
+    if(EMAIL_DEBUG || $nome_tamplate == 'attivaAbbonamentoFatturaErroreMail' || $nome_tamplate == 'attivaCorsoFatturaErroreMail'){
         if (strlen($destinatario_admin) > 5) {
             $destinatario = $destinatario_admin;
         }else{
             $destinatario = trim(EMAIL_TO_SEND_DEBUG);
         }
     }
-
-    $messaggio_da_inviare = str_replace('_XXX_', $cognome_nome_professionista, $messaggio_da_inviare);
-    $messaggio_da_inviare = str_replace('_CREDENZIALI_', $dati_credenziali, $messaggio_da_inviare);
-    $messaggio_da_inviare = str_replace('_NOME_DEL_CORSO_', $nome_del_corso, $messaggio_da_inviare);
-    $messaggio_da_inviare = str_replace('_NOME_ABBONAMENTO_', $nome_del_corso, $messaggio_da_inviare);
-
+    
     //intestazioni e corpo dell'email
     $messaggio->From = $mittente;
     $messaggio->FromName = $mittente;
