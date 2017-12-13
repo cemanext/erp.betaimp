@@ -806,7 +806,7 @@ if (isset($_GET['fn'])) {
                 $sql_0102 = "UPDATE lista_fatture_dettaglio SET id_sezionale = '$idSezionale', sezionale = '$sezionale' WHERE id_fattura = '$idFattura' ";
                 $ok = $ok && $dblink->query($sql_0102);
                 
-                $sql_0103 = "UPDATE lista_fatture SET codice_ricerca = CONCAT(codice,'/',sezionale) WHERE id = '$idFattura'";
+                $sql_0103 = "UPDATE lista_fatture SET codice_ricerca = CONCAT(codice,'-',sezionale) WHERE id = '$idFattura'";
                 $ok = $ok && $dblink->query($sql_0103);
                 
                 list($idSezPrev, $sezPrev) = $dblink->get_row("SELECT id_sezionale, sezionale FROM lista_preventivi WHERE id = '".$idPreventivo."'");
