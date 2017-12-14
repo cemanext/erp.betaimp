@@ -93,7 +93,7 @@ if (isset($_GET['fn'])) {
                                 data_creazione = '" . GiraDataOra($dataCreazioneEmissione) . "',
                                 data_scadenza = '" . GiraDataOra($dataScadenzaEmissione) . "',
                                 codice = '" . $fattura_nuova . "',
-                                codice_ricerca = CONCAT('" . $fattura_nuova . "/',sezionale),
+                                codice_ricerca = CONCAT('" . $fattura_nuova . "-',sezionale),
                                 pagamento = '" . $tipoPagamento . "',
                                 id_fatture_banche = '" . $tipoBanca . "',
                                 scrittore = '" . addslashes($_SESSION['cognome_nome_utente']) . "',
@@ -659,7 +659,7 @@ if (isset($_GET['fn'])) {
             $fattura_nuova = nuovoCodiceFattura($idFattura, $codSezionale);
 
             $sql_000001 = "INSERT INTO lista_fatture (`id`, `id_fattura_nota_credito`, `id_area`, `id_fatture_banche`, `id_sezionale`, `sezionale`, `dataagg`, `data_creazione`, `data_scadenza`, `id_contatto`, `id_professionista`, `id_azienda`, `id_preventivo`, `codice_preventivo`, `gestore`, `codice`, `codice_ricerca`, `barcode`, `causale`, `pagamento`, `importo`, `imponibile`, `sconto`, `iva`, `note`, `scrittore`, `tipo`, `stato`, `id_agente`, `cognome_nome_agente`, `campo_1`, `campo_2`, `campo_3`, `numerico_1`, `numerico_2`, `id_campagna`, `id_calendario`, `data_invio`, `stato_invio`, `cognome_nome_professionista`, `ragione_sociale_azienda`, `nome_campagna`, `banca_pagamento`) 
-                    SELECT '', `id_fattura_nota_credito`, `id_area`, `id_fatture_banche`, `id_sezionale`, `sezionale`, NOW(), CURDATE(), CURDATE(), `id_contatto`, `id_professionista`, `id_azienda`, `id_preventivo`, `codice_preventivo`, `gestore`, '" . $fattura_nuova . "', '" . $fattura_nuova . "/" . $codSezionale . "', `barcode`, `causale`, `pagamento`, (0 - `importo`), (0 - `imponibile`), `sconto`, `iva`, `note`, '" . addslashes($_SESSION['cognome_nome_utente']) . "', 'Nota di Credito', 'Nota di Credito " . $statoPagamento . "', `id_agente`, `cognome_nome_agente`, `campo_1`, `campo_2`, `campo_3`, `numerico_1`, `numerico_2`, `id_campagna`, `id_calendario`, `data_invio`, `stato_invio`, `cognome_nome_professionista`, `ragione_sociale_azienda`, `nome_campagna`, `banca_pagamento` 
+                    SELECT '', `id_fattura_nota_credito`, `id_area`, `id_fatture_banche`, `id_sezionale`, `sezionale`, NOW(), CURDATE(), CURDATE(), `id_contatto`, `id_professionista`, `id_azienda`, `id_preventivo`, `codice_preventivo`, `gestore`, '" . $fattura_nuova . "', '" . $fattura_nuova . "-" . $codSezionale . "', `barcode`, `causale`, `pagamento`, (0 - `importo`), (0 - `imponibile`), `sconto`, `iva`, `note`, '" . addslashes($_SESSION['cognome_nome_utente']) . "', 'Nota di Credito', 'Nota di Credito " . $statoPagamento . "', `id_agente`, `cognome_nome_agente`, `campo_1`, `campo_2`, `campo_3`, `numerico_1`, `numerico_2`, `id_campagna`, `id_calendario`, `data_invio`, `stato_invio`, `cognome_nome_professionista`, `ragione_sociale_azienda`, `nome_campagna`, `banca_pagamento` 
                     FROM lista_fatture WHERE id = '" . $idFattura . "'";
             $rs_000001 = $dblink->query($sql_000001);
             if ($rs_000001) {
