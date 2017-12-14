@@ -120,6 +120,14 @@ if (isset($_GET['fn'])) {
                                         FROM lista_fatture WHERE id='" . $idFattura . "'";
                                         $rs1 = $dblink->query($sql1);
                                         if ($rs1) {
+                                        
+                                        //MODIFICA EMETTI MULTIPLO
+                                        $sql_007_2_multiplo = "UPDATE lista_fatture SET
+                                        dataagg = NOW(),
+                                        codice_numerico = SUBSTRING_INDEX(`codice`,'/',1),
+                                        scrittore = '" . addslashes($_SESSION['cognome_nome_utente']) . "'
+                                        WHERE id ='" . $idFattura . "'";
+                                        $rs_007_2_multiplo = $dblink->query($sql_007_2_multiplo);
                                             
                                         }
                                     }
