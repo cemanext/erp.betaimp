@@ -14,10 +14,10 @@ if (isset($_GET['idA'])) {
 }
 
 if (isset($_GET['idFatt'])) {
-    if (strlen($_SESSION['passwd_email_utente']) > 2 && strpos($_SESSION['email_utente'], "@betaformazione.com") > 0) {
+    if (strlen($_SESSION['passwd_email_utente']) > 2 && strpos($_SESSION['email_utente'], "@betaimprese.com") > 0) {
         $mitt = $_SESSION['email_utente'];
     } else {
-        $mitt = 'erp@betaformazione.com';
+        $mitt = 'vitali@betaimprese.com';
     }
 
     creaFatturaPDF($_GET['idFatt'], false);
@@ -26,8 +26,8 @@ if (isset($_GET['idFatt'])) {
     $row = $dblink->get_row($sql, true);
 
     $n_progetto = str_replace("/", "-", $row['codice']);
-    $filename = "BetaFormazione_Fattura_" . $row['codice'] . "-" . $row['sezionale'] . ".pdf";
-    $filename_oggetto = "Fattura " . $row['codice'] . "/" . $row['sezionale'] . "";
+    $filename = "BetaImprese_Fattura_" . $n_progetto . "-" . $row['sezionale'] . ".pdf";
+    $filename_oggetto = "Fattura " . $row['codice'] . "-" . $row['sezionale'] . "";
     $causale = $row['causale'];
 
     $id_Fattura = $_GET['idFatt'];
@@ -38,7 +38,7 @@ if (isset($_GET['idFatt'])) {
     $dest = $emailDesti;
     $dest_cc = '';
     $dest_bcc = '';
-    $ogg = 'Beta Formazione s.r.l. -  ';
+    $ogg = 'Beta Imprese s.r.l. -  ';
     $mess = 'Gentile Cliente,<br>
             in allegato alla presente Le inviamo la copia (in formato PDF) della fattura relativa ai servizi da noi forniti.<br>
             Il presente invio SOSTITUISCE INTEGRALMENTE quello effettuato in modo tradizionale a mezzo servizio postale .<br>
@@ -53,15 +53,10 @@ if (isset($_GET['idFatt'])) {
             Il file &egrave; in formato pdf di seguito il link del software gratuito per la visualizzazione e la stampa di questo formato:<br>
             http://get.adobe.com/it/reader/<br><br>
 
-	<br><img src="http://landing.betaformazione.com/wp-content/uploads/2017/03/logo-head.png" alt="Beta Formazione s.r.l." title="Beta Formazione s.r.l.">
+	<br><img src="http://betaimprese.com/wp-content/uploads/2017/03/BETA-IMPRESE-DEFINITIVO_ALTA-RISOLUZIONE-e1489148974244.png" alt="Beta Imprese s.r.l." title="Beta Imprese s.r.l." width="250px">
 	<br>
-	<h5>Ente n° 8124, accreditato alla Regione Emilia-Romagna<br>
-	con D.G.R. n. 481 dell’11 Aprile 2011<br>
-	Azienda operante con sistema di<br>
-	Qualit&agrave; Certificato da QGest<br>
-	Certificato n. Q/00522/14</h5>
-        <b>Sede legale e operativa :via Piratello, 66/68  48022 Lugo (RA)<b><br>
-        Tel. <b>0545 916279</b> - Fax <b>0545 030139</b> - <a href="http://www.betaformazione.com/">www.betaformazione.com</a>
+        <b>Sede legale e operativa : via Risorgimento, 36 - 48022 Lugo (RA)<b><br>
+        Tel. <b>0545 900600</b> - Fax <b>0545 900600</b> - <a href="http://www.betaimprese.com/">www.betaimprese.com</a>
         <h6>Le informazioni contenute in questa e-mail e negli eventuali allegati sono riservate e destinate esclusivamente alla persona sopraindicata. Qualora non foste il destinatario, siete pregati di distruggere questo messaggio e notificarci il problema immediatamente.<br>
         In ogni caso, non dovrete spedire a terzi, copiare, usare o diffondere il contenuto di questa e-mail e degli eventuali allegati. Si ricorda che la diffusione l\'utilizzo e/o la conservazione dei dati ricevuti per errore costituiscono violazione alle disposizioni del D.lgs. n. 196/2003 (Codice in materia di protezione dei dati personali) oltre a costituire violazione di carattere penale ai sensi dell\'art. 616 C.P.
         </h6>';

@@ -456,7 +456,7 @@ function creaFatturaPDF($idFatt, $echo = false) {
                     $codice_originale = $row['codice'];
                     $sezionale_originale = $row['sezionale'];
 
-                    $filename = "BetaFormazione_Fattura_" . $codice . "-" . $sezionale_originale . ".pdf";
+                    $filename = "BetaImprese_Fattura_" . $codice . "-" . $sezionale_originale . ".pdf";
 
                     //$pdf->SetTextColor(0,0,0);
                     //$pdf->SetFillColor(255,255,255);

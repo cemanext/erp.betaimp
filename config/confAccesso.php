@@ -289,7 +289,7 @@ if ($_SESSION['livello_utente'] == 'amministratore') {
     $_SESSION['email_utente']           = null;
     $_SESSION['stato_utente']           = null;
 
-    header("Location: http://elearning.betaformazione.com/login/index.php");
+    header("Location: ".MOODLE_DOMAIN_NAME."/login/index.php");
     die();
 } else {
 

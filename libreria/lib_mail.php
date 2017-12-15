@@ -432,9 +432,9 @@ function inviaEmailFatturaDaId($idFattura,$updateFattura) {
     $row = $dblink->get_row($sql,true);
     
     $n_progetto = str_replace("/", "-", $row['codice']);
-    $filename = "BetaFormazione_Fattura_" . $row['codice'] . "-" . $row['sezionale'] . ".pdf";
+    $filename = "BetaImprese_Fattura_" . $n_progetto . "-" . $row['sezionale'] . ".pdf";
     $allegato_1 = $filename;
-    $filename_oggetto = "Fattura " . $row['codice'] . "/" . $row['sezionale'] . "";
+    $filename_oggetto = "Fattura " . $row['codice'] . "-" . $row['sezionale'] . "";
     $causale = $row['causale'];
 
     $emailDesti = $dblink->get_row("SELECT email, ragione_sociale FROM lista_aziende WHERE id = '".$row['id_azienda']."'", true);
