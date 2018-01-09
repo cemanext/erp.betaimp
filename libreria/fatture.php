@@ -63,7 +63,9 @@ function nuovoCodiceFattura($idFattura, $codSezionale) {
 	WHERE `codice` LIKE '%/%' 
 	AND lista_fatture.sezionale = '" . $codSezionale . "'
 	AND codice>0
+	AND YEAR(data_creazione) = YEAR(CURDATE())
 	ORDER BY codice_numerico DESC LIMIT 1";
+	
     $rs_numero_fattura = $dblink->get_results($sql_numero_fattura);
     //echo '<li>$sql_numero_fattura = '.$sql_numero_fattura.'</li>';
     if (!empty($rs_numero_fattura)) {

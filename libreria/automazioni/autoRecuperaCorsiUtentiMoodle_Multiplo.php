@@ -21,12 +21,35 @@ if (DISPLAY_DEBUG) {
     //AND lista_password.id_moodle_user=152
 }
 
-$rs_utente_entrato = $dblink->get_results("SELECT id FROM ".MOODLE_DB_NAME.".mdl_user WHERE DATE(FROM_UNIXTIME(lastaccess))=CURDATE() AND HOUR(FROM_UNIXTIME(lastaccess)) = HOUR(NOW())");
+if(isset($_GET['idUtente'])){
+    $idUtente = $_GET['idUtente'];
+    if(DISPLAY_DEBUG) echo '<li style="color:green;">$idUtente = '.$idUtente.'</li>';
+    
+    $rs_utente_entrato = $dblink->get_results("SELECT id, username FROM ".MOODLE_DB_NAME.".mdl_user WHERE id='".$idUtente."'");
+}else{
+    $rs_utente_entrato = $dblink->get_results("SELECT id, username FROM ".MOODLE_DB_NAME.".mdl_user WHERE DATE(FROM_UNIXTIME(lastaccess))=CURDATE() AND HOUR(FROM_UNIXTIME(lastaccess)) = HOUR(NOW()) ORDER BY RAND() LIMIT 1");
+}
 
 foreach($rs_utente_entrato as $row_utente_entrato){
     $id_utente_entrato = $row_utente_entrato['id'];
+    $username_utente_entrato = $row_utente_entrato['username'];
+    if(DISPLAY_DEBUG){ 
+        echo '<li style="color:blue;">$id_utente_entrato = '.$id_utente_entrato.'</li>';
+        echo '<li style="color:blue;">$username_utente_entrato = '.$username_utente_entrato.'</li>'; 
+    }
+    $sql_successiva = "SELECT id FROM ".MOODLE_DB_NAME.".mdl_user 
+    WHERE YEAR(DATE(FROM_UNIXTIME(lastaccess)))=YEAR(CURDATE()) 
+    AND MONTH(DATE(FROM_UNIXTIME(lastaccess))) >=10 
+    AND id!='".$id_utente_entrato."' ORDER BY RAND() LIMIT 1";
+    $rs_utente_successivo = $dblink->get_results($sql_successiva);
+    //echo '<li>$sql_successiva = '.$sql_successiva.'</li>';
 
-    if (DISPLAY_DEBUG) echo '<h1>$id_utente_entrato = '.$id_utente_entrato.'</h1>';
+    foreach($rs_utente_successivo as $row_utente_successivo){
+        $id_utente_successivo = $row_utente_successivo['id'];
+        if(DISPLAY_DEBUG) echo '<li>$id_utente_successivo = '.$id_utente_successivo.'</li>';
+    }
+
+    if(DISPLAY_DEBUG) echo '<h1>$id_utente_entrato = '.$id_utente_entrato.'</h1>';
 
     $sql_lista_attivazioni_manuale = "SELECT  mdl_enrol.courseid, 
     mdl_user_enrolments.userid , 
@@ -84,7 +107,7 @@ foreach($rs_utente_entrato as $row_utente_entrato){
             echo '<br>$data_inizio_iscrizione_manuale = '.$data_inizio_iscrizione_manuale = $row_lista_attivazioni_manuale['data_inizio_iscrizione_manuale'];
             echo '<br>$data_fine_iscrizione_manuale = '.$data_fine_iscrizione_manuale = $row_lista_attivazioni_manuale['data_fine_iscrizione_manuale'];
             echo '<br>$id_utente_enrolments = '.$id_utente_enrolments = $row_lista_attivazioni_manuale['id_user_enrolments'];
-
+            
             echo "<br><br>";
         }else{
             $id_utente_moodle = $row_lista_attivazioni_manuale['userid'];
@@ -135,8 +158,8 @@ foreach($rs_utente_entrato as $row_utente_entrato){
                     "id_corso" => $id_corso['id'],
                     "id_classe" => 0,
                     "id_professionista" => $idProfessionista,
-                    //"data_inizio_iscrizione" => $data_inizio_corso_singolo,
-                    //"data_fine_iscrizione" => $data_scadenza_corso_singolo,
+                    "data_inizio_iscrizione" => $data_inizio_corso_singolo,
+                    "data_fine_iscrizione" => $data_scadenza_corso_singolo,
                     "data_inizio" =>  date("Y-m-d H:i:s", $timestart),
                     "data_fine" => date("Y-m-d H:i:s", $timeend),
                     "nome_corso" => $dblink->filter($id_corso['nome_prodotto']),
@@ -151,8 +174,10 @@ foreach($rs_utente_entrato as $row_utente_entrato){
                    //$ok = $dblink->update(DB_NAME.".lista_iscrizioni", $update, array("id" => $controllo['id'], "stato"=>"In Attesa"));
                    $ok = $dblink->update(DB_NAME.".lista_iscrizioni", $update, array("id" => $controllo['id'], "stato"=>"In Attesa di Moodle"));
                    if($ok){
-                       if (DISPLAY_DEBUG) echo '<li style="color: GREEN;"> $dblink->update OK !</li>';
+                       //if (DISPLAY_DEBUG) echo '<li style="color: GREEN;"> $dblink->update OK !</li>';
+                       echo '<li style="color: GREEN;"> $dblink->update OK !</li>';
                        if (DISPLAY_DEBUG) echo $dblink->get_query()."<br>";
+                       //echo $dblink->get_query()."<br>";
                        $log->log_all_errors('autoRecuperaCorsiUtentiMoodleManuale.php -> $dblink->update OK ! [id_utente_moodle = '.$id_utente_moodle.']','OK');
                    }
                 }else{
@@ -182,6 +207,7 @@ foreach($rs_utente_entrato as $row_utente_entrato){
 
                 $ok = $dblink->insert(DB_NAME.".lista_iscrizioni", $insert);
                 if (DISPLAY_DEBUG) echo '<pre>$insert = '.print_r($insert).'</pre>';
+                //echo '<pre>$insert = '.print_r($insert).'</pre>';
             }
 
 
@@ -201,4 +227,9 @@ foreach($rs_utente_entrato as $row_utente_entrato){
 
 if (DISPLAY_DEBUG) echo '<li>'.date('Y-m-d H:i:s').'</li>';
 
+if($id_utente_successivo>0){
+    if(DISPLAY_DEBUG) echo '<center>Attendere 10 Secondi ... </center><META HTTP-EQUIV="Refresh" CONTENT="10; url='.BASE_URL.'/libreria/automazioni/autoRecuperaCorsiUtentiMoodle_Multiplo.php?idUtente='.$id_utente_successivo.'">';
+}else{
+    if(DISPLAY_DEBUG) echo '<li>FINITO</li>';
+}
 ?>
