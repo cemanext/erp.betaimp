@@ -11,10 +11,10 @@ WHERE lista_password.id_professionista = lista_iscrizioni.id_professionista AND 
 $dblink->query($sql_0005);
 */
 
-$sql_00055 = "UPDATE  ".DB_NAME.".lista_password, ".MOODLE_DB_NAME.".mdl_user_info_data
+/*$sql_00055 = "UPDATE  ".DB_NAME.".lista_password, ".MOODLE_DB_NAME.".mdl_user_info_data
 SET lista_password.data_scadenza = STR_TO_DATE(mdl_user_info_data.data,'%d/%m/%Y') 
 WHERE lista_password.id_moodle_user = mdl_user_info_data.userid AND mdl_user_info_data.fieldid=1 AND mdl_user_info_data.data !=''";
-$dblink->query($sql_00055);
+$dblink->query($sql_00055);*/
 
 echo '<h1>autoRecuperaCorsiUtentiMoodleManuale_StoricoNonAttivi</h1>';
 echo '<li>DB_HOST = '.DB_HOST.'</li>';
