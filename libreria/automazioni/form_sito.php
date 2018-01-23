@@ -11,7 +11,7 @@ if(isset($_GET['id']) && !empty($_GET['id'])){
 if(isset($_GET['url']) && !empty($_GET['url'])){
     $urlReferer = $_GET['url'];
 }else{
-    $urlReferer = $_SERVE['referer'];
+    $urlReferer = $_SERVER['HTTP_REFERER'];
 }
 
 ?>
