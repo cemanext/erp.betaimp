@@ -421,6 +421,9 @@ function stampa_bootstrap_form_horizontal($tabella,$id,$titolo,$action="".BASE_U
     foreach ($arrayCampi as $key => $campo) {
 
         if(trim($arrayTipoCampi[$key])=="hidden"){
+            if($arrayReturn['forza_valore_default'][$campo] == true || empty($row[$key])){
+                $row[$key] = $arrayReturn['default'][$campo];
+            }
             print_hidden($campo,$row[$key]);
             continue;
         }
@@ -439,6 +442,9 @@ function stampa_bootstrap_form_horizontal($tabella,$id,$titolo,$action="".BASE_U
             case "input":
                 echo "<label class=\"col-md-$colNum control-label\">".$arrayReturn['campi_etichette'][$key]."</label>
                         <div class=\"col-md-$inputColNum\">";
+                        if($arrayReturn['forza_valore_default'][$campo] == true || empty($row[$key])){
+                            $row[$key] = $arrayReturn['default'][$campo];
+                        }
                         print_input($campo,$row[$key],$arrayReturn['campi_etichette'][$key],in_array($campo, $arrayCampiNonEditabili));
                     echo "</div>";
             break;
@@ -446,6 +452,9 @@ function stampa_bootstrap_form_horizontal($tabella,$id,$titolo,$action="".BASE_U
             case "hidden":
                 echo "<label class=\"col-md-$colNum control-label\">".$arrayReturn['campi_etichette'][$key]."</label>
                         <div class=\"col-md-$inputColNum\">";
+                        if($arrayReturn['forza_valore_default'][$campo] == true || empty($row[$key])){
+                            $row[$key] = $arrayReturn['default'][$campo];
+                        }
                         print_hidden($campo,$row[$key],$arrayReturn['campi_etichette'][$key],in_array($campo, $arrayCampiNonEditabili));
                     echo "</div>";
             break;
@@ -843,7 +852,7 @@ function print_select2($sql,$nomeSelect,$valoreSelezionato="",$ajaxFunction = ""
 
 function print_multi_select($sql,$nomeSelect,$valoreSelezionato="",$ajaxFunction = "", $echo = true, $classi="mt-multiselect", $extra_data=""){
     global $dblink;
-    $select= '<select class="form-control '.$classi.'" multiple="multiple" data-label="left" data-select-all="true" data-width="100%"  data-height="300" data-filter="true" data-action-dropdownhide="true" '.$extra_data.' id="'.$nomeSelect.'" name="'.$nomeSelect.'" '.($ajaxFunction!="" ? "onchange=\"".$ajaxFunction."(this);\"" : "").'>';
+    $select= '<select class="form-control '.$classi.'" multiple="multiple" data-label="left" data-select-all="true" data-width="100%"  data-height="300" data-filter="true" data-action-dropdownhide="true" '.$extra_data.' id="'.str_replace("[]", "", $nomeSelect).'" name="'.$nomeSelect.'" '.($ajaxFunction!="" ? "onchange=\"".$ajaxFunction."(this);\"" : "").'>';
     $res = $dblink->get_results($sql);
     $i = 0;
     //if($valoreSelezionato==="") {
@@ -943,6 +952,10 @@ function get_campi_tabella($dati, $ret = array()){
 
                 case "default":
                     $ret['default'][$value['campo']] = $val;
+                break;
+            
+                case "forza_valore_default":
+                    $ret['forza_valore_default'][$value['campo']] = $val;
                 break;
 
                 case "sql":

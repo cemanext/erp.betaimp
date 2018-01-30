@@ -2,7 +2,8 @@
 
 /** FUNZIONI DI CROCCO */
 function Stampa_HTML_index_Corsi($tabella){
-    global $table_listaCorsi, $table_listaClassi, $table_calendarioEsami, $table_documentiAttestati;
+    global $table_listaCorsi, $table_listaClassi, $table_calendarioEsami, $table_documentiAttestati,
+           $table_listaIscrizioniPartecipanti;
     
     switch($tabella){
 
@@ -12,6 +13,32 @@ function Stampa_HTML_index_Corsi($tabella){
             $where = $table_documentiAttestati['index']['where'];
             $ordine = $table_documentiAttestati['index']['order'];
             $titolo = 'Elenco Attestati';
+            $sql_0001 = "SELECT ".$campi_visualizzati." FROM ".$tabella." WHERE $where $ordine";
+            //echo '<li>$sql_0001 = '.$sql_0001.'</li>';
+            stampa_table_datatables_ajax($sql_0001, "datatable_ajax", $titolo, '', '', false);
+            //stampa_table_datatables_responsive($sql_0001, $titolo, 'tabella_base');
+        break;
+    
+        case 'attestati_in_attesa':
+            $tabella = "lista_iscrizioni";
+            $campi_visualizzati = $table_listaIscrizioniPartecipanti['index']['campi'];
+            $campi_visualizzati = str_replace("data_inizio,", "data_completamento,", $campi_visualizzati);
+            $where = "stato_invio_attestato LIKE 'In Attesa di Invio'";
+            $ordine = $table_listaIscrizioniPartecipanti['index']['order'];
+            $titolo = 'Elenco Attestati - In Attesa di Invio';
+            $sql_0001 = "SELECT ".$campi_visualizzati." FROM ".$tabella." WHERE $where $ordine LIMIT 100";
+            //echo '<li>$sql_0001 = '.$sql_0001.'</li>';
+            //stampa_table_datatables_ajax($sql_0001, "datatable_ajax", $titolo, '', '', false);
+            stampa_table_datatables_responsive($sql_0001, $titolo, 'tabella_base');
+        break;
+    
+        case 'attestati_inviati':
+            $tabella = "lista_iscrizioni";
+            $campi_visualizzati = $table_listaIscrizioniPartecipanti['index']['campi'];
+            $campi_visualizzati = str_replace("data_inizio,", "data_completamento,data_invio_attestato,", $campi_visualizzati);
+            $where = "stato_invio_attestato LIKE 'Inviata'";
+            $ordine = $table_listaIscrizioniPartecipanti['index']['order'];
+            $titolo = 'Elenco Attestati - Inviati';
             $sql_0001 = "SELECT ".$campi_visualizzati." FROM ".$tabella." WHERE $where $ordine";
             //echo '<li>$sql_0001 = '.$sql_0001.'</li>';
             stampa_table_datatables_ajax($sql_0001, "datatable_ajax", $titolo, '', '', false);
@@ -125,11 +152,15 @@ function Stampa_HTML_Dettaglio_Corsi($tabella,$id){
             stampa_table_datatables_responsive($sql_0001, 'Esami Disponibili', 'tabella_base3', 'blue-steel');
             echo '</div></div>';
          
+            //CONCAT('<span class=\"btn sbold uppercase btn-outline blue\">',stato,'</span>') AS stato,
             echo '<div class="row"><div class="col-md-12 col-sm-12">';
             $sql_0001 = "SELECT 
+            CONCAT('<a class=\"btn btn-circle btn-icon-only yellow btn-outline\" href=\"".BASE_URL."/moduli/anagrafiche/dettaglio.php?tbl=lista_professionisti&id=',id_professionista,'\" title=\"DETTAGLIO PROFESSIONISTA\" alt=\"DETTAGLIO PROFESSIONISTA\"><i class=\"fa fa-search\"></i></a>') AS 'fa-search',
             data, ora, etichetta As Tipo, oggetto, 
             (SELECT CONCAT('<span class=\"btn sbold uppercase btn-outline blue\">',cognome, ' ', nome,'</span>') FROM lista_professionisti WHERE id=id_professionista) AS 'Iscritto', 
-            CONCAT('<span class=\"btn sbold uppercase btn-outline blue\">',stato,'</span>') AS stato,
+            IF(id_preventivo > 0, 
+                (SELECT IF(stato LIKE 'Paga%', 'SI', 'NO') FROM lista_fatture WHERE lista_fatture.id_preventivo = calendario.id_preventivo ORDER BY data_creazione DESC LIMIT 1),
+               'No Fattura') AS fattura_pagata,
             CONCAT('<a class=\"btn btn-circle btn-icon-only red-thunderbird btn-outline\" href=\"cancella.php?tbl=calendario_esami&idCalendario=',id,'&idCalendarioCorso=',id_calendario_0,'&idIscrizione=',id_iscrizione,'\" title=\"DISISCRIVI DAL CORSO\" alt=\"DISISCRIVI DAL CORSO\"><i class=\"fa fa-user-times\"></i></a>') AS 'fa-user-times' 
             FROM calendario
             WHERE id_prodotto='" . $idProdotto."'
