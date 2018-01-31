@@ -11,7 +11,7 @@ if (isset($_GET['idMenu'])) {
     $row_padre = $dblink->get_row($sql_padre, true);
     if(!empty($row_padre)){
         $nome_del_padre = $row_padre['tipo'];
-        $sql_id_padre = "SELECT id FROM `lista_menu` WHERE `nome` = '".addslashes($nome_del_padre)."' AND tipo='betaform_erp' AND livello='".$_SESSION['livello_utente']."'";
+        $sql_id_padre = "SELECT id FROM `lista_menu` WHERE `nome` = '".addslashes($nome_del_padre)."' AND tipo='betaimprese_erp' AND livello='".$_SESSION['livello_utente']."'";
         $row_id_padre = $dblink->get_row($sql_id_padre, true);
         if(!empty($row_id_padre)){
             $id_del_menu_padre = $row_id_padre['id'];
