@@ -678,7 +678,13 @@ if (isset($_GET['fn'])) {
                         WHERE id_fattura = '" . $idFattura . "'";
                 $rs_000002 = $dblink->query($sql_000002);
                 if ($rs_000002) {
-
+                    
+                    $sql_000004 = "UPDATE lista_fatture SET
+                        dataagg = NOW(),
+                        codice_numerico = SUBSTRING_INDEX(`codice`,'/',1),
+                        scrittore = '" . addslashes($_SESSION['cognome_nome_utente']) . "'
+                        WHERE id ='" . $id_Fattura_Nota_di_Credito_inserita . "'";
+                        $rs_000004 = $dblink->query($sql_000004);
 
                     if ($statoPagamento == 'Totale') {
                         $sql_000003 = "UPDATE lista_fatture 
