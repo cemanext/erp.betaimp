@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-var BASE_URL_HOST = "http://"+window.location.hostname+"";
+var BASE_URL_HOST = location.protocol+"//"+window.location.hostname+"";
 
 function scriviDentroListaPreventiviDettaglioTXT(selettore){
     
@@ -21,7 +21,7 @@ function scriviDentroListaPreventiviDettaglioTXT(selettore){
 
 $( document ).ready(function() {
     
-    BASE_URL_HOST = "http://"+window.location.hostname+"";
+    BASE_URL_HOST = location.protocol+"//"+window.location.hostname+"";
     
     toastr.options = {
         "closeButton": false,
@@ -651,18 +651,24 @@ $( document ).ready(function() {
     }); 
     
     $("#myModalRichiestaNegativa #okButtonRichiestaNegativa").on( "click", function(event) {
-        
         event.preventDefault();
-        var posting = jQuery.post( BASE_URL_HOST+"/moduli/anagrafiche/salva.php?fn=preventivoNegativo" , jQuery( "#idFromRichiestaNegativa" ).serializeArray() );
-        posting.done(function(data) {
-            var tmp = data.split(':');
-            $("#myModalRichiestaNegativa").modal('hide');     // dismiss the dialog
-            location.href = urlReferer + "&res=1";
-            //alert( "Data Loaded: " + data );
-        }).fail(function() {
-            toastr.alert("Impossibile trasferire la richiesta!", "Errore");
-            $("#myModalRichiestaNegativa").modal('hide'); 
-        });
+        
+        var valoreObiezione = $("#idFromRichiestaNegativa #idObiezione").val();
+        
+        if(valoreObiezione > 0){
+            var posting = jQuery.post( BASE_URL_HOST+"/moduli/anagrafiche/salva.php?fn=preventivoNegativo" , jQuery( "#idFromRichiestaNegativa" ).serializeArray() );
+            posting.done(function(data) {
+                var tmp = data.split(':');
+                $("#myModalRichiestaNegativa").modal('hide');     // dismiss the dialog
+                location.href = urlReferer + "&res=1";
+                //alert( "Data Loaded: " + data );
+            }).fail(function() {
+                toastr.alert("Impossibile trasferire la richiesta!", "Errore");
+                $("#myModalRichiestaNegativa").modal('hide'); 
+            });
+        }else{
+            alert('Valore obiezione obbligatorio!');    
+        }
     });
     
     $("#myModalRichiestaNegativa #annullaButtonRichiestaNegativa").on( "click", function(event) {

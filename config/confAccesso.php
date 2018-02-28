@@ -6,7 +6,7 @@ if ($_SESSION['livello_utente'] == 'amministratore') {
     $where_lista_listini = "";
     $where_lista_commesse_dettaglio = "";
     $where_lista_fatture = "";
-    $where_calendario = "";
+    $where_calendario = " AND etichetta LIKE 'Nuova Richiesta' ";
     $where_calendario_all = "";
     $where_lista_richieste_stati = "";
     $where_lista_password = " AND livello!='cliente' ";
@@ -46,7 +46,7 @@ if ($_SESSION['livello_utente'] == 'amministratore') {
     $where_lista_listini = "";
     $where_lista_commesse_dettaglio = "";
     $where_lista_fatture = " AND sezionale NOT LIKE 'CN%' AND id_agente!='7' ";
-    $where_calendario = " AND calendario.id_agente!='7' ";
+    $where_calendario = " AND calendario.id_agente!='7' AND etichetta LIKE 'Nuova Richiesta' ";
     $where_calendario_all = " AND calendario.id_agente!='7' ";
     $where_lista_richieste_stati = " AND lista_richieste_stati.livello LIKE 'betaadmin'";
     $where_lista_password = " AND (livello!='cliente' AND livello!='amministratore') ";
@@ -86,7 +86,7 @@ if ($_SESSION['livello_utente'] == 'amministratore') {
     $where_lista_listini = "";
     $where_lista_commesse_dettaglio = "";
     $where_lista_fatture = " AND sezionale NOT LIKE 'CN%' AND id_agente!='7' ";
-    $where_calendario = " AND calendario.id_agente!='7' ";
+    $where_calendario = " AND calendario.id_agente!='7' AND etichetta LIKE 'Nuova Richiesta' ";
     $where_calendario_all = " AND calendario.id_agente!='7' ";
     $where_lista_richieste_stati = " AND lista_richieste_stati.livello LIKE 'betaadmin'";
     $where_lista_password = " AND (livello!='cliente' AND livello!='amministratore') ";
@@ -126,7 +126,7 @@ if ($_SESSION['livello_utente'] == 'amministratore') {
     $where_lista_listini = "";
     $where_lista_commesse_dettaglio = "";
     $where_lista_fatture = " AND sezionale NOT LIKE 'CN%'  AND id_agente!='7' ";
-    $where_calendario = " AND calendario.id_agente!='7' ";
+    $where_calendario = " AND calendario.id_agente!='7' AND etichetta LIKE 'Nuova Richiesta' ";
     $where_calendario_all = " AND calendario.id_agente!='7' ";
     $where_lista_richieste_stati = " AND lista_richieste_stati.livello LIKE 'betaadmin'";
     $where_lista_password = " AND (livello!='cliente' AND livello!='amministratore') ";
@@ -331,16 +331,7 @@ if ($_SESSION['livello_utente'] == 'amministratore') {
 
 $where_lista_menu = " AND `lista_menu`.livello='" . $_SESSION['livello_utente'] . "'";
 
-/* MODULO CONTATTI - CONFIGURAZIONE */
-
-$title_contatti = "Gestione Contatti";
-$description_contatti = "Modulo per la gestione dei contatti";
-$keywords_contatti = "";
-
-$site_name = "Beta Imprese";
-$author = "CEMA NEXT";
-
-$config_tipo_lista_menu = "betaimprese_erp";
+$site_name = SITE_NAME;
 
 include_once(BASE_ROOT . 'config/confTabelle.php');
 include_once(BASE_ROOT . 'libreria/libreria.php');

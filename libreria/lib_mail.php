@@ -8,11 +8,11 @@ require BASE_ROOT.'classi/phpmailer/src/PHPMailer.php';
 require BASE_ROOT.'classi/phpmailer/src/SMTP.php';
 
 
-define("SERVER_HOST_MAIL", "authsmtp.betaformazione.com");
-define("SECURE_SMTP_MAIL", "");
-define("PORT_MAIL", "25");
-define("PASS_MAIL", "p8arEtha@1");
-define("USER_MAIL", "smtp@betaformazione.com");
+define("SERVER_HOST_MAIL", BASE_SERVER_HOST_MAIL);
+define("SECURE_SMTP_MAIL", BASE_SECURE_SMTP_MAIL);
+define("PORT_MAIL", BASE_PORT_MAIL);
+define("PASS_MAIL", BASE_PASS_MAIL);
+define("USER_MAIL", BASE_USER_MAIL);
 
 /*
 define("SERVER_HOST_MAIL", "tls://smtp.office365.com");
@@ -32,10 +32,10 @@ function inviaEmailPreventivo($mitt, $dest, $dest_cc, $dest_bcc, $ogg, $mess, $a
     $verifica = preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$/i", $mitt);
 
     if ($verifica) {
-        //require BASE_ROOT . "classi/phpmailer/class.phpmailer.php";
         $messaggio = new PHPmailer();
         $messaggio->IsHTML(true);
         $messaggio->IsSMTP();
+        $messaggio->CharSet = 'UTF-8';
         # I added SetLanguage like this
         $messaggio->SetLanguage('it', BASE_ROOT . 'classi/phpmailer/language/');
         //  $messaggio->IsSMTP(); // telling the class to use SMTP			//$messaggio->IsSMTP();
@@ -263,8 +263,133 @@ function inviaEmailFattura($mitt, $dest, $dest_cc, $dest_bcc, $ogg, $mess, $alle
     }
 }
 
+//inviare email fattura
+function inviaEmailAttestato($mitt, $dest, $dest_cc, $dest_bcc, $ogg, $mess, $allegato_1, $allegato_2, $PasswdEmailUtente) {
+    global $log;
+
+    //$verifica = preg_match("^[^@ ]+@[^@ ]+\.[^@ \.]+$", $mitt);
+    $verifica = preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$/i", $mitt);
+
+    if ($verifica) {
+        //require BASE_ROOT . "classi/phpmailer/class.phpmailer.php";
+        $messaggio = new PHPmailer();
+        $messaggio->IsHTML(true);
+        $messaggio->IsSMTP();
+        //$messaggio->SMTPDebug  = 2;
+        # I added SetLanguage like this
+        $messaggio->SetLanguage('it', BASE_ROOT . 'classi/phpmailer/language/');
+        //  $messaggio->IsSMTP(); // telling the class to use SMTP			//$messaggio->IsSMTP();
+        $messaggio->SMTPAuth = true;                  // enable SMTP authentication
+        $messaggio->Host = SERVER_HOST_MAIL; // sets the SMTP server
+        $messaggio->SMTPSecure = SECURE_SMTP_MAIL;
+        $messaggio->Port = PORT_MAIL;
+        // set the SMTP port for the GMAIL server
+        $messaggio->Username = USER_MAIL; // SMTP account username
+        $messaggio->Password = PASS_MAIL;        // SMTP account password
+        //intestazioni e corpo dell'email
+        $messaggio->From = $mitt;
+        $messaggio->FromName = $mitt;
+        $messaggio->ConfirmReadingTo = $mitt;
+        $messaggio->AddReplyTo($mitt);
+
+        if(EMAIL_DEBUG){
+            $dest = trim(EMAIL_TO_SEND_DEBUG);
+        }
+        $dest = str_replace(' ', '', $dest);
+        $dest = str_replace(';', ',', $dest);
+        $string = trim($dest);
+        /* Use tab and newline as tokenizing characters as well  */
+        $tok = strtok($string, ",");
+
+        while ($tok !== false) {
+            //echo "Word=$tok<br />";
+            $messaggio->AddAddress(trim($tok));
+            $tok = strtok(",");
+        }
+        
+        if(!EMAIL_DEBUG){
+            if (strlen($dest_cc) > 0) {
+                //$messaggio->AddAddress($dest_cc);
+                $dest_cc = str_replace(' ', '', $dest_cc);
+                $dest_cc = str_replace(';', ',', $dest_cc);
+                $string = trim($dest_cc);
+                /* Use tab and newline as tokenizing characters as well  */
+                $tok = strtok($string, ",");
+
+                while ($tok !== false) {
+                    //echo "Word=$tok<br />";
+                    $messaggio->AddAddress(trim($tok));
+                    $tok = strtok(",");
+                }
+            }
+        }
+
+        if(!EMAIL_DEBUG){
+            //$dest_bcc = EMAIL_TO_SEND_DEBUG.',contino@betaformazione.com';
+            if (strlen($dest_bcc) > 0) {
+                //$messaggio->AddBCC($dest_bcc);
+                $dest_bcc = str_replace(' ', '', $dest_bcc);
+                $dest_bcc = str_replace(';', ',', $dest_bcc);
+                $string = trim($dest_bcc);
+                /* Use tab and newline as tokenizing characters as well  */
+                $tok = strtok($string, ",");
+
+                while ($tok !== false) {
+                    //echo "Word=$tok<br />";
+                    $messaggio->AddBCC(trim($tok));
+                    $tok = strtok(",");
+                }
+            }
+        }
+
+        //	echo '<li>$allegato_1 = '.$allegato_1.'</li>';
+        if (strlen($allegato_1) > 3) {
+            //		echo '<li>fileDoc = lista_fatture/'.$_POST['fileDoc'].'</li>';
+            //echo '<li>----------> $allegato_1 = '.$allegato_1.'</li>';
+            $messaggio->AddAttachment(BASE_ROOT . $allegato_1);
+            //$messaggio->AddAttachment("../media/lista_fatture/'.$allegato_1");
+            //$messaggio->AddAttachment("CEMA-NEXT-BROCHURE-21X21-B.pdf");
+        } else {
+            
+        }
+        if (strlen($allegato_2) > 3) {
+            //		echo '<li>fileDoc = lista_fatture/'.$_POST['fileDoc'].'</li>';
+            //echo '<li>----------> $allegato_2 = '.$allegato_2.'</li>';
+            $messaggio->AddAttachment($allegato_2);
+            //$messaggio->AddAttachment("'.$allegato_2.'");
+        } else {
+            
+        }
+
+        //if (strlen($allegato_3) > 3) {
+            //		echo '<li>fileDoc = lista_fatture/'.$_POST['fileDoc'].'</li>';
+            //echo '<li>----------> $allegato_3 = '.$allegato_3.'</li>';
+            //$messaggio->AddAttachment("../doc_lista_commesse/".$idCommessaTLM."/".$idProcessoTLM."/Offerta.pdf");
+            //$messaggio->AddAttachment("CEMA-NEXT-BROCHURE-21X21-B.pdf");
+        //} else {
+            
+        //}
+
+        //$messaggio->AddBCC('staff@cemanext.it');
+        //$messaggio->AddBCC(trim($mitt));
+        $messaggio->Subject = $ogg;
+        $messaggio->Body = stripslashes($mess);
+
+
+        if (!$messaggio->Send()) {
+            $log->log_all_errors('inviaEmailAttestato -> Email NON Inviata [' . $messaggio->ErrorInfo . '] -> $destinatario = ' . $dest, 'ERRORE');
+            //echo $messaggio->ErrorInfo;
+        } else {
+            //echo '<li>Email Inviata Correttamente !</li>';
+        }
+    }
+}
+
+
 //inviare email
 function inviaEmail($mitt, $dest, $dest_cc, $dest_bcc, $ogg, $mess, $allegato_1, $allegato_2, $allegato_3, $idCommessaTLM, $idProcessoTLM, $PasswdEmailUtente) {
+    global $log;
+
     //$verifica = preg_match("^[^@ ]+@[^@ ]+\.[^@ \.]+$", $mitt);
     $verifica = preg_match("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}$", $mitt);
 
@@ -375,7 +500,8 @@ function inviaEmail($mitt, $dest, $dest_cc, $dest_bcc, $ogg, $mess, $allegato_1,
 
 
         if (!$messaggio->Send()) {
-            echo $messaggio->ErrorInfo;
+            $log->log_all_errors('inviaEmail -> Email NON Inviata [' . $messaggio->ErrorInfo . '] -> $destinatario = ' . $dest, 'ERRORE');
+            //echo $messaggio->ErrorInfo;
         } else {
             //echo '<li>Email Inviata Correttamente !</li>';
         }
@@ -383,6 +509,8 @@ function inviaEmail($mitt, $dest, $dest_cc, $dest_bcc, $ogg, $mess, $allegato_1,
 }
 
 function inviaEmail_Base($mittente, $destinatario, $oggetto_da_inviare, $messaggio_da_inviare) {
+    global $log;
+    
     $messaggio = new PHPmailer();
     $messaggio->IsHTML(true);
 
@@ -424,7 +552,7 @@ function inviaEmail_Base($mittente, $destinatario, $oggetto_da_inviare, $messagg
 
 
     if (!$messaggio->Send()) {
-        echo $messaggio->ErrorInfo;
+        $log->log_all_errors('inviaEmail_Base -> Email NON Inviata [' . $messaggio->ErrorInfo . '] -> $destinatario = ' . $dest, 'ERRORE');
         $return = false;
     } else {
         //echo '<li>Email Inviata Correttamente !</li>';
@@ -444,9 +572,9 @@ function inviaEmailFatturaDaId($idFattura,$updateFattura) {
     $row = $dblink->get_row($sql,true);
     
     $n_progetto = str_replace("/", "-", $row['codice']);
-    $filename = "BetaImprese_Fattura_" . $n_progetto . "-" . $row['sezionale'] . ".pdf";
+    $filename = PREFIX_FILE_PDF_FATTURA . $n_progetto . "-" . $row['sezionale'] . ".pdf";
     $allegato_1 = $filename;
-    $filename_oggetto = "Fattura " . $row['codice'] . "-" . $row['sezionale'] . "";
+    $filename_oggetto = PREFIX_MAIL_OGGETTO_INIVA_FATTURA . $row['codice'] . "/" . $row['sezionale'] . "";
     $causale = $row['causale'];
 
     $emailDesti = $dblink->get_row("SELECT email, ragione_sociale FROM lista_aziende WHERE id = '".$row['id_azienda']."'", true);
@@ -457,7 +585,7 @@ function inviaEmailFatturaDaId($idFattura,$updateFattura) {
 
     $dest = $emailDesti['email'];
     $ragione_sociale = $emailDesti['ragione_sociale'];
-    $ogg = 'Beta Imprese s.r.l. -  ' . $filename_oggetto;
+    $ogg = MAIL_OGGETTO_INVIA_FATTURA . $filename_oggetto;
 
     $sql_template = "SELECT * FROM lista_template_email WHERE nome = 'inviaEmailFatturaDaId'";
     $rs_template = $dblink->get_results($sql_template);
@@ -636,7 +764,7 @@ function inviaEmailCorsoCompletato($idIscrione,$updateIscrizione) {
     $dest = $emailDesti['email'];
     $cognome = $emailDesti['cognome'];
     $nome = $emailDesti['nome'];
-    $ogg = 'Beta Imprese s.r.l. -  Conferma Conclusione Corso';
+    $ogg = 'Conferma Conclusione Corso';
     
     
     $sql_template = "SELECT * FROM lista_template_email WHERE nome = '".$template_attestato."'";

@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-var BASE_URL_HOST = "http://"+window.location.hostname+"";
+var BASE_URL_HOST = location.protocol+"//"+window.location.hostname+"";
 
 $( document ).ready(function() {
     
-    BASE_URL_HOST = "http://"+window.location.hostname+"";
+    BASE_URL_HOST = location.protocol+"//"+window.location.hostname+"";
     
     toastr.options = {
         "closeButton": false,
@@ -41,6 +41,16 @@ $( document ).ready(function() {
         pulisciRefereStorico();
     }
     
+    $('#txt_checkbox_all').change(function(){
+        var numCheck = ($('input:checkbox').length-1);
+        for (i = 0; i < numCheck; i++) { 
+            if ($('#txt_checkbox_'+i+'').is(':checked')) {
+                $('#txt_checkbox_'+i+'').prop('checked',false);
+            } else {
+                $('#txt_checkbox_'+i+'').prop('checked',true);
+            }
+        }
+    });
     
     TableDatatablesAjaxCorsi.init();
     TabelleCorsi.init();

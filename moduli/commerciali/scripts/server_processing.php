@@ -27,6 +27,34 @@ if(strpos($campoRicerca," ")!==false){
     }
 }
 
+$where_data_calendario = "";
+$where_data_calendario_inserimento = "";
+
+if($_GET['tbl']=="lista_esami_corsi_commerciali" && $_GET['tbl']!="" && $_GET['whrStato']!="null"){
+    if (!empty($_SESSION['intervallo_data'])) {
+        $intervallo_data = $_SESSION['intervallo_data'];
+        $data_in = GiraDataOra(before(' al ', $intervallo_data));
+        $data_out = GiraDataOra(after(' al ', $intervallo_data));
+
+        if($data_in == $data_out){
+            $where_data_calendario = " AND DATE(data) = '" . $data_in . "'";
+            $where_data_calendario_inserimento = " AND DATE(datainsert) = '" . $data_in . "'";
+            $where_data_calendario_iscritto = " AND DATE(data_iscrizione) = '" . $data_in . "'";
+            $where_data_calendario_fattura = " AND DATE(data_creazione) = '" . $data_in . "'";
+        }else{
+            $where_data_calendario = " AND data BETWEEN  '" . $data_in . "' AND  '" . $data_out . "'";
+            $where_data_calendario_inserimento = " AND datainsert BETWEEN  '" . $data_in . "' AND  '" . $data_out . "'";
+            $where_data_calendario_iscritto = " AND data_iscrizione BETWEEN  '" . $data_in . "' AND  '" . $data_out . "'";
+            $where_data_calendario_fattura = " AND data_creazione BETWEEN  '" . $data_in . "' AND  '" . $data_out . "'";
+        }
+    } else {
+        $where_data_calendario = " AND YEAR(data)=YEAR(CURDATE()) AND MONTH(data)=MONTH(CURDATE())";
+        $where_data_calendario_inserimento = " AND YEAR(datainsert)=YEAR(CURDATE()) AND MONTH(datainsert)=MONTH(CURDATE())";
+        $where_data_calendario_iscritto = " AND YEAR(data_iscrizione)=YEAR(CURDATE()) AND MONTH(data_iscrizione)=MONTH(CURDATE())";
+        $where_data_calendario_fattura = " AND YEAR(data_creazione)=YEAR(CURDATE()) AND MONTH(data_creazione)=MONTH(CURDATE())";
+    }
+}
+
 switch($funzione){
     case "tabella1":
         $campi_visualizzati = "CONCAT('<a class=\"btn btn-circle btn-icon-only green btn-outline\" href=\"".BASE_URL."/moduli/anagrafiche/dettaglio_tab.php?tbl=calendario&id=',id,'\" title=\"SCHEDA\" alt=\"SCHEDA\"><i class=\"fa fa-book\"></i></a>') AS 'fa-book',
@@ -116,6 +144,31 @@ switch($funzione){
 
     default:
         switch ($tabella) {
+            case "lista_esami_corsi_commerciali":
+                $tabella = "calendario";
+                $campi_visualizzati = $table_listaEsamiCorsiCommerciali['index']['campi'];
+                if($_SESSION['livello_utente'] == 'commerciale'){
+                    //$where = " (lista_preventivi.stato LIKE 'Venduto' OR lista_preventivi.stato LIKE 'Chiuso') AND sezionale NOT LIKE 'CN%' AND (lista_preventivi.id_agente='" . $_SESSION['id_utente'] . "' OR md5(lista_preventivi.cognome_nome_agente)='" . MD5($_SESSION['cognome_nome_utente']) . "') ";
+                    $where = $table_listaEsamiCorsiCommerciali['index']['where'];
+                }else{
+                    $where = $table_listaEsamiCorsiCommerciali['index']['where'];
+                }
+                if(!empty($arrayCampoRicerca)){
+                    foreach ($arrayCampoRicerca as $campoRicerca) {
+                        if(!empty($campoRicerca)){
+                            //  $campoRicerca = $dblink->filter($campoRicerca);
+                            $where.= " AND ( oggetto LIKE '%".$campoRicerca."%' OR da LIKE '%".$campoRicerca."%'";
+                            //$where.= " OR id_agente IN (SELECT id FROM lista_password WHERE nome LIKE '%".$campoRicerca."%' OR cognome LIKE '%".$campoRicerca."%' )";
+                            //$where.= " OR id_professionista IN (SELECT id FROM lista_professionisti WHERE nome LIKE '%".$campoRicerca."%' OR cognome LIKE '%".$campoRicerca."%' )";
+                            //$where.= " OR id IN (SELECT id_preventivo FROM lista_fatture WHERE lista_fatture.stato LIKE '%".$campoRicerca."%' OR lista_fatture.data_creazione LIKE '%".$campoRicerca."%' OR lista_fatture.imponibile LIKE '%".$campoRicerca."%' )";
+                            //$where.= " OR codice_ricerca LIKE '%".$campoRicerca."%' OR imponibile LIKE '%".$campoRicerca."%')";
+                        }
+                    }
+                }
+                $where .= $where_data_calendario;
+                $ordine = $table_listaEsamiCorsiCommerciali['index']['order'];
+            break;
+            
             case "lista_consuntivo_vendite":
                 $tabella = "lista_preventivi";
                 $campi_visualizzati = $table_listaConsuntivoVendite['index']['campi'];

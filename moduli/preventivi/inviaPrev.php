@@ -16,26 +16,30 @@ if (isset($_GET['idA'])) {
 }
 
 if (isset($_GET['idPrev'])) {
+    
+    $numPrevDett = $dblink->num_rows("SELECT * FROM lista_preventivi_dettaglio WHERE id_preventivo = '".$_GET['idPrev']."'");
 
-    creaPreventivoPDF($_GET['idPrev'], false);
+    if($numPrevDett > 0){
+        creaPreventivoPDF($_GET['idPrev'], false);
+    }
 
     if (isset($_SESSION['email_utente'])) {
         $mitt = $_SESSION['email_utente'];
     } else {
-        $mitt = 'vitali@betaimprese.com';
+        $mitt = MAIL_DA_INVIA_PREVENTIVO;
     }
 
     $sql = "SELECT codice FROM lista_preventivi WHERE id='" . $_GET['idPrev'] . "'";
     list($codice) = $dblink->get_row($sql);
 
     $n_progetto = str_replace("/", "-", $codice);
-    $filename = "BetaImprese_Ordine_" . $_GET['idPrev'] . ".pdf";
-    $filename_oggetto = "Ordine " . $_GET['idPrev'] . "";
+    $filename = PREFIX_FILE_PDF_PREVENTIVO . $_GET['idPrev'] . ".pdf";
+    $filename_oggetto = PREFIX_MAIL_OGGETTO_INIVA_PREVENTIVO . $_GET['idPrev'] . "";
 
     $id_Preventivo = $_GET['idPrev'];
 
-    $sql_prev = "SELECT email, id_calendario FROM lista_professionisti INNER JOIN lista_preventivi ON lista_professionisti.id=lista_preventivi.id_professionista WHERE lista_preventivi.id='" . $id_Preventivo . "'";
-    list($emailDesti, $id_calendario) = $dblink->get_row($sql_prev);
+    $sql_prev = "SELECT email, id_calendario, lista_professionisti.id FROM lista_professionisti INNER JOIN lista_preventivi ON lista_professionisti.id=lista_preventivi.id_professionista WHERE lista_preventivi.id='" . $id_Preventivo . "'";
+    list($emailDesti, $id_calendario, $id_professionista) = $dblink->get_row($sql_prev);
 
 //echo '<h1>$emailDesti = '.$emailDesti.'</h1>';
 
@@ -54,37 +58,29 @@ if (isset($_GET['idPrev'])) {
     $dest = $emailDesti;
     $dest_cc = '';
     $dest_bcc = '';
-    $ogg = 'Beta Imprese s.r.l. -  ';
-    $mess = 'Gentile Cliente,<br>
-            in allegato alla presente Le inviamo la copia (in formato PDF) della fattura relativa ai servizi da noi forniti.<br>
-            Il presente invio SOSTITUISCE INTEGRALMENTE quello effettuato in modo tradizionale a mezzo servizio postale .<br>
-            Tale operazione &egrave; ammessa dalla normativa fiscale in essere, relativa alla "Trasmissione delle Fatture" per via Telematica:<br>
-            - R.M. n. 571134 del 19/07/88 - (posta elettronica)<br>
-            - R.M. n. 450217 del 30/07/90 - (procedure informatizzate)<br>
-            - R.M. n. 107 del 04/07/01 - (trasmissione fatture)<br>
-            - R.M. n. 202/E del 04/12/01 - (archiviazione fatture)<br>
-            Risoluzioni che forniscono chiarimenti in ordine alle condizioni necessarie per l\'ammissibilit&agrave; ai sensi dell\'art. 21 D.P.R. 26/10/72 n. 633 della procedura di trasmissione e memorizzazione delle fatture mediante sistemi combinati fondati sull\'impiego congiunto di supporti informatici, telefax e posta elettronica.<br>
-            La normativa nazionale italiana ad oggi NON consente l\'archiviazione di alcun documento contabile in formato digitale.<br>
-            Quindi &egrave; necessario GENERARNE UNA STAMPA e procedere alla relativa archiviazione come da prassi a norma di legge<br>
-            Il file &egrave; in formato pdf di seguito il link del software gratuito per la visualizzazione e la stampa di questo formato:<br>
-            http://get.adobe.com/it/reader/<br><br>
-
-	<br><img src="http://betaimprese.com/wp-content/uploads/2017/03/BETA-IMPRESE-DEFINITIVO_ALTA-RISOLUZIONE-e1489148974244.png" alt="Beta Imprese s.r.l." title="Beta Imprese s.r.l." width="250px">
-	<br>
-        <b>Sede legale e operativa : via Risorgimento, 36 - 48022 Lugo (RA)<b><br>
-        Tel. <b>0545 900600</b> - Fax <b>0545 900600</b> - <a href="http://www.betaimprese.com/">www.betaimprese.com</a>
-        <h6>Le informazioni contenute in questa e-mail e negli eventuali allegati sono riservate e destinate esclusivamente alla persona sopraindicata. Qualora non foste il destinatario, siete pregati di distruggere questo messaggio e notificarci il problema immediatamente.<br>
-        In ogni caso, non dovrete spedire a terzi, copiare, usare o diffondere il contenuto di questa e-mail e degli eventuali allegati. Si ricorda che la diffusione l\'utilizzo e/o la conservazione dei dati ricevuti per errore costituiscono violazione alle disposizioni del D.lgs. n. 196/2003 (Codice in materia di protezione dei dati personali) oltre a costituire violazione di carattere penale ai sensi dell\'art. 616 C.P.
-        </h6>';
+    $ogg = MAIL_OGGETTO_INVIA_PREVENTIVO;
+    $mess = MAIL_TESTO_INVIA_PREVENTIVO;
+    
+    $rowComm = $dblink->get_row("SELECT * FROM lista_password WHERE id ='".$_SESSION['id_utente']."'",true);
+    $rowComm['firma_email'] = html_entity_decode($rowComm['firma_email']);
+    $mess = str_replace("_XXX_FIRMA_MAIL_XXX_", $rowComm['firma_email'], $mess);
 }
 ?>
 <form action="salva.php?fn=inviaEmailPreventivo" method="post" enctype="multipart/form-data" class="form">
     <div class="modal-body">
-        <h3 class="form-section">Invia Preventivo </h3>
+        <div class="row" style="margin-bottom:10px;">
+            <div class="col-md-6"><h3 class="form-section">Invia Preventivo </h3></div>
+            <div class="col-md-6">
+                <div class="input-group">
+                <label>Seleziona Template E-Mail</label>
+                <?php print_select2("SELECT id as valore, oggetto as nome FROM lista_template_email WHERE nome LIKE 'richieste_%' ORDER BY oggetto ASC", "template_mail", "", "ricaricaTemplateMail", true); ?>
+                </div>
+            </div>
+        </div>
         <div class="row" style="margin-bottom:10px;">
             <div class="col-md-6">
                 <div class="input-group">
-                    <span class="input-group-addon" style="background-color: #fff;"><i class="fa fa-user font-grey-mint"></i></span>
+                    <span class="input-group-addon" style="background-color: #fff;"><i class="fa fa-user-circle font-grey-mint"></i></span>
                     <input name="mitt" id="mitt" type="text" class="form-control tooltips" placeholder="Mittente" value="<?php echo $mitt; ?>" data-container="body" data-placement="top" data-original-title="MITTENTE"></div></div>
             <div class="col-md-6">
                 <div class="input-group">
@@ -94,17 +90,18 @@ if (isset($_GET['idPrev'])) {
         <div class="row" style="margin-bottom:10px;">
             <div class="col-md-12">
                 <div class="input-group">
-                    <span class="input-group-addon" style="background-color: #fff;"><i class="fa fa-user font-grey-mint"></i></span>
+                    <span class="input-group-addon" style="background-color: #fff;"><i class="fa fa-users font-grey-mint"></i></span>
                     <input name="dest_cc" id="dest_cc" type="text" class="form-control tooltips" placeholder="CC" value="<?php echo $dest_cc; ?>" data-container="body" data-placement="top" data-original-title="CC"></div></div>
         </div>
         <div class="row" style="margin-bottom:10px;">
             <div class="col-md-12">
                 <div class="input-group">
-                    <span class="input-group-addon" style="background-color: #fff;"><i class="fa fa-user font-grey-mint"></i></span>
+                    <span class="input-group-addon" style="background-color: #fff;"><i class="fa fa-pencil-square-o  font-grey-mint"></i></span>
                     <input name="ogg" id="ogg" type="text" class="form-control tooltips" placeholder="Oggetto" value="<?php echo $ogg . str_replace('_', ' ', str_replace('.pdf', '', $filename_oggetto)) . ''; ?>" data-container="body" data-placement="top" data-original-title="OGGETTO"></div></div>
         </div>
         <div class="row" style="margin-bottom:10px;">
             <div class="col-md-9">
+                <?php if($numPrevDett > 0){ ?>
                 <div class="mt-checkbox-inline">
                     <label class="mt-checkbox font-blue-steel">
                         <input type="checkbox" id="fileDoc" name="fileDoc" value="<?php echo $filename; ?>"> <?php echo $filename; ?>
@@ -112,6 +109,7 @@ if (isset($_GET['idPrev'])) {
                         <span></span>
                     </label>
                 </div>
+                <?php } ?>
             </div>
             <div class="col-md-3">
                 <div class="form-group">
@@ -145,7 +143,54 @@ if (isset($_GET['idPrev'])) {
         </div>
 </form>
 <script type="text/javascript">
+    var BASE_URL_HOST = location.protocol+"//"+window.location.hostname+"";
+    
     $(document).ready(function () {
         ComponentsEditors.init();
+        BASE_URL_HOST = location.protocol+"//"+window.location.hostname+"";
     });
+    
+    function ricaricaTemplateMail(selettore){
+        
+        var id = selettore.id;
+        var idTemplate = $("#"+id).val();
+        
+        var posting = jQuery.post( BASE_URL_HOST+"/moduli/preventivi/salva.php?fn=CaricaTemplate&id="+idTemplate+"&idProf=<?=$id_professionista?>");
+        posting.done(function(data) {
+            
+            obj = JSON.parse(data);
+            
+            /*var str = data.replace(/^\s+|\s+$/g, '');
+            var res = str.split(":");*/
+            
+            if(obj.id > 0){
+                ComponentsEditors.destroy();
+                $("#ogg").val(obj.oggetto);
+                $("#mess").val(obj.messaggio);
+                ComponentsEditors.init();
+                //$("#mitt").val(data.mittente);
+                //$("#myModalCodiceFiscale").modal('hide');     // dismiss the dialog
+                //location.reload();
+            }else{
+                toastr.warning("Non è stato possibile caricare il template della mail.");
+                //alert("Non è stato torvato nessun professionista corrispondente al dato inserito.");
+                /*var nome = $("#copiaNome").val();
+                var cognome = $("#copiaCognome").val();
+                var codice_fiscale = res[1];
+                var telefono = $("#copiaTelefono").val();
+                var email = $("#copiaEmail").val();
+
+                $("#lista_professionisti_txt_nome").val(nome);
+                $("#lista_professionisti_txt_cognome").val(cognome);
+                $("#lista_professionisti_txt_codice_fiscale").val(codice_fiscale);
+                $("#lista_professionisti_txt_telefono").val(telefono);
+                $("#lista_professionisti_txt_email").val(email);
+                
+                $("#myModalCodiceFiscale").modal('hide');     // dismiss the dialog*/
+            }
+            //alert( "Data Loaded: " + data );
+        }).fail(function() {
+            toastr.error("Errore - Non è stato possibile caricare il template.");
+        });
+    }
 </script>
