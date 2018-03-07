@@ -19,7 +19,7 @@ if (isset($_GET['idTicket'])) {
       $rs = mysql_query($sql);
       while($row = mysql_fetch_array($rs,MYSQL_BOTH)){
       $n_progetto = str_replace("/","-",$row['codice']);
-      $filename = "BetaImprese_Fattura_".$row['codice']."-".$row['sezionale'].".pdf";
+      $filename = "BetaFormazione_Fattura_".$row['codice']."-".$row['sezionale'].".pdf";
       $filename_oggetto = "Fattura ".$row['codice']."/".$row['sezionale']."";
       $causale = $row['causale'];
 
