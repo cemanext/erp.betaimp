@@ -123,6 +123,11 @@ require_once( BASE_ROOT.'classi/class.db.php' );
 global $dblink;
 $dblink = DB::getInstance();
 
+//NUOVA CLASSE CRON
+require_once( BASE_ROOT.'classi/class.cron.php' );
+global $cronErp;
+$cronErp = cronerp::getInstance(BASE_ROOT."libreria/automazioni/", $dblink);
+
 define( 'COLORE_PRIMARIO', 'yellow-soft' );
 define( 'COLORE_PRIMARIO_FONT', 'font-yellow-soft' );
 define( 'COLORE_PRIMARIO_FONT_BACKGROUND', 'bg-yellow-soft bg-font-yellow-soft' );
