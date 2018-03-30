@@ -17,6 +17,10 @@ if(!is_dir(BASE_ROOT . "media/lista_telefonate")){
     mkdir(BASE_ROOT . "media/lista_telefonate", 0777);
 }
 
+if(!is_dir(BASE_ROOT . "media/lista_telefonate/elaborati")){
+    mkdir(BASE_ROOT . "media/lista_telefonate/elaborati", 0777);
+}
+
 $path = BASE_ROOT.'media/lista_telefonate/'.$filename;
 
 // readlink(BASE_ROOT.'media/lista_telefonate/'.$filename);
@@ -26,6 +30,8 @@ $path = BASE_ROOT.'media/lista_telefonate/'.$filename;
 
 if(file_exists($path)) {
 
+    $lastCodiceEsterno = $dblink->get_field("SELECT MAX(codice_esterno) FROM lista_telefonate ORDER BY codice_esterno DESC LIMIT 1");
+    
     $countOK = 0;
     $countKO = 0;
     $countSkip = 0;
@@ -76,6 +82,11 @@ if(file_exists($path)) {
                 
                 $tmpID = explode(" ", $row[0]);                         //historyid
                 $idCodiceEsterno = $tmpID[1];                           
+                
+                if($idCodiceEsterno <= $lastCodiceEsterno){
+                    continue;
+                }
+                
                 $durataChiamata = $row[2];                              //duration
                 $dataInizioChiamata = str_replace("/", "-", $row[3]);   //time-start
                 $dataInizioTelefonata = str_replace("/", "-", $row[4]); //time-answred
@@ -95,22 +106,22 @@ if(file_exists($path)) {
                 $billName = $row[18];                                   //bill-name
                 $chain = $row[19];                                      //chain
                 
-                if(strpos($chain, "BETA IMPRESE")!==false){
-                    continue; //Salto la riga se è BetaImprese
+                if(strpos($chain, "BETA FORMAZIONE")!==false){
+                    continue; //Salto la riga se Betaformazione
                 }
                 
                 $campo_1 = $data[0];                                    //salvo tutto il record
                 
                 if(strpos($fromNumber, "Ext.")!==false && $fromNumber!='Ext.MakeCall'){
                     
-                    if($toDn == '10002'){
-                        continue; //Salto la riga se è BetaImprese
+                    if($toDn == '10000'){
+                        continue; //Salto la riga se Betaformazione
                     }
                     
                     $mittente = substr($fromNumber, 4);
                     $idCommerciale = $dblink->get_field("SELECT id FROM lista_password WHERE LCASE(numerico_1) LIKE LCASE('".$mittente."')");
                     
-                    if(is_numeric($toDn) && $toDn!='10000' && $toDn!='10002'){
+                    if(is_numeric($toDn) && $toDn!='10000' && $toDn!='10002' && $toDn!='10003'){
                         $destinatario = $toDn;
                     }else{
                         $destinatario = $dialNo;
@@ -123,14 +134,14 @@ if(file_exists($path)) {
                     
                 }else if($fromNumber=='Ext.MakeCall'){
                     
-                    if($toDn == '10002'){
-                        continue; //Salto la riga se è BetaImprese
+                    if($toDn == '10000'){
+                        continue; //Salto la riga se Betaformazione
                     }
                     
                     $mittente = substr($toNumber, 4);
                     $idCommerciale = $dblink->get_field("SELECT id FROM lista_password WHERE LCASE(numerico_1) LIKE LCASE('".$mittente."')");
                     
-                    if(is_numeric($toDn) && $toDn!='10000' && $toDn!='10002'){
+                    if(is_numeric($toDn) && $toDn!='10000' && $toDn!='10002' && $toDn!='10003'){
                         $destinatario = $toDn;
                     }else{
                         $destinatario = $dialNo;
@@ -144,8 +155,8 @@ if(file_exists($path)) {
                     //Chiamata in Ingresso
                     $mittente = $fromNumber;
                     
-                    if($fromDn == '10002'){
-                        continue; //Salto la riga se è BetaImprese
+                    if($fromDn == '10000'){
+                        continue; //Salto la riga se Betaformazione
                     }
                     
                     $destinatario = substr($toNumber, 4);
@@ -188,6 +199,11 @@ if(file_exists($path)) {
               }
         }
         fclose($handle);
+        
+        if(copy($path, BASE_ROOT . "media/lista_telefonate/elaborati/cdr_".date("d-m-Y_H-i-s").".log")){
+           unlink($path); 
+        }
+        
     }
 
     //$log->log_all_errors("IMPORTAZIONE FILE ($fileName) - RIGHE IMPORTATE: $countOK - RIGHE CON ERRORI: $countKO - RIGHE SALTATE: $countSkip","OK");
